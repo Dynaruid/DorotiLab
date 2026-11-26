@@ -163,6 +163,16 @@ if(TARGET doroti_webview_qt)
 endif()
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/doroti-qt-build.json" DESTINATION .)
 
+option(DOROTI_QT_SEMANTICS_TESTS "Build the Qt accessibility regression" OFF)
+if(DOROTI_QT_SEMANTICS_TESTS)
+  enable_testing()
+  target_compile_definitions(doroti_qt_host PRIVATE DOROTI_QT_SEMANTICS_TESTS)
+  add_executable(doroti_qt_semantics_test tests/semantics_test.cpp)
+  target_link_libraries(doroti_qt_semantics_test PRIVATE doroti_qt_host Qt6::Widgets)
+  add_test(NAME doroti_qt_semantics COMMAND doroti_qt_semantics_test)
+  set_tests_properties(doroti_qt_semantics PROPERTIES TIMEOUT 1200)
+endif()
+
 # Camera/video producer is optional; no extra dependency for ordinary apps.
 option(DOROTI_GSTREAMER_TEXTURES "Build the GPU DMA-BUF camera/video adapter" OFF)
 if(DOROTI_GSTREAMER_TEXTURES)

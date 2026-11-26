@@ -1,5 +1,6 @@
 #include "doroti_windows_host_v1.h"
 #include "accessibility_bridge.h"
+#include "../../../shared/native/semantics_queue.h"
 #include "resize_order_trace.h"
 #include "pointer_device_kind.h"
 #include "pointer_sequence.h"
@@ -58,8 +59,7 @@ constexpr UINT kUpdateTextConfiguration = WM_APP + 0x420;
 constexpr UINT kUpdateTextState = WM_APP + 0x407;
 constexpr UINT kSetCaretRect = WM_APP + 0x408;
 constexpr UINT kClearTextClient = WM_APP + 0x409;
-constexpr UINT kUpdateSemantics = WM_APP + 0x40A;
-constexpr UINT kClearSemantics = WM_APP + 0x40B;
+constexpr UINT kDrainSemantics = WM_APP + 0x40A;
 constexpr UINT kEnvironmentChanged = WM_APP + 0x40C;
 constexpr UINT_PTR kInteractiveMoveTimer = 3;
 constexpr UINT kInteractiveMoveIntervalMs = 8;
@@ -267,6 +267,7 @@ class ProductHost final {
         platform_brightness_,
         &SetCompositionChild,
         &UpdateTextConfiguration,
+        &SubmitSemantics,
     };
     callbacks_.host_ready(callbacks_.callback_context, &host);
     // Host-ready attaches the managed Composition tree synchronously. Publish
@@ -698,13 +699,11 @@ class ProductHost final {
       case kClearTextClient:
         ClearTextClientOnPlatform();
         return 0;
-      case kUpdateSemantics: {
-        std::unique_ptr<std::wstring> json(reinterpret_cast<std::wstring*>(lparam));
-        if (json) ApplySemantics(*json);
-        return 0;
-      }
-      case kClearSemantics:
-        accessibility_.Clear();
+      case kDrainSemantics:
+        semantics_queue_.Drain([&](auto item) {
+          if (item.clear) accessibility_.Clear();
+          else if (!fatal_) ApplySemantics(item.payload, item.patch, !item.versioned);
+        });
         return 0;
       default:
         return DefWindowProcW(window, message, wparam, lparam);
@@ -1106,11 +1105,16 @@ class ProductHost final {
 
   static uint32_t DOROTI_WINDOWS_CALL UpdateSemantics(
       void* context, doroti_windows_utf8_v1 json) {
+    return SubmitSemantics(context, json, 0, 0);
+  }
+
+  static uint32_t DOROTI_WINDOWS_CALL SubmitSemantics(
+      void* context, doroti_windows_utf8_v1 json, uint64_t revision, uint64_t base) {
     auto* host = static_cast<ProductHost*>(context);
-    if (host == nullptr || !ValidHeader(&json)) return 1;
+    if (host == nullptr || !ValidHeader(&json) || (revision == 0 && base != 0)) return 1;
     try {
-      auto value = std::make_unique<std::wstring>(Decode(json));
-      return host->PostOwned(kUpdateSemantics, std::move(value));
+      return host->semantics_queue_.Submit(Decode(json), revision, base, false,
+          [=] { return host->WakeSemantics(); });
     } catch (...) {
       return 4;
     }
@@ -1118,8 +1122,16 @@ class ProductHost final {
 
   static uint32_t DOROTI_WINDOWS_CALL ClearSemantics(void* context) {
     auto* host = static_cast<ProductHost*>(context);
-    if (host == nullptr || host->task_ == nullptr) return 1;
-    return PostMessageW(host->task_, kClearSemantics, 0, 0) ? 0u : 4u;
+    if (host == nullptr) return 1;
+    try {
+      return host->semantics_queue_.Submit({}, 0, 0, true, [=] { return host->WakeSemantics(); });
+    } catch (...) {
+      return 4;
+    }
+  }
+
+  bool WakeSemantics() const {
+    return task_ != nullptr && PostMessageW(task_, kDrainSemantics, 0, 0);
   }
 
   template <typename T>
@@ -1781,94 +1793,155 @@ class ProductHost final {
     return -1;
   }
 
-  void ApplySemantics(const std::wstring& json) {
+  static void ReadSemanticsNode(const winrt::Windows::Data::Json::JsonObject& source,
+                                doroti::windows::AccessibilityNode& node) {
+    using namespace winrt::Windows::Data::Json;
+    if (source.HasKey(L"label")) node.label = JsonString(source, L"label");
+    if (source.HasKey(L"value")) node.value = JsonString(source, L"value");
+    if (source.HasKey(L"identifier")) node.identifier = JsonString(source, L"identifier");
+    if (source.HasKey(L"hint")) node.hint = JsonString(source, L"hint");
+    if (source.HasKey(L"tooltip")) node.tooltip = JsonString(source, L"tooltip");
+    if (source.HasKey(L"linkUrl")) node.link_url = JsonString(source, L"linkUrl");
+    if (source.HasKey(L"increasedValue")) node.increased_value = JsonString(source, L"increasedValue");
+    if (source.HasKey(L"decreasedValue")) node.decreased_value = JsonString(source, L"decreasedValue");
+    if (source.HasKey(L"minValue")) node.min_value = JsonString(source, L"minValue");
+    if (source.HasKey(L"maxValue")) node.max_value = JsonString(source, L"maxValue");
+    if (source.HasKey(L"headingLevel")) node.heading_level = static_cast<int>(JsonNumber(source, L"headingLevel"));
+    if (source.HasKey(L"role")) node.role = source.GetNamedString(L"role", L"none");
+    if (source.HasKey(L"actions")) node.actions = static_cast<int64_t>(source.GetNamedNumber(L"actions", 0));
+    if (source.HasKey(L"indexInParent"))
+      node.index_in_parent = static_cast<int>(JsonNumber(source, L"indexInParent", std::numeric_limits<int>::max()));
+    const auto read_scroll = [&](const wchar_t* key, std::optional<double>& field) {
+      if (!source.HasKey(key)) return;
+      const auto value = source.GetNamedValue(key);
+      field = value.ValueType() == JsonValueType::Number ? std::optional<double>(value.GetNumber()) : std::nullopt;
+    };
+    read_scroll(L"scrollPosition", node.scroll_position);
+    read_scroll(L"scrollExtentMin", node.scroll_min);
+    read_scroll(L"scrollExtentMax", node.scroll_max);
+    if (source.HasKey(L"rect")) {
+      const auto rect = source.GetNamedArray(L"rect");
+      if (rect.Size() != 4) throw std::invalid_argument("semantics rect");
+      node.left = rect.GetNumberAt(0);
+      node.top = rect.GetNumberAt(1);
+      node.right = rect.GetNumberAt(2);
+      node.bottom = rect.GetNumberAt(3);
+    }
+    if (source.HasKey(L"children")) {
+      const auto children = source.GetNamedArray(L"children");
+      node.children.clear();
+      for (uint32_t index = 0; index < children.Size(); ++index)
+        node.children.push_back(static_cast<int>(children.GetNumberAt(index)));
+    }
+    if (source.HasKey(L"flags")) {
+      const auto flags = source.GetNamedValue(L"flags").ValueType() == JsonValueType::Object
+          ? source.GetNamedObject(L"flags") : JsonObject{};
+      node.enabled = JsonBool(flags, L"enabled", true);
+      node.focusable = JsonBool(flags, L"focusable");
+      node.focused = JsonBool(flags, L"focused");
+      node.hidden = JsonBool(flags, L"hidden");
+      node.button = JsonBool(flags, L"button");
+      node.text_field = JsonBool(flags, L"textField");
+      node.read_only = JsonBool(flags, L"readOnly");
+      node.slider = JsonBool(flags, L"slider");
+      node.mutually_exclusive = JsonBool(flags, L"mutuallyExclusive");
+      node.header = JsonBool(flags, L"header");
+      node.image = JsonBool(flags, L"image");
+      node.live_region = JsonBool(flags, L"liveRegion");
+      node.link = JsonBool(flags, L"link");
+      node.obscured = JsonBool(flags, L"obscured");
+      node.required = JsonBool(flags, L"required");
+      node.checked = JsonState(flags, L"checked");
+      node.selected = JsonState(flags, L"selected");
+      node.toggled = JsonState(flags, L"toggled");
+      node.expanded = JsonState(flags, L"expanded");
+    }
+    if (source.HasKey(L"textSelectionBase"))
+      node.selection_base = static_cast<int>(JsonNumber(source, L"textSelectionBase", -1));
+    if (source.HasKey(L"textSelectionExtent"))
+      node.selection_extent = static_cast<int>(JsonNumber(source, L"textSelectionExtent", -1));
+    if (node.obscured || source.HasKey(L"textGeometry")) {
+      node.text_geometry = false;
+      node.text_revision = 0;
+      node.layout_text.clear();
+      node.text_boundaries.clear();
+      node.text_runs.clear();
+    }
+    if (node.obscured) return;
+    if (source.HasKey(L"textGeometry") && source.GetNamedValue(L"textGeometry").ValueType() == JsonValueType::Object) {
+      const auto geometry = source.GetNamedObject(L"textGeometry");
+      node.layout_text = JsonString(geometry, L"text");
+      node.text_revision = static_cast<uint64_t>(JsonNumber(geometry, L"revision"));
+      const auto boundaries = geometry.GetNamedArray(L"boundaries");
+      for (uint32_t i = 0; i < boundaries.Size(); ++i) node.text_boundaries.push_back(static_cast<int>(boundaries.GetNumberAt(i)));
+      const auto runs = geometry.GetNamedArray(L"runs");
+      if (node.layout_text.size() > 32768 || runs.Size() > 65536) throw std::invalid_argument("text geometry size");
+      for (const auto geometry_value : runs) {
+        const auto source_run = geometry_value.GetObject();
+        doroti::windows::AccessibilityTextRun run;
+        run.start = static_cast<int>(JsonNumber(source_run, L"start")); run.end = static_cast<int>(JsonNumber(source_run, L"end"));
+        run.line_start = static_cast<int>(JsonNumber(source_run, L"lineStart")); run.line_end = static_cast<int>(JsonNumber(source_run, L"lineEnd"));
+        run.left = JsonNumber(source_run, L"left"); run.top = JsonNumber(source_run, L"top");
+        run.right = JsonNumber(source_run, L"right"); run.bottom = JsonNumber(source_run, L"bottom"); run.rtl = JsonBool(source_run, L"rtl");
+        if (run.start < 0 || run.end < run.start || run.end > node.layout_text.size() ||
+            !std::isfinite(run.left) || !std::isfinite(run.top) || !std::isfinite(run.right) || !std::isfinite(run.bottom))
+          throw std::invalid_argument("text geometry range");
+        node.text_runs.push_back(run);
+      }
+      if (node.text_boundaries.empty() || node.text_boundaries.front() != 0 || node.text_boundaries.back() != node.layout_text.size()
+          || !std::is_sorted(node.text_boundaries.begin(), node.text_boundaries.end())
+          || node.text_boundaries.size() > 32769) throw std::invalid_argument("text geometry boundaries");
+      node.text_geometry = true;
+    }
+    if (source.HasKey(L"textBounds")) {
+      for (const auto& value : source.GetNamedArray(L"textBounds")) {
+        const auto bounds = value.GetArray();
+        if (bounds.Size() != 5) throw std::invalid_argument("semantics text bounds");
+        const auto index = static_cast<size_t>(bounds.GetNumberAt(0));
+        auto& run = node.text_runs.at(index);
+        run.left = bounds.GetNumberAt(1);
+        run.top = bounds.GetNumberAt(2);
+        run.right = bounds.GetNumberAt(3);
+        run.bottom = bounds.GetNumberAt(4);
+      }
+    }
+  }
+
+  void ApplySemantics(const std::wstring& json, bool patch, bool legacy) {
     try {
       const auto root = winrt::Windows::Data::Json::JsonObject::Parse(json);
-      const auto generation = static_cast<uint64_t>(root.GetNamedNumber(L"generation"));
       const auto values = root.GetNamedArray(L"nodes");
+      if (patch) {
+        std::vector<int> removed;
+        if (root.HasKey(L"removed"))
+          for (const auto& value : root.GetNamedArray(L"removed"))
+            removed.push_back(static_cast<int>(value.GetNumber()));
+        std::vector<doroti::windows::AccessibilityNodePatch> changes;
+        changes.reserve(values.Size());
+        for (const auto& value : values) {
+          const auto source = value.GetObject();
+          changes.push_back({
+              static_cast<int>(source.GetNamedNumber(L"id")),
+              source.HasKey(L"children"),
+              source.HasKey(L"label") || source.HasKey(L"value") || source.HasKey(L"role") || source.HasKey(L"flags") ||
+                  source.HasKey(L"textSelectionBase") || source.HasKey(L"textSelectionExtent"),
+              source.HasKey(L"textGeometry"),
+              [source](auto& node) { ReadSemanticsNode(source, node); }});
+        }
+        accessibility_.Patch(std::move(changes), removed, current_scale_);
+        return;
+      }
+      const auto generation = static_cast<uint64_t>(root.GetNamedNumber(L"generation"));
       std::vector<doroti::windows::AccessibilityNode> nodes;
       nodes.reserve(values.Size());
       for (const auto& value : values) {
         const auto source = value.GetObject();
         doroti::windows::AccessibilityNode node;
         node.id = static_cast<int>(source.GetNamedNumber(L"id"));
-        node.label = JsonString(source, L"label");
-        node.value = JsonString(source, L"value");
-        node.identifier = JsonString(source, L"identifier");
-        node.hint = JsonString(source, L"hint");
-        node.tooltip = JsonString(source, L"tooltip");
-        node.link_url = JsonString(source, L"linkUrl");
-        node.increased_value = JsonString(source, L"increasedValue");
-        node.decreased_value = JsonString(source, L"decreasedValue");
-        node.min_value = JsonString(source, L"minValue");
-        node.max_value = JsonString(source, L"maxValue");
-        node.heading_level = static_cast<int>(JsonNumber(source, L"headingLevel"));
-        node.role = source.GetNamedString(L"role", L"none");
-        node.actions = static_cast<int64_t>(source.GetNamedNumber(L"actions", 0));
-        const auto rect = source.GetNamedArray(L"rect");
-        if (rect.Size() != 4) throw std::invalid_argument("semantics rect");
-        node.left = rect.GetNumberAt(0);
-        node.top = rect.GetNumberAt(1);
-        node.right = rect.GetNumberAt(2);
-        node.bottom = rect.GetNumberAt(3);
-        const auto children = source.GetNamedArray(L"children");
-        for (uint32_t index = 0; index < children.Size(); ++index)
-          node.children.push_back(static_cast<int>(children.GetNumberAt(index)));
-        if (source.HasKey(L"flags") &&
-            source.GetNamedValue(L"flags").ValueType() ==
-                winrt::Windows::Data::Json::JsonValueType::Object) {
-          const auto flags = source.GetNamedObject(L"flags");
-          node.enabled = JsonBool(flags, L"enabled", true);
-          node.focusable = JsonBool(flags, L"focusable");
-          node.focused = JsonBool(flags, L"focused");
-          node.hidden = JsonBool(flags, L"hidden");
-          node.button = JsonBool(flags, L"button");
-          node.text_field = JsonBool(flags, L"textField");
-          node.read_only = JsonBool(flags, L"readOnly");
-          node.slider = JsonBool(flags, L"slider");
-          node.mutually_exclusive = JsonBool(flags, L"mutuallyExclusive");
-          node.header = JsonBool(flags, L"header");
-          node.image = JsonBool(flags, L"image");
-          node.live_region = JsonBool(flags, L"liveRegion");
-          node.link = JsonBool(flags, L"link");
-          node.obscured = JsonBool(flags, L"obscured");
-          node.required = JsonBool(flags, L"required");
-          node.checked = JsonState(flags, L"checked");
-          node.selected = JsonState(flags, L"selected");
-          node.toggled = JsonState(flags, L"toggled");
-          node.expanded = JsonState(flags, L"expanded");
-        }
-        node.selection_base = static_cast<int>(JsonNumber(source, L"textSelectionBase", -1));
-        node.selection_extent = static_cast<int>(JsonNumber(source, L"textSelectionExtent", -1));
-        if (!node.obscured && source.HasKey(L"textGeometry") && source.GetNamedValue(L"textGeometry").ValueType() ==
-            winrt::Windows::Data::Json::JsonValueType::Object) {
-          const auto geometry = source.GetNamedObject(L"textGeometry");
-          node.layout_text = JsonString(geometry, L"text");
-          node.text_revision = static_cast<uint64_t>(JsonNumber(geometry, L"revision"));
-          const auto boundaries = geometry.GetNamedArray(L"boundaries");
-          for (uint32_t i = 0; i < boundaries.Size(); ++i) node.text_boundaries.push_back(static_cast<int>(boundaries.GetNumberAt(i)));
-          const auto runs = geometry.GetNamedArray(L"runs");
-          if (node.layout_text.size() > 32768 || runs.Size() > 65536) throw std::invalid_argument("text geometry size");
-          for (const auto geometry_value : runs) {
-            const auto source_run = geometry_value.GetObject();
-            doroti::windows::AccessibilityTextRun run;
-            run.start = static_cast<int>(JsonNumber(source_run, L"start")); run.end = static_cast<int>(JsonNumber(source_run, L"end"));
-            run.line_start = static_cast<int>(JsonNumber(source_run, L"lineStart")); run.line_end = static_cast<int>(JsonNumber(source_run, L"lineEnd"));
-            run.left = JsonNumber(source_run, L"left"); run.top = JsonNumber(source_run, L"top");
-            run.right = JsonNumber(source_run, L"right"); run.bottom = JsonNumber(source_run, L"bottom"); run.rtl = JsonBool(source_run, L"rtl");
-            if (run.start < 0 || run.end < run.start || run.end > node.layout_text.size() ||
-                !std::isfinite(run.left) || !std::isfinite(run.top) || !std::isfinite(run.right) || !std::isfinite(run.bottom))
-              throw std::invalid_argument("text geometry range");
-            node.text_runs.push_back(run);
-          }
-          if (node.text_boundaries.empty() || node.text_boundaries.front() != 0 || node.text_boundaries.back() != node.layout_text.size()
-              || !std::is_sorted(node.text_boundaries.begin(), node.text_boundaries.end())
-              || node.text_boundaries.size() > 32769) throw std::invalid_argument("text geometry boundaries");
-          node.text_geometry = true;
-        }
+        ReadSemanticsNode(source, node);
         nodes.push_back(std::move(node));
       }
-      accessibility_.Update(generation, std::move(nodes), current_scale_);
+      accessibility_.Update(generation, std::move(nodes), current_scale_, legacy);
     } catch (...) {
       fatal_ = true;
       PostMessageW(top_, WM_CLOSE, 0, 0);
@@ -2523,6 +2596,7 @@ class ProductHost final {
   uint32_t lifecycle_state_{std::numeric_limits<uint32_t>::max()};
   uint32_t platform_brightness_{};
   doroti::windows::AccessibilityBridge accessibility_;
+  doroti::SemanticsQueue<std::wstring> semantics_queue_;
   std::mutex render_mutex_;
   std::condition_variable render_condition_;
   std::condition_variable resize_condition_;
@@ -2604,7 +2678,8 @@ doroti_windows_get_abi_layout_v1(doroti_windows_abi_layout_v1* layout) {
       sizeof(doroti_windows_utf8_v1),
       sizeof(doroti_windows_metrics_v1),
       sizeof(doroti_windows_frame_request_v1),
-      sizeof(doroti_windows_host_v1),
+      // Report the validated v1 prefix. New clients inspect host_ready.struct_size for the optional tail.
+      offsetof(doroti_windows_host_v1, submit_semantics),
       sizeof(doroti_windows_frame_terminal_v1),
       sizeof(doroti_windows_configuration_v1),
       sizeof(doroti_windows_callbacks_v1),

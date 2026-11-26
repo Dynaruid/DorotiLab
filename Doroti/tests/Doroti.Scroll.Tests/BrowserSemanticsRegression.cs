@@ -51,6 +51,14 @@ internal static class BrowserSemanticsRegression
             [shifted with { textSelectionBase = 0, textSelectionExtent = 2, scrollPosition = 20.5 }]))!))
             Check(delta.RootElement.GetProperty("nodes")[0].GetProperty("textSelectionExtent").GetInt64() == 2,
                 "selection and scroll values remain immediate content changes");
+        using (var delta = JsonDocument.Parse(transport.Update(new SemanticsUpdate(5,
+            [shifted with { textSelectionBase = 0, textSelectionExtent = 2, scrollPosition = 21.25 }]))!))
+        {
+            var patch = delta.RootElement.GetProperty("nodes")[0];
+            Check(patch.GetProperty("contentUnchanged").GetBoolean() && patch.GetProperty("scrollPosition").GetDouble() == 21.25
+                && !patch.TryGetProperty("label", out _) && !patch.TryGetProperty("rect", out _),
+                "scroll-only updates keep content and DOM coordinates unchanged");
+        }
         Console.WriteLine("PASS: allocation-free browser semantics comparison, all fields, compact geometry and immediate selection/scroll values");
     }
 

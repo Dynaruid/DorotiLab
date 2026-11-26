@@ -248,6 +248,14 @@ internal static unsafe class QtNativeV2
     }
 
     [StructLayout(LayoutKind.Sequential)]
+    internal readonly struct HostApiWithSemantics
+    {
+        internal const ulong Feature = 1UL << 26;
+        internal readonly HostApi Prefix;
+        internal readonly nint SubmitSemantics;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
     internal readonly struct Callbacks
     {
         internal readonly uint AbiVersion;
@@ -351,6 +359,7 @@ internal static unsafe class QtNativeV2
         RequireSize<TextConfiguration>(40);
         RequireSize<TextState>(40);
         RequireSize<HostApi>(136);
+        RequireSize<HostApiWithSemantics>(144);
         RequireSize<Callbacks>(208);
         RequireOffset<Surface>(nameof(Surface.SurfaceGeneration), 8);
         RequireOffset<Surface>(nameof(Surface.FramebufferObject), 24);

@@ -6,7 +6,9 @@
 
 #include <cstdint>
 #include <functional>
+#include <limits>
 #include <memory>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -16,9 +18,11 @@ struct AccessibilityTextRun {
   int start{}, end{}, line_start{}, line_end{};
   double left{}, top{}, right{}, bottom{};
   bool rtl{};
+  bool operator==(const AccessibilityTextRun&) const = default;
 };
 struct AccessibilityNode {
   int id{};
+  uint64_t instance{};
   double left{};
   double top{};
   double right{};
@@ -36,6 +40,7 @@ struct AccessibilityNode {
   std::wstring role;
   int64_t actions{};
   std::vector<int> children;
+  int index_in_parent{std::numeric_limits<int>::max()};
   bool enabled{true};
   bool focusable{};
   bool focused{};
@@ -58,10 +63,21 @@ struct AccessibilityNode {
   int heading_level{};
   bool text_geometry{};
   uint64_t text_revision{};
+  uint64_t text_instance{};
   std::wstring layout_text;
   std::vector<int> text_boundaries;
   std::vector<AccessibilityTextRun> text_runs;
   int selection_base{-1}, selection_extent{-1};
+  std::optional<double> scroll_position, scroll_min, scroll_max;
+  bool operator==(const AccessibilityNode&) const = default;
+};
+
+struct AccessibilityNodePatch {
+  int id{};
+  bool children_changed{};
+  bool may_notify{};
+  bool layout_changed{};
+  std::function<void(AccessibilityNode&)> apply;
 };
 
 class AccessibilityBridge final {
@@ -78,7 +94,9 @@ class AccessibilityBridge final {
 
   void Attach(HWND window, ActionCallback callback);
   void Update(uint64_t generation, std::vector<AccessibilityNode> nodes,
-              double scale);
+              double scale, bool legacy = true);
+  void Patch(std::vector<AccessibilityNodePatch> changes,
+             const std::vector<int>& removed, double scale);
   void Clear();
   void SetScale(double scale);
   LRESULT HandleGetObject(WPARAM wparam, LPARAM lparam);

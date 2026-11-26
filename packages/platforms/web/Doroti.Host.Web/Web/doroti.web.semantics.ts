@@ -12,8 +12,8 @@ export interface SemanticsNode {
   identifier?: string; hint?: string; tooltip?: string; increasedValue?: string; decreasedValue?: string;
   headingLevel?: number; linkUrl?: string; validationResult?: string; hitTestBehavior?: string;
   inputType?: string; minValue?: string; maxValue?: string; maxValueLength?: number;
-  currentValueLength?: number; scrollPosition?: number; scrollExtentMin?: number;
-  scrollExtentMax?: number; scrollChildCount?: number; scrollIndex?: number;
+  currentValueLength?: number; scrollPosition?: number | null; scrollExtentMin?: number | null;
+  scrollExtentMax?: number | null; scrollChildCount?: number; scrollIndex?: number;
   controlsNodes?: string[]; locale?: string; direction?: "ltr" | "rtl"; rect: [number, number, number, number];
 }
 
@@ -92,7 +92,7 @@ export class BrowserSemanticsState {
         plan.content.add(node.id);
       }
       this.nodes.set(node.id, node);
-      plan.changed.add(node.id);
+      if (!compact || patch.rect !== undefined || patch.children !== undefined) plan.changed.add(node.id);
       // Coordinates are in view space; moving a parent changes its children's relative DOM positions.
       if (!old || old.rect[0] !== node.rect[0] || old.rect[1] !== node.rect[1])
         for (const child of node.children) plan.changed.add(child);

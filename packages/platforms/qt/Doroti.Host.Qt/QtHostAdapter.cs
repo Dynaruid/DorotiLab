@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text.Json;
+using Doroti.Host.Shared;
 using Doroti.Skia.Rendering;
 using Doroti.Ui;
 
@@ -22,6 +23,8 @@ internal sealed unsafe class QtHostAdapter
     private readonly nint _viewHandle;
     private readonly ulong _viewId;
     private readonly QtNativeV2.HostApi _hostApi;
+    private readonly nint _submitSemantics;
+    private readonly NativeSemanticsTransport _semantics = new(qt: true);
     private Action<TimeSpan>? _pendingFrame;
     private readonly Dictionary<ulong, TaskCompletionSource<string?>> _clipboardRequests = [];
     private readonly Dictionary<long, long> _pressedLogicalKeys = [];
@@ -41,12 +44,13 @@ internal sealed unsafe class QtHostAdapter
         nint viewHandle,
         in QtNativeV2.HostApi hostApi,
         int logicalWidth,
-        int logicalHeight, ulong viewId
+        int logicalHeight, ulong viewId, nint submitSemantics
     )
     {
         _viewId = viewId;
         _viewHandle = viewHandle;
         _hostApi = hostApi;
+        _submitSemantics = submitSemantics;
         Metrics = new(
             new Size(logicalWidth, logicalHeight),
             1,
@@ -547,46 +551,36 @@ internal sealed unsafe class QtHostAdapter
 
     public void UpdateSemantics(SemanticsUpdate update)
     {
-        var nodes = update.nodes.Select(node => new
+        lock (_gate)
         {
-            node.id,
-            node.label,
-            node.value,
-            node.textSelectionBase,
-            node.textSelectionExtent,
-            textGeometry = node.flags?.isObscured == true ? null : node.textGeometry?.ToWire(),
-            role = node.role.ToString(),
-            actions = (long)node.actions,
-            children = node.children,
-            flags = node.flags is null
-                ? null
-                : new
-                {
-                    selected = node.flags.isSelected.toBoolOrNull(),
-                    checkedState = (int)node.flags.isChecked,
-                    toggled = node.flags.isToggled.toBoolOrNull(),
-                    expanded = node.flags.isExpanded.toBoolOrNull(),
-                    enabled = node.flags.isEnabled.toBoolOrNull(),
-                    focused = node.flags.isFocused.toBoolOrNull(),
-                    button = node.flags.isButton,
-                    textField = node.flags.isTextField,
-                    header = node.flags.isHeader,
-                    hidden = node.flags.isHidden,
-                    image = node.flags.isImage,
-                    slider = node.flags.isSlider,
-                    readOnly = node.flags.isReadOnly,
-                    obscured = node.flags.isObscured,
-                    multiline = node.flags.isMultiline,
-                },
-            rect = new[] { node.rect.left, node.rect.top, node.rect.right, node.rect.bottom },
-        });
-        WithUtf8(
-            JsonSerializer.Serialize(new { generation = update.generation, nodes }),
-            json => _hostApi.UpdateSemantics(_viewHandle, json)
-        );
+            if (_disposed) return;
+            _semantics.Update(update, _submitSemantics == 0 ? null : SubmitSemantics, SendLegacySemantics);
+        }
     }
 
-    public void ClearSemantics() => _hostApi.ClearSemantics(_viewHandle);
+    private uint SubmitSemantics(byte[] bytes, long revision, long baseRevision)
+    {
+        fixed (byte* data = bytes)
+        {
+            var callback = (delegate* unmanaged[Cdecl]<nint, QtNativeV2.Utf8, ulong, ulong, uint>)_submitSemantics;
+            return callback(_viewHandle, new(data, (ulong)bytes.Length), (ulong)revision, (ulong)baseRevision);
+        }
+    }
+
+    private void SendLegacySemantics(byte[] bytes)
+    {
+        fixed (byte* data = bytes)
+            _hostApi.UpdateSemantics(_viewHandle, new(data, (ulong)bytes.Length));
+    }
+
+    public void ClearSemantics()
+    {
+        lock (_gate)
+        {
+            _semantics.Clear();
+            if (!_disposed) _hostApi.ClearSemantics(_viewHandle);
+        }
+    }
 
     internal void ApplySemanticsAction(long nodeId, long action, string argumentsJson)
     {

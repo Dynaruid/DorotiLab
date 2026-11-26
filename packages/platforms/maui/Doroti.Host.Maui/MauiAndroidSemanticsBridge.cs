@@ -20,7 +20,8 @@ internal sealed partial class MauiAndroidSemanticsBridge : IMauiSemanticsBridge,
     private VirtualNodes? _helper;
     private Android.Views.Accessibility.AccessibilityManager? _accessibilityManager;
     private SemanticsUpdate? _pendingUpdate;
-    private Dictionary<int, SemanticsNodeUpdate> _nodes = [];
+    private readonly SemanticsVisibleTree _visible = new(SemanticsPlatformViewExposure.ExcludeNode, filterChildren: false);
+    private IReadOnlyDictionary<int, SemanticsNodeUpdate> _nodes => _visible.Nodes;
     private int[] _order = [];
     private Action<int, SemanticsAction, object?>? _performAction;
     private long _generation = -1,
@@ -31,6 +32,7 @@ internal sealed partial class MauiAndroidSemanticsBridge : IMauiSemanticsBridge,
         _applyMicros,
         _maxApplyMicros;
     private bool _disposed;
+    private long _attachment;
     private long _providerActiveUntil;
     internal bool HasActiveConsumer => _accessibilityManager?.IsEnabled != false
         || Stopwatch.GetTimestamp() < _providerActiveUntil
@@ -69,7 +71,11 @@ internal sealed partial class MauiAndroidSemanticsBridge : IMauiSemanticsBridge,
         // Framework dispatch, provider callbacks and SurfaceView input share the UI thread.
         if (_element.Dispatcher.IsDispatchRequired)
         {
-            _element.Dispatcher.Dispatch(() => Update(update, performAction));
+            var attachment = Interlocked.Read(ref _attachment);
+            _element.Dispatcher.Dispatch(() =>
+            {
+                if (attachment == Interlocked.Read(ref _attachment)) Update(update, performAction);
+            });
             return;
         }
         _received++;
@@ -101,46 +107,33 @@ internal sealed partial class MauiAndroidSemanticsBridge : IMauiSemanticsBridge,
         using var allocationProfile = FrameworkWorkProfile.AllocationEnabled
             ? FrameworkWorkProfile.Begin(GetType(), 16) : default;
         var started = Stopwatch.GetTimestamp();
-        var nodes = update.nodes.ToDictionary(node => node.id);
-        var hidden = new HashSet<int>();
-        var pending = new Stack<int>(
-            update.nodes.Where(node => node.flags?.isHidden == true).Select(node => node.id)
-        );
-        while (pending.TryPop(out var id))
+        var delta = _visible.Prepare(update);
+        if (!delta.HasChanges)
         {
-            if (!hidden.Add(id) || !nodes.TryGetValue(id, out var node))
-            {
-                continue;
-            }
-
-            foreach (var child in node.children)
-            {
-                pending.Push(child);
-            }
-        }
-        hidden.UnionWith(
-            nodes.Values.Where(node => node.platformViewId is not null).Select(node => node.id)
-        );
-        foreach (var id in hidden)
-        {
-            nodes.Remove(id);
-        }
-
-        var visible = update.nodes.Where(node => nodes.ContainsKey(node.id)).ToArray();
-        if (!SemanticsUpdateDiffer.HasChanges(_nodes, visible))
-        {
+            _visible.Commit(delta);
             _suppressed++;
             return;
         }
-        ClearRemovedFocus(nodes);
-        _nodes = nodes;
-        _order = visible.Select(node => node.id).ToArray();
-        _applied++;
-        // Android's helper owns accessibility/keyboard focus and emits one tree
-        // change. NodeInfo objects are created only when a service queries them.
-        if (notify)
+
+        var orderMayChange = delta.Order is not null || delta.Changes.Any(change =>
+            (change.Previous is not null && IsExposed(change.Previous)) != IsExposed(change.Current));
+        if (orderMayChange)
+            ClearRemovedFocus(id => !delta.Removed.Contains(id) && !delta.Changes.Any(change =>
+                change.Current.id == id && !IsExposed(change.Current)));
+        _visible.Commit(delta);
+        var orderChanged = false;
+        if (orderMayChange)
         {
-            _helper?.InvalidateRoot();
+            var order = _visible.Order.Where(id => IsExposed(_nodes[id])).ToArray();
+            orderChanged = !_order.AsSpan().SequenceEqual(order);
+            if (orderChanged) _order = order;
+        }
+        _applied++;
+        if (notify && _helper is { } helper)
+        {
+            var changed = delta.Changes.Where(change => IsExposed(change.Current)).Take(2).ToArray();
+            if (orderChanged || changed.Length > 1) helper.InvalidateRoot();
+            else if (changed.Length == 1) helper.InvalidateVirtualView(changed[0].Current.id);
         }
         var micros = Stopwatch.GetElapsedTime(started).Ticks / 10;
         _applyMicros += micros;
@@ -149,16 +142,17 @@ internal sealed partial class MauiAndroidSemanticsBridge : IMauiSemanticsBridge,
 
     public void Clear()
     {
+        Interlocked.Increment(ref _attachment);
         _pendingUpdate = null;
-        ClearRemovedFocus(new Dictionary<int, SemanticsNodeUpdate>());
-        _nodes.Clear();
+        ClearRemovedFocus(static _ => false);
+        _visible.Clear();
         _order = [];
         _performAction = null;
         _generation = -1;
         _helper?.InvalidateRoot();
     }
 
-    private void ClearRemovedFocus(IReadOnlyDictionary<int, SemanticsNodeUpdate> nodes)
+    private void ClearRemovedFocus(Func<int, bool> remainsExposed)
     {
         if (_helper is null || _native is null)
         {
@@ -166,13 +160,13 @@ internal sealed partial class MauiAndroidSemanticsBridge : IMauiSemanticsBridge,
         }
 
         var keyboard = _helper.KeyboardFocusedVirtualViewId;
-        if (keyboard != ExploreByTouchHelper.InvalidId && !nodes.ContainsKey(keyboard))
+        if (keyboard != ExploreByTouchHelper.InvalidId && !remainsExposed(keyboard))
         {
             _helper.ClearKeyboardFocusForVirtualView(keyboard);
         }
 
         var accessibility = _helper.AccessibilityFocusedVirtualViewId;
-        if (accessibility != ExploreByTouchHelper.InvalidId && !nodes.ContainsKey(accessibility))
+        if (accessibility != ExploreByTouchHelper.InvalidId && !remainsExposed(accessibility))
         {
             _helper
                 .GetAccessibilityNodeProvider(_native)
@@ -211,13 +205,15 @@ internal sealed partial class MauiAndroidSemanticsBridge : IMauiSemanticsBridge,
 
     private void Detach()
     {
+        Interlocked.Increment(ref _attachment);
+        var retired = _helper;
+        _helper = null;
         if (_native is not null)
         {
             _native.SemanticsHelper = null;
             ViewCompat.SetAccessibilityDelegate(_native, null);
         }
-        _helper?.Dispose();
-        _helper = null;
+        retired?.Dispose();
         _native = null;
         _accessibilityManager = null;
     }
@@ -234,6 +230,12 @@ internal sealed partial class MauiAndroidSemanticsBridge : IMauiSemanticsBridge,
         Detach();
         Clear();
     }
+
+    private static bool IsExposed(SemanticsNodeUpdate node) =>
+        !string.IsNullOrWhiteSpace(node.label)
+        || !string.IsNullOrWhiteSpace(node.value)
+        || node.actions != SemanticsAction.none
+        || node.flags is { isFocused: not Tristate.none };
 
     private sealed class VirtualNodes : ExploreByTouchHelper
     {
@@ -254,10 +256,14 @@ internal sealed partial class MauiAndroidSemanticsBridge : IMauiSemanticsBridge,
         private VirtualNodes(IntPtr handle, JniHandleOwnership ownership)
             : base(handle, ownership) { }
 
+        private MauiAndroidSemanticsBridge? LiveOwner => _owner is { _disposed: false } owner
+            && ReferenceEquals(owner._helper, this) ? owner : null;
+
         protected override int GetVirtualViewAt(float x, float y)
         {
-            _owner?.EnsureLatestNodes();
-            if (_owner is null || _host is null)
+            var owner = LiveOwner;
+            owner?.EnsureLatestNodes();
+            if (owner is null || _host is null)
             {
                 return InvalidId;
             }
@@ -268,14 +274,9 @@ internal sealed partial class MauiAndroidSemanticsBridge : IMauiSemanticsBridge,
             // so an actionable child wins over its scroll/container bounds.
             var best = InvalidId;
             var area = double.PositiveInfinity;
-            foreach (var id in _owner._order)
+            foreach (var id in owner._order)
             {
-                var node = _owner._nodes[id];
-                if (!IsExposed(node))
-                {
-                    continue;
-                }
-
+                var node = owner._nodes[id];
                 if (node.rect.contains(point) && node.rect.width * node.rect.height < area)
                 {
                     best = id;
@@ -287,45 +288,36 @@ internal sealed partial class MauiAndroidSemanticsBridge : IMauiSemanticsBridge,
 
         protected override void GetVisibleVirtualViews(IList<Java.Lang.Integer>? virtualViewIds)
         {
-            _owner?.EnsureLatestNodes();
-            if (_owner is null || virtualViewIds is null)
+            var owner = LiveOwner;
+            owner?.EnsureLatestNodes();
+            if (owner is null || virtualViewIds is null)
             {
                 return;
             }
 
-            foreach (var id in _owner._order)
+            foreach (var id in owner._order)
             {
-                if (!IsExposed(_owner._nodes[id]))
-                {
-                    continue;
-                }
-
                 using var value = Java.Lang.Integer.ValueOf(id)!;
                 virtualViewIds.Add(value);
             }
         }
-
-        private static bool IsExposed(SemanticsNodeUpdate node) =>
-            !string.IsNullOrWhiteSpace(node.label)
-            || !string.IsNullOrWhiteSpace(node.value)
-            || node.actions != SemanticsAction.none
-            || node.flags is { isFocused: not Tristate.none };
 
         protected override void OnPopulateNodeForVirtualView(
             int virtualViewId,
             AccessibilityNodeInfoCompat? info
         )
         {
-            _owner?.EnsureLatestNodes();
+            var owner = LiveOwner;
+            owner?.EnsureLatestNodes();
             if (info is null)
             {
                 return;
             }
 
             if (
-                _owner is null
+                owner is null
                 || _host is null
-                || !_owner._nodes.TryGetValue(virtualViewId, out var node)
+                || !owner._nodes.TryGetValue(virtualViewId, out var node)
             )
             {
                 info.ContentDescription = string.Empty;
@@ -471,10 +463,11 @@ internal sealed partial class MauiAndroidSemanticsBridge : IMauiSemanticsBridge,
             Bundle? arguments
         )
         {
-            _owner?.EnsureLatestNodes();
+            var owner = LiveOwner;
+            owner?.EnsureLatestNodes();
             if (
-                _owner is null
-                || !_owner._nodes.TryGetValue(virtualViewId, out var node)
+                owner is null
+                || !owner._nodes.TryGetValue(virtualViewId, out var node)
                 || node.flags?.isEnabled == Tristate.isFalse
             )
             {
@@ -541,7 +534,7 @@ internal sealed partial class MauiAndroidSemanticsBridge : IMauiSemanticsBridge,
                     };
                 }
 
-                _owner._performAction?.Invoke(virtualViewId, chosen, value);
+                owner._performAction?.Invoke(virtualViewId, chosen, value);
                 return true;
             }
             return false;
@@ -552,7 +545,8 @@ internal sealed partial class MauiAndroidSemanticsBridge : IMauiSemanticsBridge,
             Android.Views.Accessibility.AccessibilityEvent? e
         )
         {
-            _owner?.EnsureLatestNodes();
+            var owner = LiveOwner;
+            owner?.EnsureLatestNodes();
             base.OnPopulateEventForVirtualView(virtualViewId, e);
             var action = e?.EventType switch
             {
@@ -564,25 +558,26 @@ internal sealed partial class MauiAndroidSemanticsBridge : IMauiSemanticsBridge,
             };
             if (
                 action != SemanticsAction.none
-                && _owner?._nodes.TryGetValue(virtualViewId, out var node) == true
+                && owner?._nodes.TryGetValue(virtualViewId, out var node) == true
                 && node.actions.HasFlag(action)
             )
             {
-                _owner._performAction?.Invoke(virtualViewId, action, null);
+                owner._performAction?.Invoke(virtualViewId, action, null);
             }
         }
 
         protected override void OnVirtualViewKeyboardFocusChanged(int virtualViewId, bool hasFocus)
         {
-            _owner?.EnsureLatestNodes();
+            var owner = LiveOwner;
+            owner?.EnsureLatestNodes();
             base.OnVirtualViewKeyboardFocusChanged(virtualViewId, hasFocus);
             if (
                 hasFocus
-                && _owner?._nodes.TryGetValue(virtualViewId, out var node) == true
+                && owner?._nodes.TryGetValue(virtualViewId, out var node) == true
                 && node.actions.HasFlag(SemanticsAction.focus)
             )
             {
-                _owner._performAction?.Invoke(virtualViewId, SemanticsAction.focus, null);
+                owner._performAction?.Invoke(virtualViewId, SemanticsAction.focus, null);
             }
         }
 

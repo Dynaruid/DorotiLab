@@ -6,45 +6,37 @@ namespace Doroti.Host.Maui;
 internal sealed partial class MauiSemanticsLayout : AbsoluteLayout
 {
     private SemanticsNodeUpdate? _node;
-    internal SemanticsNodeUpdate? Node { get => _node; set { _node = value; RefreshNativeSemantics(); } }
+    internal SemanticsNodeUpdate? Node => _node;
 
-    internal void UpdateNode(SemanticsNodeUpdate node, SemanticsNodeProperty properties)
+    internal void UpdateNode(SemanticsNodeUpdate? node)
     {
-#if IOS && !MACCATALYST
+        var previous = _node;
         _node = node;
-        // Layout owns the bounds, and actions consult the current snapshot.
-        // A scroll offset alone does not change UIKit labels, traits, or actions.
-        if ((properties & ~(SemanticsNodeProperty.bounds | SemanticsNodeProperty.scroll)) != 0)
-        {
-            RefreshNativeSemantics();
-        }
-#else
-        Node = node;
+#if ANDROID
+        if ((previous is null) != (node is null)) RefreshAndroidSemantics();
+#elif MACOS || IOS || MACCATALYST
+        UpdateAppleNode(previous);
 #endif
     }
 
     internal MauiSemanticsLayout()
     {
-        HandlerChanged += (_, _) => { RefreshNativeSemantics(); (Parent as MauiSemanticsLayout)?.RefreshNativeSemantics(); };
-        ChildAdded += (_, _) => Dispatcher.Dispatch(RefreshNativeSemantics);
-        ChildRemoved += (_, _) => Dispatcher.Dispatch(RefreshNativeSemantics);
+#if ANDROID
+        // The projected bounds already include the framework's safe-area offsets.
+        SafeAreaEdges = Microsoft.Maui.SafeAreaEdges.None;
+        HandlerChanged += (_, _) => RefreshAndroidSemantics();
+#elif MACOS || IOS || MACCATALYST
+        HandlerChanged += (_, _) =>
+        {
+            AttachAppleSemantics();
+            (Parent as MauiSemanticsLayout)?.RefreshAppleChildren();
+        };
+        ChildAdded += (_, _) => Dispatcher.Dispatch(RefreshAppleChildren);
+        ChildRemoved += (_, _) => Dispatcher.Dispatch(RefreshAppleChildren);
+#endif
     }
     internal Func<SemanticsAction, object?, bool>? DispatchAction { get; set; }
     internal bool Dispatch(SemanticsAction action, object? arguments = null) => Node is { } node
         && SemanticsActionPolicy.Allows(node, action) && DispatchAction?.Invoke(action, arguments) == true;
 
-    private void RefreshNativeSemantics()
-    {
-#if ANDROID
-        if (Handler?.PlatformView is Android.Views.View native)
-        {
-            native.ImportantForAccessibility = _node is null ? Android.Views.ImportantForAccessibility.NoHideDescendants : Android.Views.ImportantForAccessibility.Yes;
-            native.SetAccessibilityDelegate(new MauiSemanticsDelegate(this));
-            if (native is Android.Views.ViewGroup group && group.ChildCount > 0)
-                group.GetChildAt(0)!.ImportantForAccessibility = Android.Views.ImportantForAccessibility.No;
-        }
-#elif MACOS || IOS || MACCATALYST
-        RefreshAppleSemantics();
-#endif
-    }
 }

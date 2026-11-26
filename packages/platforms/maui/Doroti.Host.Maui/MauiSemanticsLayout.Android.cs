@@ -3,15 +3,64 @@ using Android.OS;
 using Android.Views.Accessibility;
 using Doroti.Ui;
 using NativeView = Android.Views.View;
+using Android.Views;
+using AndroidAction = Android.Views.Accessibility.Action;
 using CheckedState = Doroti.Ui.CheckedState;
 namespace Doroti.Host.Maui;
+
+internal sealed partial class MauiSemanticsLayout
+{
+    private NativeView? _accessibilityView;
+    private MauiSemanticsDelegate? _accessibilityDelegate;
+
+    internal void ObserveAndroidProxy(Microsoft.Maui.Controls.View proxy) =>
+        proxy.HandlerChanged += (_, _) => RefreshAndroidSemantics();
+
+    private void RefreshAndroidSemantics()
+    {
+        var view = Handler?.PlatformView as NativeView;
+        if (view?.Handle != _accessibilityView?.Handle)
+        {
+            if (_accessibilityView is { Handle: var handle } previous && handle != IntPtr.Zero)
+                previous.SetAccessibilityDelegate(null);
+            _accessibilityDelegate?.Dispose();
+            _accessibilityDelegate = null;
+            _accessibilityView = view;
+        }
+        if (view is not { Handle: var nativeHandle } || nativeHandle == IntPtr.Zero) return;
+        if (Node is null && _accessibilityDelegate is not null)
+        {
+            view.SetAccessibilityDelegate(null);
+            _accessibilityDelegate.Dispose();
+            _accessibilityDelegate = null;
+        }
+        else if (Node is not null && _accessibilityDelegate is null)
+        {
+            _accessibilityDelegate = new MauiSemanticsDelegate(this);
+            view.SetAccessibilityDelegate(_accessibilityDelegate);
+        }
+        var importance = Node is null ? ImportantForAccessibility.NoHideDescendants : ImportantForAccessibility.Yes;
+        if (view.ImportantForAccessibility != importance) view.ImportantForAccessibility = importance;
+        if (Children.Count > 0 && Children[0].Handler?.PlatformView is NativeView proxy
+            && proxy.ImportantForAccessibility != ImportantForAccessibility.No)
+            proxy.ImportantForAccessibility = ImportantForAccessibility.No;
+    }
+
+    internal bool OwnsAndroidSemantics(NativeView host, MauiSemanticsDelegate accessibilityDelegate) =>
+        ReferenceEquals(_accessibilityDelegate, accessibilityDelegate)
+        && host.Handle != IntPtr.Zero && host.Handle == _accessibilityView?.Handle;
+}
 
 internal sealed class MauiSemanticsDelegate(MauiSemanticsLayout owner) : NativeView.AccessibilityDelegate
 {
     public override void OnInitializeAccessibilityNodeInfo(NativeView host, AccessibilityNodeInfo info)
     {
         base.OnInitializeAccessibilityNodeInfo(host, info);
-        if (owner.Node is not { } node) { info.Enabled = false; return; }
+        if (!owner.OwnsAndroidSemantics(host, this) || owner.Node is not { } node)
+        {
+            info.Enabled = false;
+            return;
+        }
         info.ClassName = node.role switch
         {
             SemanticsRole.dialog or SemanticsRole.alertDialog => "android.app.Dialog",
@@ -45,8 +94,12 @@ internal sealed class MauiSemanticsDelegate(MauiSemanticsLayout owner) : NativeV
         if (node.actions.HasFlag(SemanticsAction.setSelection)) info.AddAction(AccessibilityNodeInfo.AccessibilityAction.ActionSetSelection);
         if (node.actions.HasFlag(SemanticsAction.showOnScreen)) info.AddAction(AccessibilityNodeInfo.AccessibilityAction.ActionShowOnScreen);
     }
-    public override bool PerformAccessibilityAction(NativeView host, Android.Views.Accessibility.Action action, Bundle? arguments)
+    public override bool PerformAccessibilityAction(NativeView host, AndroidAction action, Bundle? arguments)
     {
+        if (!owner.OwnsAndroidSemantics(host, this)) return false;
+        if (action is AndroidAction.AccessibilityFocus or AndroidAction.ClearAccessibilityFocus)
+            return base.PerformAccessibilityAction(host, action, arguments);
+
         var semantic = (int)action switch {
             16 => SemanticsAction.tap, 32 => SemanticsAction.longPress, 262144 => SemanticsAction.expand,
             524288 => SemanticsAction.collapse, 2097152 => SemanticsAction.setText,

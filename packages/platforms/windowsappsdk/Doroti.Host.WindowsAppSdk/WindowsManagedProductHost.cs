@@ -1,8 +1,7 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using Doroti.Host.Shared;
 using Doroti.Runtime;
 using Doroti.Skia.Rendering;
 using Doroti.Ui;
@@ -26,6 +25,8 @@ internal sealed unsafe partial class WindowsManagedProductHost
     private readonly object _gate = new();
     private readonly object _nativeGate = new();
     private readonly WindowsNativeV1.Host _native;
+    private readonly nint _submitSemantics;
+    private readonly NativeSemanticsTransport _semantics = new();
     private readonly IDorotiApplicationDispatcher _applicationDispatcher;
     private readonly WindowsFrameworkFrameTiming _frameTiming = new();
     private long _wheelPackets, _panZoomPackets, _movePackets;
@@ -54,7 +55,8 @@ internal sealed unsafe partial class WindowsManagedProductHost
         int logicalHeight,
         IDorotiApplicationDispatcher applicationDispatcher,
         nint inputHwnd,
-        ulong viewId = 1
+        ulong viewId = 1,
+        nint submitSemantics = 0
     )
     {
         if (
@@ -88,6 +90,7 @@ internal sealed unsafe partial class WindowsManagedProductHost
         }
 
         _native = native;
+        _submitSemantics = submitSemantics;
         _inputHwnd = inputHwnd;
         _applicationDispatcher = applicationDispatcher ?? throw new ArgumentNullException(nameof(applicationDispatcher));
         _viewId = viewId;
@@ -890,81 +893,46 @@ internal sealed unsafe partial class WindowsManagedProductHost
     public void UpdateSemantics(SemanticsUpdate update)
     {
         ArgumentNullException.ThrowIfNull(update);
-        var nodes = update.nodes.Select(node => new SemanticsNodeWire(
-            node.id,
-            node.label,
-            node.value,
-            textGeometry: node.flags?.isObscured == true ? null : node.textGeometry?.ToWire(),
-            role: node.role.ToString(),
-            actions: (long)node.actions,
-            node.children,
-            node.identifier,
-            node.hint,
-            node.tooltip,
-            node.headingLevel,
-            node.linkUrl,
-            node.increasedValue,
-            node.decreasedValue,
-            validationResult: node.validationResult.ToString(),
-            node.minValue,
-            node.maxValue,
-            node.scrollPosition,
-            node.scrollExtentMin,
-            node.scrollExtentMax,
-            flags: node.flags is null
-                ? null
-                : new SemanticsFlagsWire(
-                    enabled: node.flags.isEnabled.toBoolOrNull() ?? true,
-                    focused: node.flags.isFocused.toBoolOrNull() ?? false,
-                    focusable: node.flags.isFocused != Tristate.none,
-                    button: node.flags.isButton,
-                    textField: node.flags.isTextField,
-                    hidden: node.flags.isHidden,
-                    slider: node.flags.isSlider,
-                    readOnly: node.flags.isReadOnly,
-                    @checked: node.flags.isChecked.ToString(),
-                    selected: node.flags.isSelected.toBoolOrNull(),
-                    toggled: node.flags.isToggled.toBoolOrNull(),
-                    expanded: node.flags.isExpanded.toBoolOrNull(),
-                    required: node.flags.isRequired.toBoolOrNull(),
-                    mutuallyExclusive: node.flags.isInMutuallyExclusiveGroup,
-                    header: node.flags.isHeader,
-                    image: node.flags.isImage,
-                    liveRegion: node.flags.isLiveRegion,
-                    link: node.flags.isLink,
-                    obscured: node.flags.isObscured
-                ),
-            node.textSelectionBase,
-            node.textSelectionExtent,
-            rect: [node.rect.left, node.rect.top, node.rect.right, node.rect.bottom]
-        ));
-        InvokeUtf8(
-            _native.UpdateSemantics,
-            JsonSerializer.Serialize(new SemanticsUpdateWire(update.generation, nodes), SemanticsJson.Default.SemanticsUpdateWire),
-            "semantics-update"
-        );
+        lock (_nativeGate)
+        {
+            if (_disposed || !_nativeActive) return;
+            _semantics.Update(update, _submitSemantics == 0 ? null : SubmitSemantics, SendLegacySemantics);
+        }
     }
 
-    private sealed record SemanticsUpdateWire(long generation, IEnumerable<SemanticsNodeWire> nodes);
+    private uint SubmitSemantics(byte[] bytes, long revision, long baseRevision)
+    {
+        fixed (byte* data = bytes)
+        {
+            var callback = (delegate* unmanaged[Cdecl]<nint, WindowsNativeV1.Utf8, ulong, ulong, uint>)_submitSemantics;
+            return callback(_native.HostContext, SemanticsUtf8(data, bytes.Length), (ulong)revision, (ulong)baseRevision);
+        }
+    }
 
-    private sealed record SemanticsNodeWire(int id, string? label, string? value, SemanticsTextGeometryWire? textGeometry,
-        string role, long actions, IReadOnlyList<int> children, string? identifier, string? hint, string? tooltip,
-        long? headingLevel, string? linkUrl, string? increasedValue, string? decreasedValue, string validationResult,
-        string? minValue, string? maxValue, double? scrollPosition, double? scrollExtentMin, double? scrollExtentMax,
-        SemanticsFlagsWire? flags, long textSelectionBase, long textSelectionExtent, double[] rect);
+    private void SendLegacySemantics(byte[] bytes)
+    {
+        fixed (byte* data = bytes)
+        {
+            var callback = (delegate* unmanaged[Cdecl]<nint, WindowsNativeV1.Utf8, uint>)_native.UpdateSemantics;
+            var status = callback(_native.HostContext, SemanticsUtf8(data, bytes.Length));
+            if (status != 0) throw new InvalidOperationException($"Native semantics-update failed: {status}.");
+        }
+    }
 
-    private sealed record SemanticsFlagsWire(bool enabled, bool focused, bool focusable, bool button, bool textField,
-        bool hidden, bool slider, bool readOnly, string @checked, bool? selected, bool? toggled, bool? expanded,
-        bool? required, bool mutuallyExclusive, bool header, bool image, bool liveRegion, bool link, bool obscured);
-
-    [JsonSerializable(typeof(SemanticsUpdateWire))]
-    private sealed partial class SemanticsJson : JsonSerializerContext;
+    private static WindowsNativeV1.Utf8 SemanticsUtf8(byte* data, int length) => new()
+    {
+        AbiVersion = WindowsNativeV1.AbiVersion,
+        StructSize = checked((uint)sizeof(WindowsNativeV1.Utf8)),
+        Data = (nint)data,
+        ByteLength = checked((ulong)length),
+    };
 
     public void ClearSemantics()
     {
-        if (!_disposed && _nativeActive)
+        lock (_nativeGate)
         {
-            Invoke(_native.ClearSemantics);
+            _semantics.Clear();
+            if (!_disposed && _nativeActive) Invoke(_native.ClearSemantics);
         }
     }
 
@@ -1083,32 +1051,6 @@ internal sealed unsafe partial class WindowsManagedProductHost
             nameof(state.composingRange),
             allowAbsent: false
         );
-    }
-
-    private void InvokeUtf8(nint callback, string text, string operation)
-    {
-        lock (_nativeGate)
-        {
-        if (_disposed || !_nativeActive) return;
-        var bytes = Encoding.UTF8.GetBytes(text);
-        fixed (byte* data = bytes)
-        {
-            var value = new WindowsNativeV1.Utf8
-            {
-                AbiVersion = WindowsNativeV1.AbiVersion,
-                StructSize = checked((uint)sizeof(WindowsNativeV1.Utf8)),
-                Data = (nint)data,
-                ByteLength = checked((ulong)bytes.Length),
-            };
-            var function = (delegate* unmanaged[Cdecl]<nint, WindowsNativeV1.Utf8, uint>)callback;
-            var status = function(_native.HostContext, value);
-            if (status != 0)
-            {
-                throw new InvalidOperationException($"Native {operation} failed: {status}.");
-            }
-        }
-    }
-
     }
 
     private static void ValidateSelection(

@@ -20,9 +20,7 @@ class TextRange final : public ITextRangeProvider, public IRangeIdentity {
   IFACEMETHODIMP_(ULONG) AddRef() override { return ++references_; }
   IFACEMETHODIMP_(ULONG) Release() override { const auto count = --references_; if (!count) delete this; return count; }
   HRESULT Validate() const {
-    AccessibilityNode current; uint64_t revision;
-    return state_->SnapshotText(id_, current, revision) && revision == revision_ && current.text_revision == node_.text_revision
-        ? S_OK : UIA_E_ELEMENTNOTAVAILABLE;
+    return state_->HasTextRevision(id_, revision_, node_.text_instance) ? S_OK : UIA_E_ELEMENTNOTAVAILABLE;
   }
   IFACEMETHODIMP Identity(void** owner, int* node, uint64_t* revision, int* start, int* end) override {
     if (!owner || !node || !revision || !start || !end) return E_POINTER;
@@ -84,10 +82,12 @@ class TextRange final : public ITextRangeProvider, public IRangeIdentity {
   }
   IFACEMETHODIMP GetBoundingRectangles(SAFEARRAY** result) override {
     if (!result) return E_POINTER; *result = nullptr;
-    const auto status = Validate(); if (FAILED(status)) return status;
+    AccessibilityNode current; uint64_t revision;
+    if (!state_->SnapshotText(id_, current, revision, revision_) || current.text_instance != node_.text_instance)
+      return UIA_E_ELEMENTNOTAVAILABLE;
     POINT origin{}; if (!ClientToScreen(state_->Window(), &origin)) return UIA_E_ELEMENTNOTAVAILABLE;
     std::vector<AccessibilityTextRun> lines;
-    for (const auto& run : node_.text_runs) {
+    for (const auto& run : current.text_runs) {
       if (run.start >= end_ || run.end <= start_ || run.right <= run.left || run.bottom <= run.top) continue;
       if (!lines.empty() && lines.back().line_start == run.line_start && lines.back().line_end == run.line_end) {
         auto& line = lines.back(); line.left = std::min(line.left, run.left); line.top = std::min(line.top, run.top);
@@ -138,14 +138,14 @@ class TextRange final : public ITextRangeProvider, public IRangeIdentity {
   IFACEMETHODIMP Select() override {
     const auto status = Validate(); if (FAILED(status)) return status;
     if ((node_.actions & (1ll << 11)) == 0) return UIA_E_NOTSUPPORTED;
-    state_->Invoke(id_, 1ll << 11, L"{\"base\":" + std::to_wstring(start_) + L",\"extent\":" + std::to_wstring(end_) + L"}"); return S_OK;
+    state_->Invoke(id_, revision_, 1ll << 11, L"{\"base\":" + std::to_wstring(start_) + L",\"extent\":" + std::to_wstring(end_) + L"}"); return S_OK;
   }
   IFACEMETHODIMP AddToSelection() override { return Select(); }
   IFACEMETHODIMP RemoveFromSelection() override { return UIA_E_INVALIDOPERATION; }
   IFACEMETHODIMP ScrollIntoView(BOOL) override {
     const auto status = Validate(); if (FAILED(status)) return status;
     if ((node_.actions & (1ll << 26)) == 0) return UIA_E_NOTSUPPORTED;
-    state_->Invoke(id_, 1ll << 26, L"{\"base\":" + std::to_wstring(start_) + L",\"extent\":" + std::to_wstring(end_) + L"}"); return S_OK;
+    state_->Invoke(id_, revision_, 1ll << 26, L"{\"base\":" + std::to_wstring(start_) + L",\"extent\":" + std::to_wstring(end_) + L"}"); return S_OK;
   }
   IFACEMETHODIMP GetChildren(SAFEARRAY** result) override {
     if (!result) return E_POINTER; *result = nullptr; const auto status = Validate(); if (FAILED(status)) return status;
@@ -210,17 +210,17 @@ static HRESULT MakeTextRanges(std::shared_ptr<AccessibilityBridge::State> state,
 }
 HRESULT Provider::get_DocumentRange(ITextRangeProvider** result) {
   if (!result) return E_POINTER; *result = nullptr; AccessibilityNode node; uint64_t revision;
-  if (!state_->SnapshotText(id_, node, revision)) return UIA_E_ELEMENTNOTAVAILABLE;
+  if (!state_->SnapshotText(id_, node, revision, instance_)) return UIA_E_ELEMENTNOTAVAILABLE;
   const auto size = static_cast<int>(node.layout_text.size());
   *result = new (std::nothrow) TextRange(state_, id_, std::move(node), revision, 0, size); return *result ? S_OK : E_OUTOFMEMORY;
 }
 HRESULT Provider::get_SupportedTextSelection(SupportedTextSelection* result) {
-  if (!result) return E_POINTER; AccessibilityNode node; if (!state_->Snapshot(id_, node)) return UIA_E_ELEMENTNOTAVAILABLE;
+  if (!result) return E_POINTER; AccessibilityNode node; if (!state_->Snapshot(id_, node, instance_)) return UIA_E_ELEMENTNOTAVAILABLE;
   *result = (node.actions & (1ll << 11)) != 0 ? SupportedTextSelection_Single : SupportedTextSelection_None; return S_OK;
 }
 HRESULT Provider::GetSelection(SAFEARRAY** result) {
   if (!result) return E_POINTER; *result = nullptr;
-  AccessibilityNode node; uint64_t revision; if (!state_->SnapshotText(id_, node, revision)) return UIA_E_ELEMENTNOTAVAILABLE;
+  AccessibilityNode node; uint64_t revision; if (!state_->SnapshotText(id_, node, revision, instance_)) return UIA_E_ELEMENTNOTAVAILABLE;
   std::vector<std::pair<int, int>> spans;
   if (node.selection_base >= 0 && node.selection_extent >= 0) spans.emplace_back(
       std::min(node.selection_base, node.selection_extent), std::max(node.selection_base, node.selection_extent));
@@ -228,7 +228,7 @@ HRESULT Provider::GetSelection(SAFEARRAY** result) {
 }
 HRESULT Provider::GetVisibleRanges(SAFEARRAY** result) {
   if (!result) return E_POINTER; *result = nullptr;
-  AccessibilityNode node; uint64_t revision; if (!state_->SnapshotText(id_, node, revision)) return UIA_E_ELEMENTNOTAVAILABLE;
+  AccessibilityNode node; uint64_t revision; if (!state_->SnapshotText(id_, node, revision, instance_)) return UIA_E_ELEMENTNOTAVAILABLE;
   std::vector<std::pair<int, int>> spans;
   for (const auto& run : node.text_runs) if (run.right > run.left && run.bottom > run.top) {
     if (!spans.empty() && spans.back().second >= run.start) spans.back().second = std::max(spans.back().second, run.end);
@@ -241,7 +241,7 @@ HRESULT Provider::RangeFromChild(IRawElementProviderSimple*, ITextRangeProvider*
 }
 HRESULT Provider::RangeFromPoint(UiaPoint point, ITextRangeProvider** result) {
   if (!result) return E_POINTER; *result = nullptr; AccessibilityNode node; uint64_t revision;
-  if (!state_->SnapshotText(id_, node, revision)) return UIA_E_ELEMENTNOTAVAILABLE;
+  if (!state_->SnapshotText(id_, node, revision, instance_)) return UIA_E_ELEMENTNOTAVAILABLE;
   POINT origin{}; if (!ClientToScreen(state_->Window(), &origin)) return UIA_E_ELEMENTNOTAVAILABLE;
   const auto scale = state_->Scale(); const double x = (point.x - origin.x) / scale, y = (point.y - origin.y) / scale;
   double distance = std::numeric_limits<double>::infinity(); int offset = 0;

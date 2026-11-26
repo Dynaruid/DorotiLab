@@ -214,6 +214,9 @@ typedef struct doroti_windows_host_v1 {
   doroti_windows_set_composition_child_v1 set_composition_child;
   uint32_t(DOROTI_WINDOWS_CALL* update_text_configuration)(void* host_context,
       const doroti_windows_text_configuration_v1* configuration);
+  /* Optional tail. Base 0 is a snapshot. Status 2 requests a snapshot, 3 rejects a stale revision. */
+  uint32_t(DOROTI_WINDOWS_CALL* submit_semantics)(void* host_context,
+      doroti_windows_utf8_v1 json, uint64_t revision, uint64_t base_revision);
 } doroti_windows_host_v1;
 
 typedef void(DOROTI_WINDOWS_CALL* doroti_windows_host_ready_callback_v1)(

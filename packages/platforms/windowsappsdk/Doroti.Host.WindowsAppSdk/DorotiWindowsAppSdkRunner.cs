@@ -464,7 +464,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
         internal string? FallbackReason { get; private set; }
         internal ulong NativeRequiredFeatures { get; }
 
-        internal void SetHost(in WindowsNativeV1.Host native)
+        internal void SetHost(in WindowsNativeV1.Host native, nint submitSemantics)
         {
             RecordThread(ref _platformThreadId, "platform");
             var effectiveNative = native;
@@ -509,7 +509,8 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 // The original native child is the input authority (the top HWND
                 // in Composition mode). effectiveNative selects the raster HWND.
                 native.ChildHwnd,
-                _viewId
+                _viewId,
+                submitSemantics
             );
             if (
                 _platformViews is not null
@@ -1789,7 +1790,9 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                     throw new InvalidDataException("Native host-ready supplied null.");
                 }
 
-                state.SetHost(in *host);
+                var submitSemantics = host->StructSize >= sizeof(WindowsNativeV1.HostWithSemantics)
+                    ? ((WindowsNativeV1.HostWithSemantics*)host)->SubmitSemantics : 0;
+                state.SetHost(in *host, submitSemantics);
             }
         );
 

@@ -203,6 +203,13 @@ internal static partial class WindowsNativeV1
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 8)]
+    internal struct HostWithSemantics
+    {
+        internal Host Prefix;
+        internal nint SubmitSemantics;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 8)]
     internal struct Configuration
     {
         internal uint AbiVersion;

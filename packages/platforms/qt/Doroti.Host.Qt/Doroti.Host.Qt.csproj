@@ -22,6 +22,7 @@
     <ProjectReference Include="../../../../Doroti/src/Doroti.Framework.Services/Doroti.Framework.Services.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="../../shared/Semantics/NativeSemanticsTransport.cs" Link="Shared/NativeSemanticsTransport.cs" />
     <None Include="buildTransitive/Doroti.Host.Qt.targets" Pack="true" PackagePath="buildTransitive" />
   </ItemGroup>
 </Project>

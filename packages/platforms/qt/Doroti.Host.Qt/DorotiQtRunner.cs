@@ -269,7 +269,7 @@ public static unsafe partial class DorotiQtRunner
         internal QtApplicationActivation? Activation { get; set; }
         internal ulong CurrentFrameToken { get; set; }
 
-        internal void SetHost(nint viewHandle, in QtNativeV2.HostApi hostApi)
+        internal void SetHost(nint viewHandle, in QtNativeV2.HostApi hostApi, nint submitSemantics)
         {
             if (
                 hostApi.AbiVersion != QtNativeV2.AbiVersion
@@ -320,7 +320,7 @@ public static unsafe partial class DorotiQtRunner
                 viewHandle,
                 hostApi,
                 checked((int)_configuration.logicalSize.width),
-                checked((int)_configuration.logicalSize.height), _viewId
+                checked((int)_configuration.logicalSize.height), _viewId, submitSemantics
             );
             var renderer = new SkiaSceneRenderer(
                 _viewId,
@@ -821,7 +821,10 @@ public static unsafe partial class DorotiQtRunner
                     throw new InvalidDataException("Qt supplied a null host API table.");
                 }
 
-                state.SetHost(viewHandle, in *hostApi);
+                var submitSemantics = hostApi->StructSize >= sizeof(QtNativeV2.HostApiWithSemantics)
+                    && (hostApi->FeatureBits & QtNativeV2.HostApiWithSemantics.Feature) != 0
+                    ? ((QtNativeV2.HostApiWithSemantics*)hostApi)->SubmitSemantics : 0;
+                state.SetHost(viewHandle, in *hostApi, submitSemantics);
             }
         );
 

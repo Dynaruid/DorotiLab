@@ -50,6 +50,7 @@ enum doroti_qt_feature_v2 : std::uint64_t {
   DOROTI_QT_FEATURE_TEXT_CONFIGURATION_UPDATE = 1ull << 23,
   DOROTI_QT_FEATURE_TEXT_GEOMETRY = 1ull << 24,
   DOROTI_QT_FEATURE_APPLICATION_ID = 1ull << 25,
+  DOROTI_QT_FEATURE_SEMANTICS_PATCH = 1ull << 26,
 };
 
 enum doroti_qt_terminal_state_v2 : std::uint32_t {
@@ -231,6 +232,9 @@ struct doroti_qt_host_api_v2 {
   void (*prepare_present)(void* view_handle);
   void (*update_text_configuration)(void* view_handle,
       const doroti_qt_text_configuration_v2* configuration);
+  // Optional tail. Base 0 is a snapshot. Status 2 requests a snapshot, 3 rejects a stale revision.
+  std::uint32_t (*submit_semantics)(void* view_handle, doroti_qt_utf8_v2 json,
+      std::uint64_t revision, std::uint64_t base_revision);
 };
 
 // Requests OS window activation. Completion is reported only by the existing
@@ -318,7 +322,8 @@ static_assert(sizeof(doroti_qt_key_v2) == 56);
 static_assert(sizeof(doroti_qt_text_configuration_v2) == 40);
 static_assert(sizeof(doroti_qt_text_state_v2) == 40);
 static_assert(offsetof(doroti_qt_callbacks_v2, callback_context) == 24);
-static_assert(sizeof(doroti_qt_host_api_v2) == 136);
+static_assert(offsetof(doroti_qt_host_api_v2, submit_semantics) == 136);
+static_assert(sizeof(doroti_qt_host_api_v2) == 144);
 static_assert(offsetof(doroti_qt_surface_v2, vulkan_instance_api_version) == 120);
 static_assert(offsetof(doroti_qt_callbacks_v2, poll_gpu_work) == 176);
 static_assert(offsetof(doroti_qt_callbacks_v2, prepare_application) == 184);

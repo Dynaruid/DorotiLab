@@ -6,6 +6,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="../../../packages/platforms/web/Doroti.Host.Web/BrowserSemanticsTransport.cs" Link="BrowserSemanticsTransport.cs" />
+    <Compile Include="../../../packages/platforms/shared/Semantics/NativeSemanticsTransport.cs" Link="NativeSemanticsTransport.cs" />
     <Compile Include="../../../packages/platforms/shared/Windows/WindowsPlatformSceneInspection.cs" Link="WindowsPlatformSceneInspection.cs" />
     <Compile Include="../../../packages/platforms/shared/Windows/WindowsPeerChildrenCache.cs" Link="WindowsPeerChildrenCache.cs" />
     <Compile Include="../../src/Doroti.Skia.Rendering/NativeFrameSceneInspection.cs" Link="NativeFrameSceneInspection.cs" />

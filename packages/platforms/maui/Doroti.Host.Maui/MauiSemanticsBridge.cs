@@ -20,7 +20,9 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer, Action<Action, T
     private readonly Dictionary<int, NativeElementState> _elements = [];
     private readonly Dictionary<NativeElementKind, Stack<NativeElementState>> _recycledElements =
     [];
-    private readonly Dictionary<int, SemanticsNodeUpdate> _appliedNodes = [];
+    private readonly SemanticsVisibleTree _visible = new(SemanticsPlatformViewExposure.ExcludeSubtree);
+    private SemanticsTreeSnapshot? _tree;
+    private Action<int, SemanticsAction, object?>? _performAction;
     private readonly CancellationTokenSource _lifetime = new();
     private PendingUpdate? _pending;
     private bool _applyScheduled;
@@ -79,7 +81,7 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer, Action<Action, T
         ArgumentNullException.ThrowIfNull(update);
         ArgumentNullException.ThrowIfNull(performAction);
         Interlocked.Increment(ref _updatesReceived);
-        var visibleNodes = ShouldThrottleScrollUpdate(update) ? null : VisibleNodes(update.nodes);
+        var throttle = ShouldThrottleScrollUpdate(update);
         long scheduleId;
         TimeSpan delay;
         lock (_gate)
@@ -90,23 +92,28 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer, Action<Action, T
                 return;
             }
             _lastReceivedGeneration = update.generation;
+            _performAction = performAction;
             var immediate = false;
-            if (visibleNodes is null)
+            if (throttle)
             {
                 // The renderer sends a complete snapshot. Only filter and diff
                 // the latest snapshot when it reaches the UIKit dispatcher.
-                _pending = new(update, performAction, FilterVisibleNodes: true);
+                _pending = new(update, null);
             }
             else
             {
-                var delta = SemanticsUpdateDiffer.Diff(_appliedNodes, visibleNodes);
+                var delta = _visible.Prepare(update);
                 // Even an applied-equivalent update replaces older pending work and
                 // refreshes its action owner on the native dispatcher.
                 if (!delta.HasChanges) Interlocked.Increment(ref _updatesSuppressed);
-                _pending = new(update with { nodes = visibleNodes }, performAction);
+                _pending = new(update, delta);
                 immediate =
                     update.urgency is SemanticsUpdateUrgency.immediate or SemanticsUpdateUrgency.scrollEnd
-                    || delta.RequiresImmediateFlush || !delta.HasChanges;
+                    || delta.Changes.Any(change => change.Previous is not null
+                        && (change.Properties & ~(SemanticsNodeProperty.bounds | SemanticsNodeProperty.scroll
+                            | SemanticsNodeProperty.textGeometry | SemanticsNodeProperty.children
+                            | SemanticsNodeProperty.traversal)) != 0)
+                    || !delta.HasChanges;
             }
 
             if (_applyScheduled)
@@ -150,10 +157,7 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer, Action<Action, T
             }
 
             _disposed = true;
-            foreach (var state in _elements.Values) { state.Container.Node = null; state.Container.DispatchAction = null; }
-            _pending = null;
-            _applyScheduled = false;
-            _scheduleGeneration++;
+            Reset();
         }
         _lifetime.Cancel();
         _lifetime.Dispose();
@@ -168,62 +172,34 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer, Action<Action, T
                 return;
             }
 
-            _pending = null;
-            _applyScheduled = false;
-            _scheduleGeneration++;
-            _appliedNodes.Clear();
-            foreach (var state in _elements.Values) { state.Container.Node = null; state.Container.DispatchAction = null; }
-            _elements.Clear();
-            _recycledElements.Clear();
-            _lastReceivedGeneration = -1;
+            Reset();
         }
-        _layer.Dispatcher.Dispatch(() => _layer.Children.Clear());
-        Interlocked.Exchange(ref _activeElements, 0);
-        Interlocked.Exchange(ref _retainedNodes, 0);
     }
 
-    private static IReadOnlyList<SemanticsNodeUpdate> VisibleNodes(
-        IReadOnlyList<SemanticsNodeUpdate> nodes
-    )
+    private void Reset()
     {
-        var nodesById = nodes.ToDictionary(node => node.id);
-        var hidden = nodes
-            .Where(node => node.flags?.isHidden == true)
-            .Select(node => node.id)
-            .ToHashSet();
-        // Native platform views expose their own accessibility subtree. A transparent MAUI placeholder would
-        // duplicate it in accessibility and can steal native hit tests / keyboard navigation.
-        hidden.UnionWith(
-            nodes.Where(node => node.platformViewId is not null).Select(node => node.id)
-        );
-        var changed = true;
-        while (changed)
+        var retired = _elements.Values.ToArray();
+        _pending = null;
+        _applyScheduled = false;
+        _scheduleGeneration++;
+        _performAction = null;
+        _lastReceivedGeneration = -1;
+        _lastApplyTimestamp = 0;
+        _visible.Clear();
+        _tree = null;
+        _elements.Clear();
+        _recycledElements.Clear();
+        Interlocked.Exchange(ref _activeElements, 0);
+        Interlocked.Exchange(ref _retainedNodes, 0);
+        _layer.Dispatcher.Dispatch(() =>
         {
-            changed = false;
-            foreach (var hiddenId in hidden.ToArray())
+            // A new snapshot may already have attached other views by the time this runs.
+            foreach (var state in retired)
             {
-                if (!nodesById.TryGetValue(hiddenId, out var node))
-                {
-                    continue;
-                }
-
-                foreach (var childId in node.children)
-                {
-                    changed |= hidden.Add(childId);
-                }
+                state.Container.UpdateNode(null);
+                DetachContainer(state);
             }
-        }
-        var visible = nodesById.Keys.Where(id => !hidden.Contains(id)).ToHashSet();
-        return nodes
-            .Where(node => visible.Contains(node.id))
-            .Select(node =>
-                node with
-                {
-                    children = node.children.Where(visible.Contains).ToArray(),
-                }
-            )
-            .OrderBy(node => node.id)
-            .ToArray();
+        });
     }
 
     private void ApplyLatest(long scheduleId)
@@ -257,14 +233,9 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer, Action<Action, T
             lock (_gate)
             {
                 if (_disposed || scheduleId != _scheduleGeneration) return;
-                var update = pending.Update;
-                if (pending.FilterVisibleNodes)
-                {
-                    update = update with { nodes = VisibleNodes(update.nodes) };
-                }
-                Apply(update, pending.PerformAction);
+                if (Apply(pending.Delta ?? _visible.Prepare(pending.Update)))
+                    Interlocked.Increment(ref _updatesApplied);
                 _lastApplyTimestamp = Stopwatch.GetTimestamp();
-                Interlocked.Increment(ref _updatesApplied);
             }
         }
         finally
@@ -330,25 +301,20 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer, Action<Action, T
         }
     }
 
-    private void Apply(SemanticsUpdate update, Action<int, SemanticsAction, object?> performAction)
+    private bool Apply(SemanticsVisibleUpdate delta)
     {
         using var allocationProfile = FrameworkWorkProfile.AllocationEnabled
             ? FrameworkWorkProfile.Begin(GetType(), 17)
             : default;
-        var tree = new SemanticsTreeSnapshot(update.nodes);
-        var delta = SemanticsUpdateDiffer.Diff(_appliedNodes, update.nodes);
-        var changedById = delta.changedNodes.ToDictionary(node => node.id);
-        var rebuildOrder = delta.HasTopologyChange;
-        if (rebuildOrder)
-        {
-            Interlocked.Increment(ref _topologyUpdatesApplied);
-        }
+        _visible.Commit(delta);
+        if (!delta.HasChanges) return false;
 
+        var rebuildOrder = delta.TopologyChanged;
         _layer.BatchBegin();
         _projectionDepth++;
         try
         {
-            foreach (var staleId in delta.removedNodeIds)
+            foreach (var staleId in delta.Removed)
             {
                 if (_elements.TryGetValue(staleId, out var staleState))
                 {
@@ -356,11 +322,11 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer, Action<Action, T
                     RecycleState(staleState);
                 }
                 _elements.Remove(staleId);
-                _appliedNodes.Remove(staleId);
             }
 
-            foreach (var node in update.nodes)
+            foreach (var change in delta.Changes)
             {
+                var node = change.Current;
                 var kind = ElementKindFor(node);
                 if (!_elements.TryGetValue(node.id, out var state) || state.Kind != kind)
                 {
@@ -372,23 +338,35 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer, Action<Action, T
                     state = AcquireState(kind);
                     _elements[node.id] = state;
                     rebuildOrder = true;
-                    UpdateState(state, node, performAction, AllProperties);
+                    UpdateState(state, node, AllProperties);
                 }
-                else if (changedById.TryGetValue(node.id, out var nodeDelta))
-                {
-                    UpdateState(state, node, performAction, nodeDelta.changedProperties);
-                }
-                else UpdateState(state, node, performAction, SemanticsNodeProperty.none);
-                _appliedNodes[node.id] = node;
+                else UpdateState(state, node, change.Properties);
             }
 
+            var tree = _tree = delta.TopologyChanged || _tree is null
+                ? SemanticsTreeSnapshot.IndexRetainedNodes(_visible.Nodes) : _tree;
             if (rebuildOrder)
             {
+                Interlocked.Increment(ref _topologyUpdatesApplied);
                 SynchronizeChildOrder(tree);
+                foreach (var node in tree.Nodes.Values) LayoutNode(tree, node);
             }
-            LayoutHierarchy(tree);
+            else
+            {
+                HashSet<int>? affected = null;
+                foreach (var change in delta.Changes)
+                {
+                    if (change.Previous?.rect == change.Current.rect) continue;
+                    (affected ??= []).Add(change.Current.id);
+                    if (change.Previous?.rect.topLeft != change.Current.rect.topLeft)
+                        affected.UnionWith(tree.Children(change.Current.id));
+                }
+                if (affected is not null)
+                    foreach (var id in affected) LayoutNode(tree, tree.Nodes[id]);
+            }
             Interlocked.Exchange(ref _activeElements, _elements.Count);
-            Interlocked.Exchange(ref _retainedNodes, _appliedNodes.Count);
+            Interlocked.Exchange(ref _retainedNodes, _visible.Nodes.Count);
+            return true;
         }
         finally
         {
@@ -416,11 +394,10 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer, Action<Action, T
 
     private void RecycleState(NativeElementState state)
     {
-        state.Container.Node = null;
-        state.Container.DispatchAction = null;
+        state.Container.UpdateNode(null);
         foreach (var child in state.Container.Children.OfType<MauiSemanticsLayout>().ToArray()) state.Container.Children.Remove(child);
         state.Node = null;
-        state.PerformAction = null;
+        state.LayoutBounds = null;
         // An exposed native peer must never become a different node through pooling.
         if (state.Container.Handler is not null) return;
         if (!_recycledElements.TryGetValue(state.Kind, out var recycled))
@@ -483,23 +460,21 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer, Action<Action, T
         if (state.Container.Parent is Layout parent) parent.Children.Remove(state.Container);
     }
 
-    private void LayoutHierarchy(SemanticsTreeSnapshot tree)
+    private void LayoutNode(SemanticsTreeSnapshot tree, SemanticsNodeUpdate node)
     {
-        foreach (var node in tree.Nodes.Values)
-        {
-            var state = _elements[node.id];
-            var origin = tree.Parents.TryGetValue(node.id, out var parent) ? tree.Nodes[parent].rect.topLeft : Doroti.Ui.Offset.zero;
-            var bounds = new Microsoft.Maui.Graphics.Rect(
-                node.rect.left - origin.dx,
-                node.rect.top - origin.dy,
-                Math.Max(0, node.rect.width),
-                Math.Max(0, node.rect.height)
-            );
-            if (state.LayoutBounds == bounds) continue;
-            AbsoluteLayout.SetLayoutBounds(state.Container, bounds);
-            state.LayoutBounds = bounds;
-            Interlocked.Increment(ref _nativePropertyWrites);
-        }
+        var state = _elements[node.id];
+        var origin = tree.Parents.TryGetValue(node.id, out var parent)
+            ? tree.Nodes[parent].rect.topLeft : Doroti.Ui.Offset.zero;
+        var bounds = new Microsoft.Maui.Graphics.Rect(
+            node.rect.left - origin.dx,
+            node.rect.top - origin.dy,
+            Math.Max(0, node.rect.width),
+            Math.Max(0, node.rect.height)
+        );
+        if (state.LayoutBounds == bounds) return;
+        AbsoluteLayout.SetLayoutBounds(state.Container, bounds);
+        state.LayoutBounds = bounds;
+        Interlocked.Increment(ref _nativePropertyWrites);
     }
 
     private NativeElementState CreateState(NativeElementKind kind)
@@ -522,8 +497,12 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer, Action<Action, T
             _ => new Label { Opacity = 0 },
         };
         var state = new NativeElementState(kind, element);
+        state.Container.DispatchAction = (action, arguments) => PerformAction(state, action, arguments);
         AbsoluteLayout.SetLayoutFlags(state.Container, AbsoluteLayoutFlags.None);
         state.Container.Children.Add(element);
+#if ANDROID
+        state.Container.ObserveAndroidProxy(element);
+#endif
         AbsoluteLayout.SetLayoutBounds(element, new(0, 0, 1, 1));
         AbsoluteLayout.SetLayoutFlags(element, AbsoluteLayoutFlags.All);
         if (element is Entry entry)
@@ -654,7 +633,7 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer, Action<Action, T
     // All controls share this boundary: publishing an entire tree (including
     // reparenting/focus changes) must never feed actions back into the framework.
     // The value comparisons above also reject delayed/no-op projection echoes.
-    private void PerformAction(
+    private bool PerformAction(
         NativeElementState state,
         SemanticsAction action,
         object? arguments = null
@@ -670,7 +649,7 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer, Action<Action, T
             || !SemanticsActionPolicy.Allows(node, action)
         )
         {
-            return;
+            return false;
         }
 
         if (
@@ -683,10 +662,12 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer, Action<Action, T
                     or SemanticsAction.decrease
         )
         {
-            return;
+            return false;
         }
 
-        state.PerformAction?.Invoke(node.id, action, arguments);
+        if (_performAction is not { } owner) return false;
+        owner(node.id, action, arguments);
+        return true;
     }
 
     // Advance the baseline on real native changes too: a second action may
@@ -715,24 +696,17 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer, Action<Action, T
     private void UpdateState(
         NativeElementState state,
         SemanticsNodeUpdate node,
-        Action<int, SemanticsAction, object?> performAction,
         SemanticsNodeProperty properties
     )
     {
+        state.Node = node;
+        state.Container.UpdateNode(node);
+        if ((properties & ~(SemanticsNodeProperty.bounds | SemanticsNodeProperty.scroll
+            | SemanticsNodeProperty.textGeometry | SemanticsNodeProperty.children
+            | SemanticsNodeProperty.traversal)) == SemanticsNodeProperty.none) return;
         state.Updating = true;
         try
         {
-            state.Node = node;
-            state.PerformAction = performAction;
-            state.Container.UpdateNode(node, properties);
-            state.Container.DispatchAction = (action, arguments) =>
-            {
-                if (_disposed || _projectionDepth != 0 || state.Node is not { } currentNode
-                    || !_elements.TryGetValue(currentNode.id, out var live) || !ReferenceEquals(live, state)
-                    || !SemanticsActionPolicy.Allows(currentNode, action)) return false;
-                PerformAction(state, action, arguments);
-                return true;
-            };
             if (!state.Element.InputTransparent)
             {
                 state.Element.InputTransparent = true;
@@ -1026,8 +1000,7 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer, Action<Action, T
 
     private sealed record PendingUpdate(
         SemanticsUpdate Update,
-        Action<int, SemanticsAction, object?> PerformAction,
-        bool FilterVisibleNodes = false
+        SemanticsVisibleUpdate? Delta
     );
 
     private enum NativeElementKind
@@ -1047,7 +1020,6 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer, Action<Action, T
         internal View Element { get; } = element;
         internal MauiSemanticsLayout Container { get; } = new() { InputTransparent = true, CascadeInputTransparent = false };
         internal SemanticsNodeUpdate? Node { get; set; }
-        internal Action<int, SemanticsAction, object?>? PerformAction { get; set; }
         internal string? Description { get; set; }
         internal string? Hint { get; set; }
         internal SemanticHeadingLevel Heading { get; set; } = SemanticHeadingLevel.None;

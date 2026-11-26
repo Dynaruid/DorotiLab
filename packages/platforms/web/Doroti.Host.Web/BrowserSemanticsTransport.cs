@@ -15,6 +15,7 @@ internal sealed class BrowserSemanticsTransport
     };
     private readonly long _stream = Interlocked.Increment(ref _nextStream);
     private readonly Dictionary<int, SemanticsNodeUpdate> _nodes = [];
+    private IReadOnlyList<SemanticsNodeUpdate>? _lastSnapshot;
     private long _revision;
     private long _generation;
     private int[] _roots = [];
@@ -24,7 +25,10 @@ internal sealed class BrowserSemanticsTransport
         _generation = update.generation;
         var changes = new Dictionary<int, (SemanticsNodeUpdate Node, SemanticsNodeUpdate? Previous)>();
         var topology = _revision == 0;
-        foreach (var node in update.nodes)
+        var candidates = update.snapshotChanges is { } projected && ReferenceEquals(_lastSnapshot, projected.previousNodes)
+            ? projected.changedNodes : update.nodes;
+        _lastSnapshot = update.nodes;
+        foreach (var node in candidates)
         {
             _nodes.TryGetValue(node.id, out var previous);
             if (previous is not null && ContentEquals(previous, node)
@@ -60,6 +64,7 @@ internal sealed class BrowserSemanticsTransport
     public void Reset()
     {
         _nodes.Clear();
+        _lastSnapshot = null;
         _roots = [];
         _generation = 0;
     }
@@ -81,12 +86,15 @@ internal sealed class BrowserSemanticsTransport
             writer.WriteStartArray("nodes");
             foreach (var (node, previous) in changes)
             {
-                if (!full && previous is not null && ContentEquals(previous, node))
+                if (!full && previous is not null && ContentFieldsEqual(previous, node))
                 {
                     writer.WriteStartObject();
                     writer.WriteNumber("id", node.id);
                     writer.WriteBoolean("contentUnchanged", true);
                     if (previous.rect != node.rect) WriteRect(writer, node);
+                    if (previous.scrollPosition != node.scrollPosition) WriteScroll(writer, "scrollPosition", node.scrollPosition);
+                    if (previous.scrollExtentMin != node.scrollExtentMin) WriteScroll(writer, "scrollExtentMin", node.scrollExtentMin);
+                    if (previous.scrollExtentMax != node.scrollExtentMax) WriteScroll(writer, "scrollExtentMax", node.scrollExtentMax);
                     if (!previous.children.SequenceEqual(node.children))
                     {
                         writer.WritePropertyName("children");
@@ -112,6 +120,12 @@ internal sealed class BrowserSemanticsTransport
     }
 
     private static bool ContentEquals(SemanticsNodeUpdate previous, SemanticsNodeUpdate node) =>
+        ReferenceEquals(previous, node) || (ContentFieldsEqual(previous, node)
+            && Nullable.Equals(previous.scrollPosition, node.scrollPosition)
+            && Nullable.Equals(previous.scrollExtentMax, node.scrollExtentMax)
+            && Nullable.Equals(previous.scrollExtentMin, node.scrollExtentMin));
+
+    private static bool ContentFieldsEqual(SemanticsNodeUpdate previous, SemanticsNodeUpdate node) =>
         // A record `with` expression copies every field, even for unchanged
         // nodes. This comparison runs over the retained tree on every scroll
         // frame (and again when encoding changes), so compare the wire content
@@ -121,8 +135,7 @@ internal sealed class BrowserSemanticsTransport
             && previous.actions == node.actions && Equals(previous.flags, node.flags)
             && previous.role == node.role && previous.textSelectionBase == node.textSelectionBase
             && previous.textSelectionExtent == node.textSelectionExtent
-            && Nullable.Equals(previous.scrollPosition, node.scrollPosition) && Nullable.Equals(previous.scrollExtentMax, node.scrollExtentMax)
-            && Nullable.Equals(previous.scrollExtentMin, node.scrollExtentMin) && previous.identifier == node.identifier
+            && previous.identifier == node.identifier
             && previous.hint == node.hint && previous.tooltip == node.tooltip
             && previous.increasedValue == node.increasedValue && previous.decreasedValue == node.decreasedValue
             && previous.headingLevel == node.headingLevel && previous.linkUrl == node.linkUrl
@@ -171,6 +184,12 @@ internal sealed class BrowserSemanticsTransport
         writer.WriteNumberValue(node.rect.right);
         writer.WriteNumberValue(node.rect.bottom);
         writer.WriteEndArray();
+    }
+
+    private static void WriteScroll(Utf8JsonWriter writer, string name, double? value)
+    {
+        if (value is { } number) writer.WriteNumber(name, number);
+        else writer.WriteNull(name);
     }
 
     private static void WriteNode(Utf8JsonWriter writer, SemanticsNodeUpdate node) =>

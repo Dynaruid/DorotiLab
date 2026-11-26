@@ -63,6 +63,7 @@ internal static class ProjectionRegression
         builder.updateNode(original with { flags = new SemanticsFlags(isObscured: true), textGeometry = geometry });
         builder.UpdateTextGeometry(1, geometry);
         Check(builder.build().nodes[0].textGeometry is null, "obscured text geometry is still removed");
+        IncrementalSemanticsRegression.Run();
         Console.WriteLine("PASS: Android vsync clock, matrix ownership/allocation, perspective and legacy semantics projection");
     }
     private static void Check(bool condition, string message)

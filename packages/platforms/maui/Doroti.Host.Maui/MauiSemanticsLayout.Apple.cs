@@ -57,63 +57,159 @@ internal sealed partial class MauiSemanticsLayout
             _ => action.ToString(),
         };
 
-    private void RefreshAppleSemantics()
+    private AppleSemanticsView? _appleView;
+    private NSObject[] _appleChildren = [];
+    private SemanticsAction _appleActionMask;
+    private int? _appleActionOwner;
+
+    private void AttachAppleSemantics()
     {
-        var node = Node;
+        var view = Handler?.PlatformView as AppleSemanticsView;
+        if (_appleView?.Handle == view?.Handle) return;
+        if (_appleView is { } retired && retired.Handle != IntPtr.Zero)
+        {
 #if MACOS
-        if (Handler?.PlatformView is not AppleSemanticsView native)
-            return;
-        native.AccessibilityElement = node is not null;
-        native.AccessibilityLabel = node?.label;
-        // AXCheckBox uses a numeric state (0 off, 1 on, 2 mixed), independent
-        // of AXSelected. Preserve any textual value in the help description.
-        var state = AppleSemanticsState.NumericValue(node);
-        using NSObject? value = node?.flags?.isObscured == true ? null
-            : state is { } number ? new NSNumber(number)
-            : node?.value is { } text ? new NSString(text) : null;
-        native.SetProjectedValue(value);
-        native.AccessibilityHelp = string.Join(" ", new[] { node?.hint ?? node?.tooltip,
-            state is not null && node?.flags?.isObscured != true ? node?.value : null }.Where(text => !string.IsNullOrWhiteSpace(text)));
-        native.AccessibilityIdentifier = node?.identifier;
-        native.AccessibilityEnabled = node?.flags?.isEnabled != Tristate.isFalse;
-        native.AccessibilitySelected = node?.flags?.isSelected == Tristate.isTrue;
-        native.SetProjectedExpanded(node?.flags?.isExpanded == Tristate.isTrue);
-        native.AccessibilityProtectedContent = node?.flags?.isObscured == true;
-        native.AccessibilitySubrole = node?.role
-            is SemanticsRole.dialog
-                or SemanticsRole.alertDialog
-            ? NSAccessibilitySubroles.DialogSubrole
-            : null;
-        native.AccessibilityRole = node is null ? NSAccessibilityRoles.UnknownRole : Role(node);
-        // Explicit semantic children omit the transparent MAUI control proxy.
-        native.AccessibilityChildren = Children
-            .OfType<MauiSemanticsLayout>()
-            .Select(child => child.Handler?.PlatformView)
-            .OfType<NSObject>()
-            .ToArray();
-        native.AccessibilityCustomActions = node is null
-            ? []
-            : AppleActions
-                .Where(action =>
-                    action != SemanticsAction.setText && SemanticsActionPolicy.Allows(node, action)
-                )
-                .Select(action => new NSAccessibilityCustomAction(
-                    ActionName(action),
-                    () =>
-                        Node?.id == node.id
-                        && ReferenceEquals(Handler?.PlatformView, native)
-                        && Dispatch(action)
-                ))
-                .ToArray();
+            retired.AccessibilityElement = false;
+            retired.AccessibilityChildren = [];
 #else
-        if (Handler?.PlatformView is not AppleSemanticsView native) return;
-        var children = Children.OfType<MauiSemanticsLayout>()
-            .Select(child => child.Handler?.PlatformView).OfType<NSObject>().ToArray();
-        native.IsAccessibilityElement = node is not null && children.Length == 0;
-        native.AccessibilityLabel = node?.label;
-        native.AccessibilityValue = AppleSemanticsState.TextValue(node,
-            key => NSBundle.MainBundle.GetLocalizedString(key, key));
-        native.AccessibilityHint = node?.hint ?? node?.tooltip;
+            retired.IsAccessibilityElement = false;
+            retired.Elements = [];
+#endif
+            retired.AccessibilityCustomActions = [];
+        }
+        _appleView = view;
+        _appleChildren = [];
+        _appleActionMask = SemanticsAction.none;
+        _appleActionOwner = null;
+        UpdateAppleNode(null, force: true);
+        RefreshAppleChildren();
+    }
+
+    private void UpdateAppleNode(SemanticsNodeUpdate? previous, bool force = false)
+    {
+        if (_appleView is not { } native) return;
+        var node = Node;
+        if (!force && previous is not null && node is not null
+            && previous.label == node.label && previous.value == node.value
+            && previous.identifier == node.identifier && previous.hint == node.hint
+            && previous.tooltip == node.tooltip && previous.flags == node.flags
+            && previous.actions == node.actions && previous.id == node.id && previous.role == node.role
+            && (previous.children.Count == 0) == (node.children.Count == 0))
+            return;
+
+        if (force || previous?.label != node?.label) native.AccessibilityLabel = node?.label;
+        var value = node?.flags?.isObscured == true ? null : node?.value;
+        var previousValue = previous?.flags?.isObscured == true ? null : previous?.value;
+        var numeric = node?.flags?.isObscured == true ? null : AppleSemanticsState.NumericValue(node);
+        var oldNumeric = previous?.flags?.isObscured == true ? null : AppleSemanticsState.NumericValue(previous);
+#if MACOS
+        if (force || (previous is null) != (node is null)) native.AccessibilityElement = node is not null;
+        if (force || numeric != oldNumeric || (numeric is null && value != previousValue))
+        {
+            // AXCheckBox exposes a numeric state independently of AXSelected.
+            using NSObject? projected = numeric is { } number ? new NSNumber(number)
+                : value is { } text ? new NSString(text) : null;
+            native.SetProjectedValue(projected);
+        }
+        if (force || Help(previous, previousValue, oldNumeric) != Help(node, value, numeric))
+            native.AccessibilityHelp = Help(node, value, numeric);
+        if (force || previous?.identifier != node?.identifier) native.AccessibilityIdentifier = node?.identifier;
+        if (force || previous?.flags?.isEnabled != node?.flags?.isEnabled)
+            native.AccessibilityEnabled = node?.flags?.isEnabled != Tristate.isFalse;
+        if (force || previous?.flags?.isSelected != node?.flags?.isSelected)
+            native.AccessibilitySelected = node?.flags?.isSelected == Tristate.isTrue;
+        if (force || previous?.flags?.isExpanded != node?.flags?.isExpanded)
+            native.SetProjectedExpanded(node?.flags?.isExpanded == Tristate.isTrue);
+        if (force || previous?.flags?.isObscured != node?.flags?.isObscured)
+            native.AccessibilityProtectedContent = node?.flags?.isObscured == true;
+        if (force || IsDialog(previous) != IsDialog(node))
+            native.AccessibilitySubrole = IsDialog(node) ? NSAccessibilitySubroles.DialogSubrole : null;
+        var role = node is null ? NSAccessibilityRoles.UnknownRole : Role(node);
+        if (force || role != (previous is null ? NSAccessibilityRoles.UnknownRole : Role(previous)))
+            native.AccessibilityRole = role;
+#else
+        if (force || numeric != oldNumeric || value != previousValue)
+            native.AccessibilityValue = AppleSemanticsState.TextValue(node,
+                key => NSBundle.MainBundle.GetLocalizedString(key, key));
+        var hint = node?.hint ?? node?.tooltip;
+        if (force || hint != (previous?.hint ?? previous?.tooltip)) native.AccessibilityHint = hint;
+        var traits = Traits(node);
+        if (force || traits != Traits(previous)) native.AccessibilityTraits = traits;
+        RefreshAppleContainer(native);
+#endif
+        if ((previous is null) != (node is null)) RefreshAppleChildren();
+        RefreshAppleActions(native, node);
+    }
+
+    private void RefreshAppleChildren()
+    {
+        if (_appleView is not { } native) return;
+        var children = Node is null ? Enumerable.Empty<NSObject>() : Children.OfType<MauiSemanticsLayout>()
+            .Select(child => child.Handler?.PlatformView).OfType<NSObject>();
+        if (_appleChildren.Select(child => child.Handle).SequenceEqual(children.Select(child => child.Handle))) return;
+        _appleChildren = children.ToArray();
+#if MACOS
+        native.AccessibilityChildren = _appleChildren;
+#else
+        native.Elements = _appleChildren;
+        RefreshAppleContainer(native);
+#endif
+    }
+
+    private void RefreshAppleActions(AppleSemanticsView native, SemanticsNodeUpdate? node)
+    {
+        var mask = SemanticsAction.none;
+        if (node is not null)
+            foreach (var action in AppleActions)
+                if (action != SemanticsAction.setText && SemanticsActionPolicy.Allows(node, action))
+                    mask |= action;
+        var id = node?.id;
+        if (mask == _appleActionMask && id == _appleActionOwner) return;
+        _appleActionMask = mask;
+        _appleActionOwner = id;
+        bool Invoke(SemanticsAction action) =>
+            Node?.id == id && OwnsAppleSemantics(native) && Dispatch(action);
+#if MACOS
+        native.AccessibilityCustomActions = AppleActions.Where(action => (mask & action) != 0)
+            .Select(action => new NSAccessibilityCustomAction(ActionName(action), () => Invoke(action)))
+            .ToArray();
+#else
+        native.AccessibilityCustomActions = AppleActions.Where(action => (mask & action) != 0)
+            .Select(action => new UIAccessibilityCustomAction(ActionName(action),
+                new UIAccessibilityCustomActionHandler(_ => Invoke(action)))).ToArray();
+#endif
+    }
+
+    internal bool OwnsAppleSemantics(AppleSemanticsView native) =>
+        native.Handle != IntPtr.Zero && native.Handle == (Handler?.PlatformView as AppleSemanticsView)?.Handle;
+
+#if MACOS
+    private static bool IsDialog(SemanticsNodeUpdate? node) =>
+        node?.role is SemanticsRole.dialog or SemanticsRole.alertDialog;
+
+    private static string Help(SemanticsNodeUpdate? node, string? value, int? numeric)
+    {
+        var hint = node?.hint ?? node?.tooltip;
+        var stateValue = numeric is null ? null : value;
+        if (string.IsNullOrWhiteSpace(hint)) return string.IsNullOrWhiteSpace(stateValue) ? "" : stateValue;
+        return string.IsNullOrWhiteSpace(stateValue) ? hint : hint + " " + stateValue;
+    }
+#else
+    private void RefreshAppleContainer(AppleSemanticsView native)
+    {
+        var exposed = Node is not null && _appleChildren.Length == 0;
+        if (native.IsAccessibilityElement != exposed) native.IsAccessibilityElement = exposed;
+        var type = Node?.role switch
+        {
+            SemanticsRole.list => UIAccessibilityContainerType.List,
+            SemanticsRole.table => UIAccessibilityContainerType.DataTable,
+            _ => _appleChildren.Length > 0 ? UIAccessibilityContainerType.SemanticGroup : UIAccessibilityContainerType.None,
+        };
+        if (native.AccessibilityContainerType != type) native.AccessibilityContainerType = type;
+    }
+
+    private static UIAccessibilityTrait Traits(SemanticsNodeUpdate? node)
+    {
         var traits = UIAccessibilityTrait.None;
         if (node?.flags?.isLink == true) traits |= UIAccessibilityTrait.Link;
         if (node?.flags?.isHeader == true) traits |= UIAccessibilityTrait.Header;
@@ -124,21 +220,9 @@ internal sealed partial class MauiSemanticsLayout
             || node?.actions.HasFlag(SemanticsAction.decrease) == true) traits |= UIAccessibilityTrait.Adjustable;
         if (node?.flags?.isEnabled == Tristate.isFalse) traits |= UIAccessibilityTrait.NotEnabled;
         if (node?.flags?.isSelected == Tristate.isTrue) traits |= UIAccessibilityTrait.Selected;
-        native.AccessibilityTraits = traits;
-        native.AccessibilityContainerType = node?.role switch
-        {
-            SemanticsRole.list => UIAccessibilityContainerType.List,
-            SemanticsRole.table => UIAccessibilityContainerType.DataTable,
-            _ => children.Length > 0 ? UIAccessibilityContainerType.SemanticGroup : UIAccessibilityContainerType.None,
-        };
-        native.Elements = children;
-        native.AccessibilityCustomActions = node is null ? [] : AppleActions
-            .Where(action => action != SemanticsAction.setText && SemanticsActionPolicy.Allows(node, action))
-            .Select(action => new UIAccessibilityCustomAction(ActionName(action),
-                new UIAccessibilityCustomActionHandler(_ => Node?.id == node.id
-                    && ReferenceEquals(Handler?.PlatformView, native) && Dispatch(action)))).ToArray();
-#endif
+        return traits;
     }
+#endif
 
 #if MACOS
     private static string Role(SemanticsNodeUpdate node) =>

@@ -3446,6 +3446,15 @@ public sealed record SemanticsUpdate(
     IReadOnlyList<SemanticsNodeUpdate> nodes,
     SemanticsUpdateUrgency urgency = SemanticsUpdateUrgency.automatic,
     double viewDevicePixelRatio = 1
+)
+{
+    /// <summary>Changes relative to the exact preceding projected snapshot, when its topology is retained.</summary>
+    public SemanticsSnapshotChanges? snapshotChanges { get; init; }
+}
+
+public sealed record SemanticsSnapshotChanges(
+    IReadOnlyList<SemanticsNodeUpdate> previousNodes,
+    IReadOnlyList<SemanticsNodeUpdate> changedNodes
 );
 
 /// <summary>
@@ -3568,7 +3577,7 @@ public static class SemanticsGeometryProjection
         activePath.Remove(id);
     }
 
-    private static Rect TransformRect(Rect rect, Matrix4 matrix)
+    internal static Rect TransformRect(Rect rect, Matrix4 matrix)
     {
         // Same homogeneous projection as Matrix4.perspectiveTransform, without
         // allocating four vectors and an array for each node/text rectangle.
@@ -3617,6 +3626,9 @@ public enum SemanticsNodeProperty
 
     /// <summary>Accessible name supplements, role metadata, ranges, and relationships.</summary>
     metadata = 1 << 10,
+
+    /// <summary>Text layout and its projected glyph rectangles.</summary>
+    textGeometry = 1 << 11,
 }
 
 public sealed record SemanticsNodeDelta(
@@ -3627,7 +3639,7 @@ public sealed record SemanticsNodeDelta(
 )
 {
     public bool IsGeometryOnly =>
-        (changedProperties & ~(SemanticsNodeProperty.bounds | SemanticsNodeProperty.scroll))
+        (changedProperties & ~(SemanticsNodeProperty.bounds | SemanticsNodeProperty.scroll | SemanticsNodeProperty.textGeometry))
         == SemanticsNodeProperty.none;
 }
 
@@ -3801,16 +3813,18 @@ public static class SemanticsUpdateDiffer
         | SemanticsNodeProperty.traversal
         | SemanticsNodeProperty.selection
         | SemanticsNodeProperty.scroll
-        | SemanticsNodeProperty.metadata;
+        | SemanticsNodeProperty.metadata
+        | SemanticsNodeProperty.textGeometry;
 
-    private static SemanticsNodeProperty ChangedProperties(
+    public static SemanticsNodeProperty ChangedProperties(
         SemanticsNodeUpdate previous,
         SemanticsNodeUpdate current
     )
     {
         var result = SemanticsNodeProperty.none;
+        if (ReferenceEquals(previous, current)) return result;
         if (previous.textGeometry is { } oldGeometry ? !oldGeometry.ContentEquals(current.textGeometry) : current.textGeometry is not null)
-            result |= SemanticsNodeProperty.metadata | SemanticsNodeProperty.bounds;
+            result |= SemanticsNodeProperty.textGeometry;
         if (
             previous.rect != current.rect
             || !(previous.coordinateTransform ?? []).SequenceEqual(

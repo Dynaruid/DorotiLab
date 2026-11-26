@@ -1,3 +1,4 @@
+#include "../../../shared/native/semantics_queue.h"
 #include "doroti_qt_host_v2.h"
 #include "doroti_qt_platform_views.h"
 #include "doroti_qt_desktop.h"
@@ -71,6 +72,7 @@
 #include <optional>
 #include <string>
 #include <stdexcept>
+#include <tuple>
 #include <utility>
 #include <wayland-client.h>
 
@@ -101,7 +103,7 @@ constexpr int kFullSurfaceBackdropExtent = 1 << 20;
 constexpr std::uint64_t kSupportedFeatures =
     DOROTI_QT_FEATURE_TEXT_CONFIGURATION_UPDATE |
     DOROTI_QT_FEATURE_TEXT_GEOMETRY |
-    DOROTI_QT_FEATURE_APPLICATION_ID |
+    DOROTI_QT_FEATURE_APPLICATION_ID | DOROTI_QT_FEATURE_SEMANTICS_PATCH |
 #ifdef DOROTI_QT_QUICK
     DOROTI_QT_FEATURE_QUICK_COMPOSITION | DOROTI_QT_FEATURE_NATIVE_TEXTURE_EXTENSIONS | DOROTI_QT_FEATURE_CONSUMER_COMPLETION | DOROTI_QT_FEATURE_FRAME_PREPARATION |
 #endif
@@ -133,7 +135,12 @@ doroti_qt_utf8_v2 Utf8(const QByteArray& value) {
           static_cast<std::uint64_t>(value.size())};
 }
 
-struct SemanticTextRun { int start{}, end{}; QRectF bounds; bool rtl{}; };
+struct SemanticTextRun {
+  int start{}, end{};
+  QRectF bounds;
+  bool rtl{};
+  bool operator==(const SemanticTextRun&) const = default;
+};
 struct SemanticNode {
   std::int64_t id = 0;
   std::int64_t parent = -1;
@@ -167,7 +174,11 @@ struct SemanticNode {
   QString layout_text;
   QList<int> text_boundaries;
   QList<SemanticTextRun> text_runs;
+  std::optional<double> scroll_position, scroll_min, scroll_max;
+  int index_in_parent = std::numeric_limits<int>::max();
+  bool operator==(const SemanticNode&) const = default;
 };
+using SemanticTree = QHash<std::int64_t, SemanticNode>;
 
 class DorotiAccessibleNode;
 QSet<QObject*> accessible_surfaces;
@@ -311,7 +322,10 @@ class DorotiSurface final : public DorotiWindowBase {
     return found == semantics_.cend() ? nullptr : &found.value();
   }
   QAccessibleInterface* Accessible(std::int64_t id) const;
-  void ApplySemantics(const QByteArray& json);
+  void ApplySemantics(const QJsonDocument& document, bool patch);
+  void PublishSemantics(SemanticTree next, bool managed_root);
+  void CompleteSemanticHierarchy(SemanticTree& tree, bool managed_root);
+  void ReleaseAccessible(std::int64_t id);
   void ClearSemanticsTree();
   void InitializeBackdrop() {
     Diagnostic("titlebar.effective", unified_titlebar_ ? "unified-client" : "solid-native");
@@ -556,34 +570,51 @@ class DorotiSurface final : public DorotiWindowBase {
   }
 
   static void UpdateSemantics(void* view_handle, doroti_qt_utf8_v2 json) noexcept {
+    if (SubmitSemantics(view_handle, json, 0, 0) == 0 || view_handle == nullptr) return;
+    auto* surface = static_cast<DorotiSurface*>(view_handle);
+    QMetaObject::invokeMethod(surface, [surface] {
+      surface->callbacks_.fatal(surface->callback_context_, DOROTI_QT_ERROR_INVALID_ARGUMENT,
+                                Utf8("invalid managed semantics JSON"));
+    }, Qt::QueuedConnection);
+  }
+
+  static std::uint32_t SubmitSemantics(void* view_handle, doroti_qt_utf8_v2 json,
+                                       std::uint64_t revision, std::uint64_t base) noexcept {
     auto* surface = static_cast<DorotiSurface*>(view_handle);
     if (surface == nullptr || json.data == nullptr || json.length == 0 ||
-        json.length > 16 * 1024 * 1024) return;
-    const QByteArray copied(reinterpret_cast<const char*>(json.data),
-                            static_cast<qsizetype>(json.length));
-    QMetaObject::invokeMethod(surface, [surface, copied] {
-      QJsonParseError error;
-      const auto document = QJsonDocument::fromJson(copied, &error);
-      if (error.error != QJsonParseError::NoError || !document.isObject()) {
-        surface->callbacks_.fatal(surface->callback_context_, DOROTI_QT_ERROR_INVALID_ARGUMENT,
-                                  Utf8("invalid managed semantics JSON"));
-        return;
-      }
-      surface->ApplySemantics(copied);
-      const auto nodes = document.object().value("nodes").toArray().size();
-      const auto count = QByteArray::number(nodes);
-      surface->Diagnostic("semantics.nodes", count.constData());
-    }, Qt::QueuedConnection);
+        json.length > 16 * 1024 * 1024 || (revision == 0 && base != 0)) return 1;
+    try {
+      const auto document = QJsonDocument::fromJson(QByteArray::fromRawData(
+          reinterpret_cast<const char*>(json.data), static_cast<qsizetype>(json.length)));
+      if (!document.isObject()) return 1;
+      return surface->semantics_queue_.Submit(document, revision, base, false,
+          [=] { return surface->WakeSemantics(); });
+    } catch (...) {
+      return 4;
+    }
   }
 
   static void ClearSemantics(void* view_handle) noexcept {
     auto* surface = static_cast<DorotiSurface*>(view_handle);
     if (surface == nullptr) return;
-    QMetaObject::invokeMethod(surface, [surface] {
-      surface->ClearSemanticsTree();
-      surface->RefreshCaptionSemantics();
-    },
-                              Qt::QueuedConnection);
+    try {
+      surface->semantics_queue_.Submit({}, 0, 0, true, [=] { return surface->WakeSemantics(); });
+    } catch (...) {
+      surface->callbacks_.fatal(surface->callback_context_, DOROTI_QT_ERROR_INVALID_ARGUMENT,
+                                Utf8("unable to queue semantics clear"));
+    }
+  }
+
+  bool WakeSemantics() {
+    return QMetaObject::invokeMethod(this, [this] {
+      semantics_queue_.Drain([this](auto item) {
+        if (item.clear) PublishSemantics({}, false);
+        else ApplySemantics(item.payload, item.patch);
+        const auto count = QByteArray::number(semantics_.size() - (!managed_semantics_root_ ? 1 : 0)
+                                              - (unified_titlebar_ ? 3 : 0));
+        Diagnostic("semantics.nodes", count.constData());
+      });
+    }, Qt::QueuedConnection);
   }
 
   static void PreparePresent(void* view_handle) noexcept {
@@ -1294,27 +1325,31 @@ class DorotiSurface final : public DorotiWindowBase {
     return std::numeric_limits<std::int64_t>::min() + button;
   }
 
-  void RefreshCaptionSemantics() {
-    if (!unified_titlebar_) return;
-    // Native window controls remain accessible even when the app has not
-    // published (or has cleared) its widget semantics tree.
-    if (!semantics_.contains(0)) {
-      SemanticNode root;
+  void RefreshCaptionSemantics() { RefreshCaptionSemantics(semantics_, managed_semantics_root_); }
+
+  void RefreshCaptionSemantics(SemanticTree& tree, bool managed_root) {
+    // The window interface is queryable before the first app update and after Clear.
+    if (!tree.contains(0)) tree.insert(0, SemanticNode{});
+    if (!managed_root) {
+      auto& root = tree[0];
       root.label = title();
       root.rect = QRectF(0, 0, width(), height());
-      semantics_.insert(0, root);
     }
+    if (!unified_titlebar_) return;
     for (std::uint32_t button = 1; button <= 3; ++button) {
-      SemanticNode node;
-      node.id = CaptionId(button);
+      const auto id = CaptionId(button);
+      auto found = tree.find(id);
+      if (found == tree.end()) found = tree.insert(id, SemanticNode{});
+      auto& node = found.value();
+      node.id = id;
+      node.parent = 0;
       node.label = button == 1 ? tr("Minimize") : button == 2
           ? (windowState() == Qt::WindowMaximized ? tr("Restore") : tr("Maximize")) : tr("Close");
       node.button = true;
       node.actions = 1;
       node.hidden = CaptionHeight() == 0;
       node.rect = QRectF(width() - (4 - button) * 46, 0, 46, CaptionHeight());
-      semantics_.insert(node.id, node);
-      if (!semantics_[0].children.contains(node.id)) semantics_[0].children.append(node.id);
+      if (!tree[0].children.contains(id)) tree[0].children.append(id);
     }
   }
 
@@ -1724,7 +1759,9 @@ class DorotiSurface final : public DorotiWindowBase {
   int composing_extent_ = -1;
   QRectF caret_rect_;
   doroti_qt_text_configuration_v2 text_configuration_{};
-  QHash<std::int64_t, SemanticNode> semantics_;
+  SemanticTree semantics_;
+  bool managed_semantics_root_ = false;
+  doroti::SemanticsQueue<QJsonDocument> semantics_queue_;
   mutable QHash<std::int64_t, QAccessible::Id> accessible_ids_;
 };
 
@@ -2044,6 +2081,14 @@ QAccessibleInterface* DorotiSurface::Accessible(std::int64_t id) const {
   return interface;
 }
 
+void DorotiSurface::ReleaseAccessible(std::int64_t id) {
+  const auto found = accessible_ids_.find(id);
+  if (found == accessible_ids_.end()) return;
+  const auto accessible_id = found.value();
+  accessible_ids_.erase(found);
+  QAccessible::deleteAccessibleInterface(accessible_id);
+}
+
 void DorotiSurface::ClearSemanticsTree() {
   for (const auto accessible_id : std::as_const(accessible_ids_))
     QAccessible::deleteAccessibleInterface(accessible_id);
@@ -2051,25 +2096,37 @@ void DorotiSurface::ClearSemanticsTree() {
   semantics_.clear();
 }
 
-void DorotiSurface::ApplySemantics(const QByteArray& json) {
-  const auto document = QJsonDocument::fromJson(json);
-  const auto array = document.object().value("nodes").toArray();
-  QHash<std::int64_t, SemanticNode> next;
-  for (const auto value : array) {
-    const auto object = value.toObject();
-    SemanticNode node;
-    node.id = object.value("id").toInteger();
-    node.label = object.value("label").toString();
-    node.value = object.value("value").toString();
-    node.role = object.value("role").toString();
-    node.actions = object.value("actions").toInteger();
+namespace {
+
+QRectF SemanticRect(const QJsonArray& rect, qsizetype offset = 0) {
+  return QRectF(rect[offset].toDouble(), rect[offset + 1].toDouble(),
+                rect[offset + 2].toDouble() - rect[offset].toDouble(),
+                rect[offset + 3].toDouble() - rect[offset + 1].toDouble());
+}
+
+void ReadSemanticNode(const QJsonObject& object, SemanticNode& node) {
+  if (object.contains("label")) node.label = object.value("label").toString();
+  if (object.contains("value")) node.value = object.value("value").toString();
+  if (object.contains("role")) node.role = object.value("role").toString();
+  if (object.contains("actions")) node.actions = object.value("actions").toInteger();
+  if (object.contains("children")) {
+    node.children.clear();
     for (const auto child : object.value("children").toArray())
       node.children.append(child.toInteger());
-    const auto rect = object.value("rect").toArray();
-    if (rect.size() == 4)
-      node.rect = QRectF(rect[0].toDouble(), rect[1].toDouble(),
-                         rect[2].toDouble() - rect[0].toDouble(),
-                         rect[3].toDouble() - rect[1].toDouble());
+  }
+  if (object.contains("indexInParent"))
+    node.index_in_parent = object.value("indexInParent").toInt(std::numeric_limits<int>::max());
+  const auto rect = object.value("rect").toArray();
+  if (rect.size() == 4) node.rect = SemanticRect(rect);
+  const auto read_scroll = [&](const char* key, std::optional<double>& field) {
+    if (!object.contains(key)) return;
+    const auto value = object.value(key);
+    field = value.isDouble() ? std::optional<double>(value.toDouble()) : std::nullopt;
+  };
+  read_scroll("scrollPosition", node.scroll_position);
+  read_scroll("scrollExtentMin", node.scroll_min);
+  read_scroll("scrollExtentMax", node.scroll_max);
+  if (object.contains("flags")) {
     const auto flags = object.value("flags").toObject();
     node.enabled = !flags.contains("enabled") || flags.value("enabled").isNull() ||
                    flags.value("enabled").toBool();
@@ -2090,106 +2147,248 @@ void DorotiSurface::ApplySemantics(const QByteArray& json) {
     node.expanded = flags.value("expanded").toBool();
     node.obscured = flags.value("obscured").toBool();
     node.multiline = flags.value("multiline").toBool();
-    node.selection_base = object.value("textSelectionBase").toInt(-1);
-    node.selection_extent = object.value("textSelectionExtent").toInt(-1);
-    const auto geometry = object.value("textGeometry").toObject();
-    if (!node.obscured && !geometry.isEmpty()) {
-      node.text_geometry = true;
-      node.layout_text = geometry.value("text").toString();
-      int previous = -1;
-      for (const auto value : geometry.value("boundaries").toArray()) {
-        const int offset = value.toInt(-1);
-        if (offset <= previous || offset > node.layout_text.size()) {
-          node.text_boundaries.clear();
-          break;
-        }
-        node.text_boundaries.append(offset);
-        previous = offset;
-      }
-      if (!node.text_boundaries.isEmpty() &&
-          (node.text_boundaries.front() != 0 || node.text_boundaries.back() != node.layout_text.size()))
+  }
+  if (object.contains("textSelectionBase")) node.selection_base = object.value("textSelectionBase").toInt(-1);
+  if (object.contains("textSelectionExtent")) node.selection_extent = object.value("textSelectionExtent").toInt(-1);
+  if (node.obscured || object.contains("textGeometry")) {
+    node.text_geometry = false;
+    node.layout_text.clear();
+    node.text_boundaries.clear();
+    node.text_runs.clear();
+  }
+  if (node.obscured) return;
+  const auto geometry = object.value("textGeometry").toObject();
+  if (!geometry.isEmpty()) {
+    node.text_geometry = true;
+    node.layout_text = geometry.value("text").toString();
+    int previous = -1;
+    for (const auto value : geometry.value("boundaries").toArray()) {
+      const int offset = value.toInt(-1);
+      if (offset <= previous || offset > node.layout_text.size()) {
         node.text_boundaries.clear();
-      for (const auto value : geometry.value("runs").toArray()) {
-        const auto run = value.toObject();
-        const int start = run.value("start").toInt(-1), end = run.value("end").toInt(-1);
-        const double left = run.value("left").toDouble(), top = run.value("top").toDouble();
-        const double right = run.value("right").toDouble(), bottom = run.value("bottom").toDouble();
-        if (start < 0 || end < start || end > node.layout_text.size() || !std::isfinite(left) || !std::isfinite(top)
-            || !std::isfinite(right) || !std::isfinite(bottom)) { node.text_geometry = false; node.text_runs.clear(); break; }
-        node.text_runs.append({start, end, QRectF(left, top, right - left, bottom - top), run.value("rtl").toBool()});
+        break;
       }
+      node.text_boundaries.append(offset);
+      previous = offset;
     }
-    next.insert(node.id, node);
+    if (!node.text_boundaries.isEmpty() &&
+        (node.text_boundaries.front() != 0 || node.text_boundaries.back() != node.layout_text.size()))
+      node.text_boundaries.clear();
+    for (const auto value : geometry.value("runs").toArray()) {
+      const auto run = value.toObject();
+      const int start = run.value("start").toInt(-1), end = run.value("end").toInt(-1);
+      const double left = run.value("left").toDouble(), top = run.value("top").toDouble();
+      const double right = run.value("right").toDouble(), bottom = run.value("bottom").toDouble();
+      if (start < 0 || end < start || end > node.layout_text.size() || !std::isfinite(left) || !std::isfinite(top)
+          || !std::isfinite(right) || !std::isfinite(bottom)) { node.text_geometry = false; node.text_runs.clear(); break; }
+      node.text_runs.append({start, end, QRectF(left, top, right - left, bottom - top), run.value("rtl").toBool()});
+    }
   }
-  for (auto parent = next.begin(); parent != next.end(); ++parent)
-    for (const auto child_id : parent->children)
-      if (auto child = next.find(child_id); child != next.end()) child->parent = parent->id;
-  const auto previous = semantics_;
-  bool reordered = previous.size() != next.size();
-  for (auto it = next.cbegin(); it != next.cend(); ++it) {
-    const auto before = previous.constFind(it.key());
-    if (before == previous.cend() || before->children != it->children ||
-        before->parent != it->parent) reordered = true;
+  for (const auto value : object.value("textBounds").toArray()) {
+    const auto bounds = value.toArray();
+    if (bounds.size() != 5) continue;
+    const auto index = bounds[0].toInteger(-1);
+    if (index >= 0 && index < node.text_runs.size()) node.text_runs[index].bounds = SemanticRect(bounds, 1);
   }
-  for (auto it = accessible_ids_.begin(); it != accessible_ids_.end();) {
-    if (next.contains(it.key())) { ++it; continue; }
-    QAccessible::deleteAccessibleInterface(it.value());
-    it = accessible_ids_.erase(it);
-  }
-  semantics_ = std::move(next);
-  RefreshCaptionSemantics();
+}
+
+struct SemanticEvents {
+  QString label, value;
+  std::int64_t actions;
+  int selection_base, selection_extent, checked;
+  bool focused, selected, toggled, expanded, enabled, hidden, text_field, obscured;
+
+  explicit SemanticEvents(const SemanticNode& node)
+      : label(node.label), value(node.obscured ? QString() : node.value), actions(node.actions),
+        selection_base(node.selection_base), selection_extent(node.selection_extent), checked(node.checked_state),
+        focused(node.focused), selected(node.selected), toggled(node.toggled), expanded(node.expanded),
+        enabled(node.enabled), hidden(node.hidden), text_field(node.text_field), obscured(node.obscured) {}
+
+  bool operator==(const SemanticEvents&) const = default;
+};
+using ChangedEvents = QList<std::tuple<std::int64_t, SemanticEvents, SemanticEvents>>;
+
+void NotifySemantics(DorotiSurface& surface, bool reordered, const ChangedEvents& changes) {
   if (reordered) {
-    QAccessibleEvent changed(this, QAccessible::ObjectReorder);
+    QAccessibleEvent changed(&surface, QAccessible::ObjectReorder);
     QAccessible::updateAccessibility(&changed);
   }
-  for (auto it = semantics_.cbegin(); it != semantics_.cend(); ++it) {
-    const auto old = previous.constFind(it.key());
-    if (old == previous.cend()) continue;
-    auto* iface = Accessible(it.key());
+  for (const auto& [id, old, current] : changes) {
+    auto* iface = surface.Accessible(id);
     if (iface == nullptr) continue;
-    if (old->label != it->label) {
+    if (old.label != current.label) {
       QAccessibleEvent changed(iface, QAccessible::NameChanged);
       QAccessible::updateAccessibility(&changed);
     }
-    if (old->value != it->value) {
-      if (it->text_field && !it->obscured) {
-        QAccessibleTextUpdateEvent changed(iface, 0, old->value, it->value);
+    if (old.value != current.value) {
+      if (current.text_field && !current.obscured && !old.obscured) {
+        QAccessibleTextUpdateEvent changed(iface, 0, old.value, current.value);
         QAccessible::updateAccessibility(&changed);
       } else {
-        QAccessibleValueChangeEvent changed(iface, it->obscured ? QString() : it->value);
+        QAccessibleValueChangeEvent changed(iface, current.value);
         QAccessible::updateAccessibility(&changed);
       }
     }
-    if (old->selection_base != it->selection_base ||
-        old->selection_extent != it->selection_extent) {
-      QAccessibleTextSelectionEvent changed(iface, it->selection_base, it->selection_extent);
+    if (!current.obscured && (old.selection_base != current.selection_base ||
+        old.selection_extent != current.selection_extent)) {
+      QAccessibleTextSelectionEvent changed(iface, current.selection_base, current.selection_extent);
       QAccessible::updateAccessibility(&changed);
     }
-    if (old->focused != it->focused) {
+    if (old.actions != current.actions) {
+      QAccessibleEvent changed(iface, QAccessible::ActionChanged);
+      QAccessible::updateAccessibility(&changed);
+    }
+    if (old.focused != current.focused) {
       QAccessible::State states;
       states.focused = true;
       QAccessibleStateChangeEvent changed(iface, states);
       QAccessible::updateAccessibility(&changed);
-      if (it->focused) {
+      if (current.focused) {
         QAccessibleEvent focus(iface, QAccessible::Focus);
         QAccessible::updateAccessibility(&focus);
       }
     }
-    if (old->selected != it->selected || old->checked_state != it->checked_state ||
-        old->toggled != it->toggled || old->expanded != it->expanded ||
-        old->enabled != it->enabled || old->hidden != it->hidden) {
+    if (old.selected != current.selected || old.checked != current.checked ||
+        old.toggled != current.toggled || old.expanded != current.expanded ||
+        old.enabled != current.enabled || old.hidden != current.hidden) {
       QAccessible::State states;
-      states.selected = old->selected != it->selected;
-      states.checked = old->checked_state != it->checked_state || old->toggled != it->toggled;
-      states.checkStateMixed = old->checked_state != it->checked_state;
-      states.expanded = old->expanded != it->expanded;
-      states.collapsed = old->expanded != it->expanded;
-      states.disabled = old->enabled != it->enabled;
-      states.invisible = old->hidden != it->hidden;
+      states.selected = old.selected != current.selected;
+      states.checked = old.checked != current.checked || old.toggled != current.toggled;
+      states.checkStateMixed = old.checked != current.checked;
+      states.expanded = old.expanded != current.expanded;
+      states.collapsed = old.expanded != current.expanded;
+      states.disabled = old.enabled != current.enabled;
+      states.invisible = old.hidden != current.hidden;
       QAccessibleStateChangeEvent changed(iface, states);
       QAccessible::updateAccessibility(&changed);
     }
   }
+}
+
+}  // namespace
+
+void DorotiSurface::CompleteSemanticHierarchy(SemanticTree& tree, bool managed_root) {
+  if (!managed_root) tree.insert(0, SemanticNode{});
+  for (auto& node : tree) node.parent = -1;
+  for (auto parent = tree.cbegin(); parent != tree.cend(); ++parent)
+    for (const auto child_id : parent->children)
+      if (auto child = tree.find(child_id); child != tree.end()) child->parent = parent.key();
+  if (!managed_root) {
+    QList<std::pair<int, std::int64_t>> roots;
+    for (const auto& node : std::as_const(tree))
+      if (node.id != 0 && node.id >= std::numeric_limits<int>::min() && node.parent < 0)
+        roots.append({node.index_in_parent, node.id});
+    std::sort(roots.begin(), roots.end());
+    for (const auto& [order, id] : roots) {
+      tree[0].children.append(id);
+      tree[id].parent = 0;
+    }
+  }
+  RefreshCaptionSemantics(tree, managed_root);
+}
+
+void DorotiSurface::PublishSemantics(SemanticTree next, bool managed_root) {
+  CompleteSemanticHierarchy(next, managed_root);
+  const auto listening = QAccessible::isActive();
+  bool reordered = next.size() != semantics_.size();
+  ChangedEvents changes;
+  // Compare the complete tree, including the persistent caption nodes.
+  for (auto it = next.cbegin(); it != next.cend(); ++it) {
+    auto before = semantics_.find(it.key());
+    if (before == semantics_.end()) {
+      semantics_.insert(it.key(), it.value());
+      reordered = true;
+      continue;
+    }
+    reordered |= before->children != it->children || before->parent != it->parent;
+    if (before.value() == it.value()) continue;
+    if (listening) {
+      const SemanticEvents old(before.value()), current(it.value());
+      if (old != current) changes.append({it.key(), old, current});
+    }
+    before.value() = it.value();
+  }
+  for (auto it = semantics_.begin(); it != semantics_.end();) {
+    if (next.contains(it.key())) { ++it; continue; }
+    const auto id = it.key();
+    it = semantics_.erase(it);
+    ReleaseAccessible(id);
+    reordered = true;
+  }
+  managed_semantics_root_ = managed_root;
+  if (listening) NotifySemantics(*this, reordered, changes);
+}
+
+void DorotiSurface::ApplySemantics(const QJsonDocument& document, bool patch) {
+  const auto root = document.object();
+  const auto array = root.value("nodes").toArray();
+  if (!patch) {
+    SemanticTree next;
+    QList<std::int64_t> pending;
+    for (const auto value : array) {
+      const auto object = value.toObject();
+      SemanticNode node;
+      node.id = object.value("id").toInteger();
+      ReadSemanticNode(object, node);
+      if (node.hidden) pending.append(node.id);
+      next.insert(node.id, std::move(node));
+    }
+    while (!pending.empty()) {
+      const auto id = pending.takeLast();
+      auto found = next.find(id);
+      if (found == next.end()) continue;
+      pending.append(found->children);
+      next.erase(found);
+    }
+    for (auto& node : next) node.children.removeIf([&](auto id) { return !next.contains(id); });
+    const auto managed_root = next.contains(0);
+    PublishSemantics(std::move(next), managed_root);
+    return;
+  }
+
+  bool reordered = false;
+  const auto listening = QAccessible::isActive();
+  ChangedEvents changes;
+  for (const auto value : root.value("removed").toArray()) {
+    const auto id = value.toInteger();
+    if (id == 0) managed_semantics_root_ = false;
+    if (semantics_.remove(id)) {
+      reordered = true;
+      ReleaseAccessible(id);
+    }
+  }
+  for (const auto value : array) {
+    const auto object = value.toObject();
+    const auto id = object.value("id").toInteger();
+    auto found = semantics_.find(id);
+    if (found == semantics_.end() || (id == 0 && !managed_semantics_root_)) {
+      SemanticNode node;
+      node.id = id;
+      ReadSemanticNode(object, node);
+      semantics_.insert(id, std::move(node));
+      if (id == 0) managed_semantics_root_ = true;
+      reordered = true;
+      continue;
+    }
+    std::optional<SemanticEvents> old;
+    if (listening && (object.contains("label") || object.contains("value") || object.contains("flags")
+        || object.contains("actions") || object.contains("textSelectionBase") || object.contains("textSelectionExtent")))
+      old.emplace(found.value());
+    const auto children_changed = object.contains("children");
+    const auto children = children_changed ? found->children : QList<std::int64_t>{};
+    const auto order = found->index_in_parent;
+    ReadSemanticNode(object, found.value());
+    if (id == 0 && children_changed && unified_titlebar_)
+      for (std::uint32_t button = 1; button <= 3; ++button) found->children.append(CaptionId(button));
+    reordered |= (children_changed && children != found->children)
+        || (!managed_semantics_root_ && order != found->index_in_parent);
+    if (old) {
+      const SemanticEvents current(found.value());
+      if (current != *old) changes.append({id, std::move(*old), current});
+    }
+  }
+  if (reordered) CompleteSemanticHierarchy(semantics_, managed_semantics_root_);
+  if (listening) NotifySemantics(*this, reordered, changes);
 }
 
 QAccessibleInterface* AccessibleFactory(const QString&, QObject* object) {
@@ -2197,6 +2396,10 @@ QAccessibleInterface* AccessibleFactory(const QString&, QObject* object) {
   // Qt can cache the window interface before the managed tree's first update.
   return surface == nullptr ? nullptr : new DorotiAccessibleNode(surface, 0);
 }
+
+#ifdef DOROTI_QT_SEMANTICS_TESTS
+#include "../tests/semantics_test.inc"
+#endif
 
 const doroti_qt_host_api_v2 kHostApi{
     kAbiVersion,
@@ -2217,6 +2420,7 @@ const doroti_qt_host_api_v2 kHostApi{
     &DorotiSurface::ClearSemantics,
     &DorotiSurface::PreparePresent,
     &DorotiSurface::UpdateTextConfiguration,
+    &DorotiSurface::SubmitSemantics,
 };
 
 std::int32_t Validate(const doroti_qt_configuration_v2* configuration,
@@ -2293,6 +2497,10 @@ struct AdditionalWindow {
 std::map<QWindow*, std::unique_ptr<AdditionalWindow>> additional_windows;
 #endif
 }  // namespace
+
+#ifdef DOROTI_QT_SEMANTICS_TESTS
+extern "C" DOROTI_QT_EXPORT void doroti_qt_test_semantics() { CheckSemanticsRegression(); }
+#endif
 
 extern "C" DOROTI_QT_EXPORT std::int32_t doroti_qt_create_window_v2(
     const doroti_qt_configuration_v2* configuration, const doroti_qt_callbacks_v2* callbacks) {

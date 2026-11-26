@@ -30,6 +30,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="../../shared/Windows/*.cs" Link="Shared\Windows\%(Filename)%(Extension)" />
+    <Compile Include="../../shared/Semantics/NativeSemanticsTransport.cs" Link="Shared/NativeSemanticsTransport.cs" />
     <Compile Remove="WindowsManagedHwndPresenter.cs" />
     <None Include="buildTransitive/Doroti.Host.WindowsAppSdk.targets" Pack="true" PackagePath="buildTransitive" />
   </ItemGroup>

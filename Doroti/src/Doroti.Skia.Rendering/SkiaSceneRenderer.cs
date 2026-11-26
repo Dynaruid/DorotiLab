@@ -51,7 +51,7 @@ public sealed partial class SkiaSceneRenderer
         _textCacheMisses,
         _textCacheEvictions;
     private long _fontGeneration;
-    private readonly Dictionary<int, SemanticsNodeUpdate> _semantics = [];
+    private readonly RetainedSemanticsProjection _semantics = new();
     private readonly Dictionary<long, PictureRasterCacheEntry> _pictureRasterCache = new();
     private readonly Dictionary<long, PictureRasterWarmup> _pictureRasterWarmups = new();
     private readonly LinkedList<long> _pictureRasterWarmupOrder = new();
@@ -1420,47 +1420,7 @@ public sealed partial class SkiaSceneRenderer
             return;
         }
 
-        foreach (var node in update.nodes)
-        {
-            _semantics[node.id] = node;
-        }
-
-        PruneUnreachableSemantics(_semantics);
-        var nodes = SemanticsGeometryProjection
-            .ToViewCoordinates(_semantics.Values, update.viewDevicePixelRatio)
-            .OrderBy(node => node.indexInParent ?? int.MaxValue)
-            .ThenBy(node => node.id)
-            .ToArray();
-        _host.UpdateSemantics(new SemanticsUpdate(update.generation, nodes, update.urgency));
-    }
-
-    private static void PruneUnreachableSemantics(Dictionary<int, SemanticsNodeUpdate> nodes)
-    {
-        const int rootNodeId = 0;
-        if (!nodes.ContainsKey(rootNodeId))
-        {
-            return;
-        }
-
-        var reachable = new HashSet<int>();
-        var pending = new Stack<int>();
-        pending.Push(rootNodeId);
-        while (pending.TryPop(out var nodeId))
-        {
-            if (!reachable.Add(nodeId) || !nodes.TryGetValue(nodeId, out var node))
-            {
-                continue;
-            }
-
-            foreach (var childId in node.children)
-            {
-                pending.Push(childId);
-            }
-        }
-        foreach (var staleId in nodes.Keys.Where(id => !reachable.Contains(id)).ToArray())
-        {
-            nodes.Remove(staleId);
-        }
+        _host.UpdateSemantics(_semantics.Update(update));
     }
 
     public ValueTask RegisterFontAsync(

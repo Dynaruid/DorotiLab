@@ -10,6 +10,8 @@
 #include <cwctype>
 #include <limits>
 #include <mutex>
+#include <set>
+#include <tuple>
 #include <unordered_map>
 #include <unordered_set>
 #include <utility>
@@ -43,28 +45,45 @@ struct AccessibilityBridge::State {
   std::mutex mutex;
   HWND window{};
   uint64_t generation{};
+  uint64_t last_instance{};
+  uint64_t last_text_instance{};
   double scale{1.0};
   std::unordered_map<int, AccessibilityNode> nodes;
   std::unordered_map<int, int> parents;
   std::vector<int> roots;
+  std::set<int> focused;
   ActionCallback action;
   bool alive{true};
 
-  bool Snapshot(int id, AccessibilityNode& node) {
+  uint64_t Instance(int id) {
     std::lock_guard lock(mutex);
     const auto found = nodes.find(id);
-    if (!alive || found == nodes.end()) return false;
+    return found == nodes.end() ? 0 : found->second.instance;
+  }
+
+  bool Snapshot(int id, AccessibilityNode& node, uint64_t instance = UINT64_MAX) {
+    std::lock_guard lock(mutex);
+    const auto found = nodes.find(id);
+    if (!alive || found == nodes.end() || (instance != UINT64_MAX && found->second.instance != instance)) return false;
     node = found->second;
     return true;
   }
 
-  bool SnapshotText(int id, AccessibilityNode& node, uint64_t& revision) {
+  bool SnapshotText(int id, AccessibilityNode& node, uint64_t& revision, uint64_t instance = UINT64_MAX) {
     std::lock_guard lock(mutex);
     const auto found = nodes.find(id);
-    if (!alive || found == nodes.end() || !found->second.text_geometry || found->second.obscured) return false;
+    if (!alive || found == nodes.end() || (instance != UINT64_MAX && found->second.instance != instance) ||
+        !found->second.text_geometry || found->second.obscured) return false;
     node = found->second;
-    revision = generation;
+    revision = found->second.instance;
     return true;
+  }
+
+  bool HasTextRevision(int id, uint64_t instance, uint64_t revision) {
+    std::lock_guard lock(mutex);
+    const auto found = nodes.find(id);
+    return alive && found != nodes.end() && found->second.instance == instance
+        && found->second.text_geometry && !found->second.obscured && found->second.text_instance == revision;
   }
 
   std::vector<int> Children(int id) {
@@ -83,9 +102,7 @@ struct AccessibilityBridge::State {
 
   int Focused() {
     std::lock_guard lock(mutex);
-    for (const auto& [id, node] : nodes)
-      if (node.focused && !node.hidden) return id;
-    return kRootId;
+    return focused.empty() ? kRootId : *focused.begin();
   }
 
   HWND Window() {
@@ -98,12 +115,13 @@ struct AccessibilityBridge::State {
     return scale;
   }
 
-  void Invoke(int id, int64_t action_id, const std::wstring& arguments = {}) {
+  void Invoke(int id, uint64_t instance, int64_t action_id, const std::wstring& arguments = {}) {
     ActionCallback callback;
     {
       std::lock_guard lock(mutex);
       const auto node = nodes.find(id);
-      if (!alive || node == nodes.end() || node->second.hidden || !node->second.enabled || (node->second.actions & action_id) == 0) return;
+      if (!alive || node == nodes.end() || node->second.instance != instance || node->second.hidden ||
+          !node->second.enabled || (node->second.actions & action_id) == 0) return;
       if (node->second.read_only && (action_id == (1ll << 21) || action_id == (1ll << 13) || action_id == (1ll << 14))) return;
       if (node->second.obscured && (action_id == (1ll << 12) || action_id == (1ll << 13))) return;
       callback = action;
@@ -123,7 +141,7 @@ class Provider final : public IRawElementProviderSimple,
                        public ITextProvider, public IExpandCollapseProvider, public IScrollItemProvider {
  public:
   Provider(std::shared_ptr<AccessibilityBridge::State> state, int id)
-      : state_(std::move(state)), id_(id) {}
+      : state_(std::move(state)), id_(id), instance_(state_->Instance(id)) {}
 
   IFACEMETHODIMP QueryInterface(REFIID iid, void** result) override {
     if (result == nullptr) return E_POINTER;
@@ -195,7 +213,7 @@ class Provider final : public IRawElementProviderSimple,
     if (result == nullptr) return E_POINTER;
     *result = EmptyVariant();
     AccessibilityNode node;
-    if (id_ != kRootId && !state_->Snapshot(id_, node)) return UIA_E_ELEMENTNOTAVAILABLE;
+    if (id_ != kRootId && !state_->Snapshot(id_, node, instance_)) return UIA_E_ELEMENTNOTAVAILABLE;
     switch (property) {
       case UIA_ControlTypePropertyId:
         result->vt = VT_I4;
@@ -263,6 +281,7 @@ class Provider final : public IRawElementProviderSimple,
                           IRawElementProviderFragment** result) override {
     if (result == nullptr) return E_POINTER;
     *result = nullptr;
+    if (id_ != kRootId && (!instance_ || state_->Instance(id_) != instance_)) return UIA_E_ELEMENTNOTAVAILABLE;
     int target = kRootId;
     if (direction == NavigateDirection_Parent) {
       if (id_ == kRootId) return S_OK;
@@ -325,7 +344,7 @@ class Provider final : public IRawElementProviderSimple,
       return S_OK;
     }
     AccessibilityNode node;
-    if (!state_->Snapshot(id_, node)) return UIA_E_ELEMENTNOTAVAILABLE;
+    if (!state_->Snapshot(id_, node, instance_)) return UIA_E_ELEMENTNOTAVAILABLE;
     const auto scale = state_->Scale();
     result->left = origin.x + node.left * scale;
     result->top = origin.y + node.top * scale;
@@ -343,14 +362,14 @@ class Provider final : public IRawElementProviderSimple,
   IFACEMETHODIMP SetFocus() override {
     if (id_ == kRootId) return S_OK;
     AccessibilityNode node;
-    if (!state_->Snapshot(id_, node)) return UIA_E_ELEMENTNOTAVAILABLE;
+    if (!state_->Snapshot(id_, node, instance_)) return UIA_E_ELEMENTNOTAVAILABLE;
     if (!node.focusable) return UIA_E_NOTSUPPORTED;
     const auto window = state_->Window();
     if (window == nullptr) return UIA_E_ELEMENTNOTAVAILABLE;
     ::SetFocus(window);
-    if (Supports(node, kFocusAction)) state_->Invoke(id_, kFocusAction);
+    if (Supports(node, kFocusAction)) state_->Invoke(id_, instance_, kFocusAction);
     if (Supports(node, kGainAccessibilityFocusAction))
-      state_->Invoke(id_, kGainAccessibilityFocusAction);
+      state_->Invoke(id_, instance_, kGainAccessibilityFocusAction);
     return S_OK;
   }
 
@@ -397,15 +416,15 @@ class Provider final : public IRawElementProviderSimple,
 
   IFACEMETHODIMP Invoke() override {
     AccessibilityNode node;
-    if (!state_->Snapshot(id_, node)) return UIA_E_ELEMENTNOTAVAILABLE;
+    if (!state_->Snapshot(id_, node, instance_)) return UIA_E_ELEMENTNOTAVAILABLE;
     if (!node.enabled || !Supports(node, kTapAction)) return UIA_E_NOTSUPPORTED;
-    state_->Invoke(id_, kTapAction);
+    state_->Invoke(id_, instance_, kTapAction);
     return S_OK;
   }
 
   IFACEMETHODIMP SetValue(LPCWSTR value) override {
     AccessibilityNode node;
-    if (!state_->Snapshot(id_, node)) return UIA_E_ELEMENTNOTAVAILABLE;
+    if (!state_->Snapshot(id_, node, instance_)) return UIA_E_ELEMENTNOTAVAILABLE;
     if (!node.enabled || node.read_only || !Supports(node, kSetTextAction))
       return UIA_E_NOTSUPPORTED;
     std::wstring json = L"\"";
@@ -421,14 +440,14 @@ class Provider final : public IRawElementProviderSimple,
       }
     }
     json.push_back(L'\"');
-    state_->Invoke(id_, kSetTextAction, json);
+    state_->Invoke(id_, instance_, kSetTextAction, json);
     return S_OK;
   }
 
   IFACEMETHODIMP get_Value(BSTR* result) override {
     if (result == nullptr) return E_POINTER;
     AccessibilityNode node;
-    if (!state_->Snapshot(id_, node)) return UIA_E_ELEMENTNOTAVAILABLE;
+    if (!state_->Snapshot(id_, node, instance_)) return UIA_E_ELEMENTNOTAVAILABLE;
     *result = SysAllocStringLen(node.value.data(), static_cast<UINT>(node.value.size()));
     return *result != nullptr || node.value.empty() ? S_OK : E_OUTOFMEMORY;
   }
@@ -436,7 +455,7 @@ class Provider final : public IRawElementProviderSimple,
   IFACEMETHODIMP get_IsReadOnly(BOOL* result) override {
     if (result == nullptr) return E_POINTER;
     AccessibilityNode node;
-    if (!state_->Snapshot(id_, node)) return UIA_E_ELEMENTNOTAVAILABLE;
+    if (!state_->Snapshot(id_, node, instance_)) return UIA_E_ELEMENTNOTAVAILABLE;
     *result = node.slider
                   ? (node.enabled &&
                              (Supports(node, kIncreaseAction) || Supports(node, kDecreaseAction))
@@ -448,17 +467,17 @@ class Provider final : public IRawElementProviderSimple,
 
   IFACEMETHODIMP Toggle() override {
     AccessibilityNode node;
-    if (!state_->Snapshot(id_, node)) return UIA_E_ELEMENTNOTAVAILABLE;
+    if (!state_->Snapshot(id_, node, instance_)) return UIA_E_ELEMENTNOTAVAILABLE;
     if (!node.enabled || !IsToggle(node) || !Supports(node, kTapAction))
       return UIA_E_NOTSUPPORTED;
-    state_->Invoke(id_, kTapAction);
+    state_->Invoke(id_, instance_, kTapAction);
     return S_OK;
   }
 
   IFACEMETHODIMP get_ToggleState(ToggleState* result) override {
     if (result == nullptr) return E_POINTER;
     AccessibilityNode node;
-    if (!state_->Snapshot(id_, node)) return UIA_E_ELEMENTNOTAVAILABLE;
+    if (!state_->Snapshot(id_, node, instance_)) return UIA_E_ELEMENTNOTAVAILABLE;
     const auto state = node.checked >= 0 ? node.checked : node.toggled;
     *result = state == 2 ? ToggleState_Indeterminate :
               state == 1 ? ToggleState_On : ToggleState_Off;
@@ -467,11 +486,11 @@ class Provider final : public IRawElementProviderSimple,
 
   IFACEMETHODIMP Select() override {
     AccessibilityNode node;
-    if (!state_->Snapshot(id_, node)) return UIA_E_ELEMENTNOTAVAILABLE;
+    if (!state_->Snapshot(id_, node, instance_)) return UIA_E_ELEMENTNOTAVAILABLE;
     if (!node.enabled || !IsRadio(node) || !Supports(node, kTapAction))
       return UIA_E_NOTSUPPORTED;
     const auto selected = node.checked >= 0 ? node.checked : node.selected;
-    if (selected != 1) state_->Invoke(id_, kTapAction);
+    if (selected != 1) state_->Invoke(id_, instance_, kTapAction);
     return S_OK;
   }
 
@@ -484,7 +503,7 @@ class Provider final : public IRawElementProviderSimple,
   IFACEMETHODIMP get_IsSelected(BOOL* result) override {
     if (result == nullptr) return E_POINTER;
     AccessibilityNode node;
-    if (!state_->Snapshot(id_, node)) return UIA_E_ELEMENTNOTAVAILABLE;
+    if (!state_->Snapshot(id_, node, instance_)) return UIA_E_ELEMENTNOTAVAILABLE;
     const auto selected = node.checked >= 0 ? node.checked : node.selected;
     *result = selected == 1 ? TRUE : FALSE;
     return S_OK;
@@ -502,7 +521,7 @@ class Provider final : public IRawElementProviderSimple,
 
   IFACEMETHODIMP SetValue(double value) override {
     AccessibilityNode node;
-    if (!state_->Snapshot(id_, node)) return UIA_E_ELEMENTNOTAVAILABLE;
+    if (!state_->Snapshot(id_, node, instance_)) return UIA_E_ELEMENTNOTAVAILABLE;
     if (!node.enabled || !IsSlider(node)) return UIA_E_NOTSUPPORTED;
     double current{};
     if (!TryParseNumber(node.value, current)) return UIA_E_NOTSUPPORTED;
@@ -511,11 +530,11 @@ class Provider final : public IRawElementProviderSimple,
     if (TryParseNumber(node.min_value, minimum) && value < minimum) return E_INVALIDARG;
     if (TryParseNumber(node.max_value, maximum) && value > maximum) return E_INVALIDARG;
     if (value > current && Supports(node, kIncreaseAction)) {
-      state_->Invoke(id_, kIncreaseAction);
+      state_->Invoke(id_, instance_, kIncreaseAction);
       return S_OK;
     }
     if (value < current && Supports(node, kDecreaseAction)) {
-      state_->Invoke(id_, kDecreaseAction);
+      state_->Invoke(id_, instance_, kDecreaseAction);
       return S_OK;
     }
     return value == current ? S_OK : UIA_E_NOTSUPPORTED;
@@ -524,7 +543,7 @@ class Provider final : public IRawElementProviderSimple,
   IFACEMETHODIMP get_Value(double* result) override {
     if (result == nullptr) return E_POINTER;
     AccessibilityNode node;
-    if (!state_->Snapshot(id_, node)) return UIA_E_ELEMENTNOTAVAILABLE;
+    if (!state_->Snapshot(id_, node, instance_)) return UIA_E_ELEMENTNOTAVAILABLE;
     return TryParseNumber(node.value, *result) ? S_OK : UIA_E_NOTSUPPORTED;
   }
 
@@ -545,7 +564,7 @@ class Provider final : public IRawElementProviderSimple,
   IFACEMETHODIMP get_SmallChange(double* result) override {
     if (result == nullptr) return E_POINTER;
     AccessibilityNode node;
-    if (!state_->Snapshot(id_, node)) return UIA_E_ELEMENTNOTAVAILABLE;
+    if (!state_->Snapshot(id_, node, instance_)) return UIA_E_ELEMENTNOTAVAILABLE;
     double current{};
     double adjacent{};
     if (TryParseNumber(node.value, current) &&
@@ -564,21 +583,21 @@ class Provider final : public IRawElementProviderSimple,
   IFACEMETHODIMP RangeFromPoint(UiaPoint point, ITextRangeProvider** result) override;
   IFACEMETHODIMP get_DocumentRange(ITextRangeProvider** result) override;
   IFACEMETHODIMP get_SupportedTextSelection(SupportedTextSelection* result) override;
-  IFACEMETHODIMP Expand() override { if (!Supports(1ll << 24)) return UIA_E_NOTSUPPORTED; state_->Invoke(id_, 1ll << 24); return S_OK; }
-  IFACEMETHODIMP Collapse() override { if (!Supports(1ll << 25)) return UIA_E_NOTSUPPORTED; state_->Invoke(id_, 1ll << 25); return S_OK; }
+  IFACEMETHODIMP Expand() override { if (!Supports(1ll << 24)) return UIA_E_NOTSUPPORTED; state_->Invoke(id_, instance_, 1ll << 24); return S_OK; }
+  IFACEMETHODIMP Collapse() override { if (!Supports(1ll << 25)) return UIA_E_NOTSUPPORTED; state_->Invoke(id_, instance_, 1ll << 25); return S_OK; }
   IFACEMETHODIMP get_ExpandCollapseState(ExpandCollapseState* result) override {
-    if (!result) return E_POINTER; AccessibilityNode node; if (!state_->Snapshot(id_, node)) return UIA_E_ELEMENTNOTAVAILABLE;
+    if (!result) return E_POINTER; AccessibilityNode node; if (!state_->Snapshot(id_, node, instance_)) return UIA_E_ELEMENTNOTAVAILABLE;
     *result = node.expanded == 1 ? ExpandCollapseState_Expanded : ExpandCollapseState_Collapsed; return S_OK;
   }
-  IFACEMETHODIMP ScrollIntoView() override { if (!Supports(1ll << 8)) return UIA_E_NOTSUPPORTED; state_->Invoke(id_, 1ll << 8); return S_OK; }
+  IFACEMETHODIMP ScrollIntoView() override { if (!Supports(1ll << 8)) return UIA_E_NOTSUPPORTED; state_->Invoke(id_, instance_, 1ll << 8); return S_OK; }
 
  private:
   ~Provider() = default;
-  bool HasTextGeometry() { AccessibilityNode node; return state_->Snapshot(id_, node) && node.text_geometry && !node.obscured; }
+  bool HasTextGeometry() { AccessibilityNode node; return state_->Snapshot(id_, node, instance_) && node.text_geometry && !node.obscured; }
 
   bool Supports(int64_t action) {
     AccessibilityNode node;
-    return state_->Snapshot(id_, node) && Supports(node, action);
+    return state_->Snapshot(id_, node, instance_) && Supports(node, action);
   }
 
   static bool Supports(const AccessibilityNode& node, int64_t action) {
@@ -587,12 +606,12 @@ class Provider final : public IRawElementProviderSimple,
 
   bool IsTextField() {
     AccessibilityNode node;
-    return state_->Snapshot(id_, node) && node.text_field;
+    return state_->Snapshot(id_, node, instance_) && node.text_field;
   }
 
   bool IsToggle() {
     AccessibilityNode node;
-    return state_->Snapshot(id_, node) && IsToggle(node);
+    return state_->Snapshot(id_, node, instance_) && IsToggle(node);
   }
 
   static bool IsToggle(const AccessibilityNode& node) {
@@ -601,7 +620,7 @@ class Provider final : public IRawElementProviderSimple,
 
   bool IsRadio() {
     AccessibilityNode node;
-    return state_->Snapshot(id_, node) && IsRadio(node);
+    return state_->Snapshot(id_, node, instance_) && IsRadio(node);
   }
 
   static bool IsRadio(const AccessibilityNode& node) {
@@ -610,7 +629,7 @@ class Provider final : public IRawElementProviderSimple,
 
   bool IsSlider() {
     AccessibilityNode node;
-    return state_->Snapshot(id_, node) && IsSlider(node);
+    return state_->Snapshot(id_, node, instance_) && IsSlider(node);
   }
 
   static bool IsSlider(const AccessibilityNode& node) {
@@ -621,7 +640,7 @@ class Provider final : public IRawElementProviderSimple,
   HRESULT RangeEndpoint(double* result, bool minimum) {
     if (result == nullptr) return E_POINTER;
     AccessibilityNode node;
-    if (!state_->Snapshot(id_, node)) return UIA_E_ELEMENTNOTAVAILABLE;
+    if (!state_->Snapshot(id_, node, instance_)) return UIA_E_ELEMENTNOTAVAILABLE;
     const auto& text = minimum ? node.min_value : node.max_value;
     if (TryParseNumber(text, *result)) return S_OK;
     *result = minimum ? 0 : 100;
@@ -676,6 +695,7 @@ class Provider final : public IRawElementProviderSimple,
   std::atomic<ULONG> references_{1};
   std::shared_ptr<AccessibilityBridge::State> state_;
   int id_{};
+  uint64_t instance_{};
 
   friend class AccessibilityBridge;
 };
@@ -698,96 +718,77 @@ void AccessibilityBridge::Attach(HWND window, ActionCallback callback) {
   state_->action = std::move(callback);
 }
 
-void AccessibilityBridge::Update(uint64_t generation,
-                                 std::vector<AccessibilityNode> nodes,
-                                 double scale) {
-  std::unordered_set<int> hidden_ids;
-  for (const auto& node : nodes)
-    if (node.hidden) hidden_ids.insert(node.id);
-  bool hidden_changed = true;
-  while (hidden_changed) {
-    hidden_changed = false;
-    for (const auto& node : nodes) {
-      if (!hidden_ids.contains(node.id)) continue;
-      for (const auto child : node.children)
-        hidden_changed = hidden_ids.insert(child).second || hidden_changed;
-    }
-  }
-  std::unordered_set<int> visible_ids;
-  for (const auto& node : nodes)
-    if (!hidden_ids.contains(node.id)) visible_ids.insert(node.id);
-  std::vector<AccessibilityNode> visible_nodes;
-  visible_nodes.reserve(visible_ids.size());
-  for (auto& node : nodes) {
-    if (!visible_ids.contains(node.id)) continue;
-    std::erase_if(node.children, [&](int id) { return !visible_ids.contains(id); });
-    visible_nodes.push_back(std::move(node));
-  }
+namespace {
 
-  HWND window{};
-  bool topology_changed{};
-  int previous_focused{kRootId};
-  int focused{kRootId};
-  std::unordered_map<int, AccessibilityNode> previous_nodes;
-  std::unordered_map<int, AccessibilityNode> current_nodes;
-  {
-    std::lock_guard lock(state_->mutex);
-    if (!state_->alive || generation < state_->generation) return;
-    previous_nodes = state_->nodes;
-    for (const auto& [id, node] : state_->nodes)
-      if (node.focused) previous_focused = id;
-    const auto previous_roots = state_->roots;
-    std::unordered_map<int, std::vector<int>> previous_children;
-    for (const auto& [id, node] : state_->nodes)
-      previous_children.emplace(id, node.children);
-    state_->generation = generation;
-    state_->scale = scale > 0 ? scale : 1.0;
-    state_->nodes.clear();
-    state_->parents.clear();
-    std::unordered_set<int> child_ids;
-    for (auto& node : visible_nodes) {
-      for (const auto child : node.children) {
-        state_->parents[child] = node.id;
-        child_ids.insert(child);
-      }
-      state_->nodes.emplace(node.id, std::move(node));
-    }
-    state_->roots.clear();
-    for (const auto& [id, node] : state_->nodes)
-      if (!child_ids.contains(id)) state_->roots.push_back(id);
-    std::sort(state_->roots.begin(), state_->roots.end());
-    topology_changed = previous_roots != state_->roots ||
-        previous_children.size() != state_->nodes.size();
-    if (!topology_changed) {
-      for (const auto& [id, node] : state_->nodes) {
-        const auto previous = previous_children.find(id);
-        const auto old_node = previous_nodes.find(id);
-        if (previous == previous_children.end() || previous->second != node.children ||
-            old_node == previous_nodes.end() || old_node->second.role != node.role ||
-            old_node->second.button != node.button || old_node->second.text_field != node.text_field ||
-            old_node->second.slider != node.slider || old_node->second.link != node.link ||
-            old_node->second.image != node.image ||
-            old_node->second.mutually_exclusive != node.mutually_exclusive ||
-            (old_node->second.checked >= 0) != (node.checked >= 0) ||
-            (old_node->second.toggled >= 0) != (node.toggled >= 0)) {
-          topology_changed = true;
-          break;
-        }
-      }
-    }
-    for (const auto& [id, node] : state_->nodes)
-      if (node.focused) focused = id;
-    current_nodes = state_->nodes;
-    window = state_->window;
+struct EventValues {
+  std::wstring label, value, role;
+  bool enabled, text_field, slider, mutually_exclusive, obscured, button, link, image;
+  int checked, selected, toggled, selection_base, selection_extent;
+
+  explicit EventValues(const AccessibilityNode& node)
+      : label(node.label), value(node.obscured ? L"" : node.value), role(node.role),
+        enabled(node.enabled), text_field(node.text_field), slider(node.slider),
+        mutually_exclusive(node.mutually_exclusive), obscured(node.obscured),
+        button(node.button), link(node.link), image(node.image), checked(node.checked),
+        selected(node.selected), toggled(node.toggled),
+        selection_base(node.selection_base), selection_extent(node.selection_extent) {}
+  bool operator==(const EventValues&) const = default;
+
+  bool SameProviderShape(const EventValues& other) const {
+    return std::tie(role, button, text_field, slider, link, image, mutually_exclusive) ==
+        std::tie(other.role, other.button, other.text_field, other.slider, other.link,
+                 other.image, other.mutually_exclusive) &&
+        (checked >= 0) == (other.checked >= 0) && (toggled >= 0) == (other.toggled >= 0);
   }
-  if (window != nullptr && topology_changed) {
-    auto* provider = new Provider(state_, kRootId);
+};
+
+using NodeEvents = std::vector<std::tuple<int, EventValues, EventValues>>;
+
+void RebuildHierarchy(AccessibilityBridge::State& state) {
+  state.parents.clear();
+  state.roots.clear();
+  for (const auto& [id, node] : state.nodes)
+    for (const auto child : node.children) state.parents[child] = id;
+  for (const auto& [id, node] : state.nodes)
+    if (!state.parents.contains(id)) state.roots.push_back(id);
+  std::sort(state.roots.begin(), state.roots.end(), [&](int a, int b) {
+    return std::tie(state.nodes.at(a).index_in_parent, a) < std::tie(state.nodes.at(b).index_in_parent, b);
+  });
+}
+
+int FocusedLocked(const AccessibilityBridge::State& state) {
+  return state.focused.empty() ? kRootId : *state.focused.begin();
+}
+
+void UpdateFocus(AccessibilityBridge::State& state, const AccessibilityNode& node, bool was_focused) {
+  if (node.focused == was_focused) return;
+  if (node.focused) state.focused.insert(node.id);
+  else state.focused.erase(node.id);
+}
+
+bool SameTextLayout(const AccessibilityNode& a, const AccessibilityNode& b) {
+  return a.text_geometry == b.text_geometry && a.text_revision == b.text_revision &&
+      a.layout_text == b.layout_text && a.text_boundaries == b.text_boundaries &&
+      a.text_runs.size() == b.text_runs.size() &&
+      std::equal(a.text_runs.begin(), a.text_runs.end(), b.text_runs.begin(), [](const auto& left, const auto& right) {
+        return std::tie(left.start, left.end, left.line_start, left.line_end, left.rtl) ==
+            std::tie(right.start, right.end, right.line_start, right.line_end, right.rtl);
+      });
+}
+
+void Notify(const std::shared_ptr<AccessibilityBridge::State>& state, HWND window,
+            bool topology_changed, int previous_focused, int focused, const NodeEvents& changed) {
+  const auto provider_changed = std::any_of(changed.begin(), changed.end(), [](const auto& event) {
+    return !std::get<1>(event).SameProviderShape(std::get<2>(event));
+  });
+  if (window != nullptr && (topology_changed || provider_changed)) {
+    auto* provider = new Provider(state, kRootId);
     UiaRaiseStructureChangedEvent(provider, StructureChangeType_ChildrenInvalidated,
                                   nullptr, 0);
     provider->Release();
   }
   if (window != nullptr && focused != kRootId && focused != previous_focused) {
-    auto* provider = new Provider(state_, focused);
+    auto* provider = new Provider(state, focused);
     UiaRaiseAutomationEvent(provider, UIA_AutomationFocusChangedEventId);
     provider->Release();
   }
@@ -800,7 +801,7 @@ void AccessibilityBridge::Update(uint64_t generation,
       auto new_value = EmptyVariant();
       StringVariant(previous, &old_value);
       StringVariant(current, &new_value);
-      auto* provider = new Provider(state_, id);
+      auto* provider = new Provider(state, id);
       UiaRaiseAutomationPropertyChangedEvent(provider, property, old_value, new_value);
       provider->Release();
       VariantClear(&old_value);
@@ -814,7 +815,7 @@ void AccessibilityBridge::Update(uint64_t generation,
       old_value.vt = new_value.vt = VT_BOOL;
       old_value.boolVal = previous ? VARIANT_TRUE : VARIANT_FALSE;
       new_value.boolVal = current ? VARIANT_TRUE : VARIANT_FALSE;
-      auto* provider = new Provider(state_, id);
+      auto* provider = new Provider(state, id);
       UiaRaiseAutomationPropertyChangedEvent(provider, property, old_value, new_value);
       provider->Release();
     };
@@ -826,7 +827,7 @@ void AccessibilityBridge::Update(uint64_t generation,
       old_value.vt = new_value.vt = VT_I4;
       old_value.lVal = previous;
       new_value.lVal = current;
-      auto* provider = new Provider(state_, id);
+      auto* provider = new Provider(state, id);
       UiaRaiseAutomationPropertyChangedEvent(provider, property, old_value, new_value);
       provider->Release();
     };
@@ -838,23 +839,23 @@ void AccessibilityBridge::Update(uint64_t generation,
       old_value.vt = new_value.vt = VT_R8;
       old_value.dblVal = previous;
       new_value.dblVal = current;
-      auto* provider = new Provider(state_, id);
+      auto* provider = new Provider(state, id);
       UiaRaiseAutomationPropertyChangedEvent(provider, property, old_value, new_value);
       provider->Release();
     };
-    const auto accessible_name = [](const AccessibilityNode& node) {
+    const auto accessible_name = [](const EventValues& node) {
       return !node.label.empty() ? node.label : (node.text_field ? L"" : node.value);
     };
-    const auto toggle_state = [](const AccessibilityNode& node) {
+    const auto toggle_state = [](const EventValues& node) {
       const auto state = node.checked >= 0 ? node.checked : node.toggled;
       return state == 2 ? static_cast<int>(ToggleState_Indeterminate) :
              state == 1 ? static_cast<int>(ToggleState_On) :
                           static_cast<int>(ToggleState_Off);
     };
-    const auto is_toggle = [](const AccessibilityNode& node) {
+    const auto is_toggle = [](const EventValues& node) {
       return !node.mutually_exclusive && (node.checked >= 0 || node.toggled >= 0);
     };
-    const auto is_radio = [](const AccessibilityNode& node) {
+    const auto is_radio = [](const EventValues& node) {
       return node.mutually_exclusive && (node.checked >= 0 || node.selected >= 0);
     };
     const auto parse_number = [](const std::wstring& text, double& result) {
@@ -863,10 +864,7 @@ void AccessibilityBridge::Update(uint64_t generation,
       result = std::wcstod(text.c_str(), &end);
       return end != text.c_str() && *end == L'\0' && std::isfinite(result);
     };
-    for (const auto& [id, current] : current_nodes) {
-      const auto found = previous_nodes.find(id);
-      if (found == previous_nodes.end()) continue;
-      const auto& previous = found->second;
+    for (const auto& [id, previous, current] : changed) {
       raise_string(id, UIA_NamePropertyId, accessible_name(previous),
                    accessible_name(current));
       raise_bool(id, UIA_IsEnabledPropertyId, previous.enabled, current.enabled);
@@ -886,13 +884,141 @@ void AccessibilityBridge::Update(uint64_t generation,
         raise_bool(id, UIA_SelectionItemIsSelectedPropertyId,
                    (previous.checked >= 0 ? previous.checked : previous.selected) == 1,
                    (current.checked >= 0 ? current.checked : current.selected) == 1);
+      if (current.text_field && !current.obscured &&
+          (previous.selection_base != current.selection_base || previous.selection_extent != current.selection_extent)) {
+        auto* provider = new Provider(state, id);
+        UiaRaiseAutomationEvent(provider, UIA_Text_TextSelectionChangedEventId);
+        provider->Release();
+      }
     }
   }
+}
+
+}  // namespace
+
+void AccessibilityBridge::Update(uint64_t generation, std::vector<AccessibilityNode> nodes,
+                                 double scale, bool legacy) {
+  // Legacy and recovery snapshots still need normal exposure filtering.
+  std::unordered_map<int, const AccessibilityNode*> by_id;
+  std::vector<int> pending;
+  for (const auto& node : nodes) {
+    by_id.emplace(node.id, &node);
+    if (node.hidden) pending.push_back(node.id);
+  }
+  std::unordered_set<int> hidden;
+  while (!pending.empty()) {
+    const auto id = pending.back();
+    pending.pop_back();
+    const auto node = by_id.find(id);
+    if (hidden.insert(id).second && node != by_id.end())
+      pending.insert(pending.end(), node->second->children.begin(), node->second->children.end());
+  }
+  for (auto& node : nodes)
+    std::erase_if(node.children, [&](int id) { return hidden.contains(id) || !by_id.contains(id); });
+  std::erase_if(nodes, [&](const AccessibilityNode& node) { return hidden.contains(node.id); });
+
+  const auto listening = UiaClientsAreListening() != FALSE;
+  HWND window{};
+  bool topology_changed{};
+  int previous_focused{kRootId}, focused{kRootId};
+  NodeEvents changed;
+  {
+    std::lock_guard lock(state_->mutex);
+    if (!state_->alive || (legacy && generation < state_->generation)) return;
+    state_->generation = generation;
+    state_->scale = scale > 0 ? scale : 1.0;
+    previous_focused = FocusedLocked(*state_);
+    topology_changed = nodes.size() != state_->nodes.size();
+    std::unordered_set<int> retained;
+    // Keep the actual map and its references on stable full snapshots too.
+    for (auto& node : nodes) {
+      retained.insert(node.id);
+      const auto found = state_->nodes.find(node.id);
+      if (found == state_->nodes.end()) {
+        topology_changed = true;
+        node.instance = ++state_->last_instance;
+        if (node.text_geometry) node.text_instance = ++state_->last_text_instance;
+        UpdateFocus(*state_, node, false);
+        state_->nodes.emplace(node.id, std::move(node));
+        continue;
+      }
+      auto& previous = found->second;
+      node.instance = previous.instance;
+      node.text_instance = SameTextLayout(previous, node) ? previous.text_instance : ++state_->last_text_instance;
+      topology_changed = topology_changed || previous.children != node.children ||
+          (previous.index_in_parent != node.index_in_parent && !state_->parents.contains(node.id));
+      if (previous == node) continue;
+      UpdateFocus(*state_, node, previous.focused);
+      if (listening) {
+        EventValues old_values(previous), new_values(node);
+        if (old_values != new_values) changed.emplace_back(node.id, std::move(old_values), std::move(new_values));
+      }
+      previous = std::move(node);
+    }
+    if (topology_changed) {
+      std::erase_if(state_->nodes, [&](const auto& pair) {
+        if (retained.contains(pair.first)) return false;
+        state_->focused.erase(pair.first);
+        return true;
+      });
+      RebuildHierarchy(*state_);
+    }
+    focused = FocusedLocked(*state_);
+    window = state_->window;
+  }
+  if (listening) Notify(state_, window, topology_changed, previous_focused, focused, changed);
+}
+
+void AccessibilityBridge::Patch(std::vector<AccessibilityNodePatch> changes,
+                                const std::vector<int>& removed, double scale) {
+  const auto listening = UiaClientsAreListening() != FALSE;
+  HWND window{};
+  int previous_focused{kRootId}, focused{kRootId};
+  bool topology_changed{};
+  NodeEvents changed;
+  {
+    std::lock_guard lock(state_->mutex);
+    if (!state_->alive) return;
+    state_->scale = scale > 0 ? scale : 1.0;
+    previous_focused = FocusedLocked(*state_);
+    for (const auto id : removed) {
+      topology_changed = state_->nodes.erase(id) != 0 || topology_changed;
+      state_->focused.erase(id);
+    }
+    for (const auto& patch : changes) {
+      auto [found, added] = state_->nodes.try_emplace(patch.id);
+      auto& node = found->second;
+      std::optional<EventValues> previous;
+      if (added) {
+        node.id = patch.id;
+        node.instance = ++state_->last_instance;
+      } else if (listening && patch.may_notify) {
+        previous.emplace(node);
+      }
+      auto was_focused = node.focused;
+      const auto previous_index = node.index_in_parent;
+      patch.apply(node);
+      if (patch.layout_changed || (added && node.text_geometry))
+        node.text_instance = ++state_->last_text_instance;
+      topology_changed = topology_changed || added || patch.children_changed ||
+          (previous_index != node.index_in_parent && !state_->parents.contains(node.id));
+      UpdateFocus(*state_, node, was_focused);
+      if (previous) {
+        EventValues current(node);
+        if (*previous != current) changed.emplace_back(node.id, std::move(*previous), std::move(current));
+      }
+    }
+    if (topology_changed) RebuildHierarchy(*state_);
+    focused = FocusedLocked(*state_);
+    window = state_->window;
+  }
+  if (listening) Notify(state_, window, topology_changed, previous_focused, focused, changed);
 }
 
 void AccessibilityBridge::Clear() {
   std::lock_guard lock(state_->mutex);
   state_->generation = 0;
+  state_->focused.clear();
   state_->nodes.clear();
   state_->parents.clear();
   state_->roots.clear();
