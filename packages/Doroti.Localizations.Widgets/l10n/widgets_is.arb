@@ -1,0 +1,20 @@
+{
+  "@@locale": "is",
+  "reorderItemToStart": "Færa fremst",
+  "reorderItemToEnd": "Færa aftast",
+  "reorderItemUp": "Færa upp",
+  "reorderItemDown": "Færa niður",
+  "reorderItemLeft": "Færa til vinstri",
+  "reorderItemRight": "Færa til hægri",
+  "searchResultsFound": "Leitarniðurstöður fundust",
+  "noResultsFound": "Engar niðurstöður fundust",
+  "copyButtonLabel": "Afrita",
+  "cutButtonLabel": "Klippa",
+  "pasteButtonLabel": "Líma",
+  "selectAllButtonLabel": "Velja allt",
+  "lookUpButtonLabel": "Look Up",
+  "searchWebButtonLabel": "Leita á vefnum",
+  "shareButtonLabel": "Deila",
+  "radioButtonUnselectedLabel": "Ekki valið",
+  "textDirection": "ltr"
+}

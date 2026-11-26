@@ -1,0 +1,20 @@
+{
+  "@@locale": "sk",
+  "reorderItemToStart": "Presunúť na začiatok",
+  "reorderItemToEnd": "Presunúť na koniec",
+  "reorderItemUp": "Presunúť nahor",
+  "reorderItemDown": "Presunúť nadol",
+  "reorderItemLeft": "Presunúť doľava",
+  "reorderItemRight": "Presunúť doprava",
+  "searchResultsFound": "Našli sa výsledky vyhľadávania",
+  "noResultsFound": "Nenašli sa žiadne výsledky",
+  "copyButtonLabel": "Kopírovať",
+  "cutButtonLabel": "Vystrihnúť",
+  "pasteButtonLabel": "Prilepiť",
+  "selectAllButtonLabel": "Vybrať všetko",
+  "lookUpButtonLabel": "Pohľad nahor",
+  "searchWebButtonLabel": "Hľadať na webe",
+  "shareButtonLabel": "Zdieľať",
+  "radioButtonUnselectedLabel": "Nevybrané",
+  "textDirection": "ltr"
+}

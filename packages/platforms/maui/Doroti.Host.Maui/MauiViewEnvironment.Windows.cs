@@ -151,9 +151,7 @@ internal sealed partial class MauiViewEnvironment
             var keyboardSnapshot = _inputPane?.OccludedRect ?? default;
             var textScaleSnapshot = _uiSettings.TextScaleFactor;
             var animationsSnapshot = _uiSettings.AnimationsEnabled;
-            var localesSnapshot = Windows
-                .System.UserProfile.GlobalizationPreferences.Languages.Select(ParseLocale)
-                .ToArray();
+            var localesSnapshot = ParseLocales(Windows.System.UserProfile.GlobalizationPreferences.Languages);
             _keyboardOcclusion = keyboardSnapshot;
             TextScale = textScaleSnapshot;
             _animationsEnabled = animationsSnapshot;

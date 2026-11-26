@@ -1,0 +1,20 @@
+{
+  "@@locale": "da",
+  "reorderItemToStart": "Flyt til først på listen",
+  "reorderItemToEnd": "Flyt til sidst på listen",
+  "reorderItemUp": "Flyt op",
+  "reorderItemDown": "Flyt ned",
+  "reorderItemLeft": "Flyt til venstre",
+  "reorderItemRight": "Flyt til højre",
+  "searchResultsFound": "Søgeresultater fundet",
+  "noResultsFound": "Der blev ikke fundet nogen resultater",
+  "copyButtonLabel": "Kopiér",
+  "cutButtonLabel": "Klip",
+  "pasteButtonLabel": "Indsæt",
+  "selectAllButtonLabel": "Markér alt",
+  "lookUpButtonLabel": "Slå op",
+  "searchWebButtonLabel": "Søg på nettet",
+  "shareButtonLabel": "Del",
+  "radioButtonUnselectedLabel": "Ikke valgt",
+  "textDirection": "ltr"
+}

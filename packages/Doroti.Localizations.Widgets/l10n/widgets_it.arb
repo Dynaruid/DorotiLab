@@ -1,0 +1,20 @@
+{
+  "@@locale": "it",
+  "reorderItemToStart": "Sposta all'inizio",
+  "reorderItemToEnd": "Sposta alla fine",
+  "reorderItemUp": "Sposta su",
+  "reorderItemDown": "Sposta giù",
+  "reorderItemLeft": "Sposta a sinistra",
+  "reorderItemRight": "Sposta a destra",
+  "searchResultsFound": "Risultati di ricerca trovati",
+  "noResultsFound": "Nessun risultato trovato",
+  "copyButtonLabel": "Copia",
+  "cutButtonLabel": "Taglia",
+  "pasteButtonLabel": "Incolla",
+  "selectAllButtonLabel": "Seleziona tutto",
+  "lookUpButtonLabel": "Cerca",
+  "searchWebButtonLabel": "Cerca sul web",
+  "shareButtonLabel": "Condividi",
+  "radioButtonUnselectedLabel": "Non selezionato",
+  "textDirection": "ltr"
+}

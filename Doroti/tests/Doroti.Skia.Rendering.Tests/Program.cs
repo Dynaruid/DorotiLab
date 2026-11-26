@@ -3,6 +3,20 @@ using System.Reflection;
 using Doroti.Skia.Rendering;
 using SkiaSharp;
 
+if (args is ["--measure-paragraphs", var fontDirectory])
+{
+    ParagraphMeasurement.Run(fontDirectory);
+    return;
+}
+
+#if DOROTI_SHAPED_PARAGRAPHS
+if (args is ["--unicode-corpus", var directory])
+{
+    UnicodeConformance.Run(directory);
+    return;
+}
+#endif
+
 const BindingFlags Members = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 var resourcesType = typeof(SkiaSceneRenderer).GetNestedType("TextRenderResources", BindingFlags.NonPublic)!;
 var keyType = typeof(SkiaSceneRenderer).GetNestedType("TextRenderKey", BindingFlags.NonPublic)!;

@@ -19,6 +19,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
     <PackageReference Include="SkiaSharp" />
     <PackageReference Include="SkiaSharp.NativeAssets.WebAssembly" />
+    <PackageReference Include="HarfBuzzSharp.NativeAssets.WebAssembly" Condition="'$(DorotiShapedParagraphs)' == 'true'" />
     <ProjectReference Include="../../../../Doroti/src/Doroti.Hosting/Doroti.Hosting.csproj" />
     <ProjectReference Include="../../../../Doroti/src/Doroti.Ui/Doroti.Ui.csproj" />
     <ProjectReference Include="../../../../Doroti/src/Doroti.Skia.RuntimeEffects/Doroti.Skia.RuntimeEffects.csproj" />

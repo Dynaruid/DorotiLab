@@ -1,0 +1,214 @@
+{
+  "unicode": "17.0.0",
+  "avaloniaRevision": "5d9e6d1b0e87337f74f233bead580db186412357",
+  "icuRevision": "ddc6b66926bfac6036144ca9902992a0d6d50af9",
+  "sources": [
+    {
+      "url": "https://raw.githubusercontent.com/AvaloniaUI/Avalonia/5d9e6d1b0e87337f74f233bead580db186412357/src/Avalonia.Base/Media/TextFormatting/Unicode/BiDi.trie.cs",
+      "sha256": "9a1517e3af500eb0ad9e99d1e608a5efc5c0e14b419156e3e46ea8bec4e3a208"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AvaloniaUI/Avalonia/5d9e6d1b0e87337f74f233bead580db186412357/src/Avalonia.Base/Media/TextFormatting/Unicode/BiDiAlgorithm.cs",
+      "sha256": "b6cdd265855dc766d44a3078afb3a4bb16c373bd539a469b5bdf5a37bdaeacdc"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AvaloniaUI/Avalonia/5d9e6d1b0e87337f74f233bead580db186412357/src/Avalonia.Base/Media/TextFormatting/Unicode/BiDiClass.cs",
+      "sha256": "69b83111e3ff6e14251cc84fe78b29e9fc63a205fd3be682a195e1c9404d2c86"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AvaloniaUI/Avalonia/5d9e6d1b0e87337f74f233bead580db186412357/src/Avalonia.Base/Media/TextFormatting/Unicode/BiDiData.cs",
+      "sha256": "107d35bfb44df71210b1870fe4f183be8b308c4586b6ff1082bce0100c67de84"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AvaloniaUI/Avalonia/5d9e6d1b0e87337f74f233bead580db186412357/src/Avalonia.Base/Media/TextFormatting/Unicode/BiDiPairedBracketType.cs",
+      "sha256": "3f6421dd82c9e01db65844731021cc14d4762fcf47e15883d77e331a8a96e3cc"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AvaloniaUI/Avalonia/5d9e6d1b0e87337f74f233bead580db186412357/src/Avalonia.Base/Media/TextFormatting/Unicode/Codepoint.cs",
+      "sha256": "ae2a8ec881bb318d3edc6222945f754fd05c509ce02b2d22596cb0f8e5d920b5"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AvaloniaUI/Avalonia/5d9e6d1b0e87337f74f233bead580db186412357/src/Avalonia.Base/Media/TextFormatting/Unicode/CodepointEnumerator.cs",
+      "sha256": "77f92bd274857560da0fcc26a9c64fa5d79aeaf4062ed4866d824fb1b82b059f"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AvaloniaUI/Avalonia/5d9e6d1b0e87337f74f233bead580db186412357/src/Avalonia.Base/Media/TextFormatting/Unicode/EastAsianWidth.trie.cs",
+      "sha256": "09944f3075e0f5afefcc65585f97960b0aecf91a1cc1191c335c7f7efa095796"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AvaloniaUI/Avalonia/5d9e6d1b0e87337f74f233bead580db186412357/src/Avalonia.Base/Media/TextFormatting/Unicode/EastAsianWidthClass.cs",
+      "sha256": "fb07f3f688663531b40ad43b2e55aa8ce89ac44a674f0ea58f2f126b9733f2f0"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AvaloniaUI/Avalonia/5d9e6d1b0e87337f74f233bead580db186412357/src/Avalonia.Base/Media/TextFormatting/Unicode/GeneralCategory.cs",
+      "sha256": "9f3b889f329c2a1d48f516f3a91d6c2001e22fec902d78742137f38c61f03b35"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AvaloniaUI/Avalonia/5d9e6d1b0e87337f74f233bead580db186412357/src/Avalonia.Base/Media/TextFormatting/Unicode/Grapheme.cs",
+      "sha256": "9f9d76dea13d922ab5d9e162cf72826f7759185b9bcbcbeefa77820f19baf9cb"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AvaloniaUI/Avalonia/5d9e6d1b0e87337f74f233bead580db186412357/src/Avalonia.Base/Media/TextFormatting/Unicode/GraphemeBreak.cs",
+      "sha256": "3875150ed3f326ea339e8f9f3c6c5f0983fe4dffdef192ac6c5d266fba592863"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AvaloniaUI/Avalonia/5d9e6d1b0e87337f74f233bead580db186412357/src/Avalonia.Base/Media/TextFormatting/Unicode/Segmentation.trie.cs",
+      "sha256": "45fb20ec0cfd3cb302582401a71a3e76b9cc1ec867fa8a0662ef4f0ef0bc2b38"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AvaloniaUI/Avalonia/5d9e6d1b0e87337f74f233bead580db186412357/src/Avalonia.Base/Media/TextFormatting/Unicode/GraphemeBreakClass.cs",
+      "sha256": "a7e551592895455436400318625ebe73c27904012bf880e63db9c9e8f946effc"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AvaloniaUI/Avalonia/5d9e6d1b0e87337f74f233bead580db186412357/src/Avalonia.Base/Media/TextFormatting/Unicode/GraphemeEnumerator.cs",
+      "sha256": "700d94a2c6ebdb5d1721b7bc48218ac7407123cf781b32dc86565b1a32ff6cbc"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AvaloniaUI/Avalonia/5d9e6d1b0e87337f74f233bead580db186412357/src/Avalonia.Base/Media/TextFormatting/Unicode/IndicConjunctBreakClass.cs",
+      "sha256": "17dfaff801174a9bc4a1a75d0672d7c2c09ca54f4f51f6561af30f86f9b7ab6e"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AvaloniaUI/Avalonia/5d9e6d1b0e87337f74f233bead580db186412357/src/Avalonia.Base/Media/TextFormatting/Unicode/LineBreak.cs",
+      "sha256": "c13ea111694330ee5ab36c348c24ea10a379125a185bbb96894f2e5e07ef5a82"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AvaloniaUI/Avalonia/5d9e6d1b0e87337f74f233bead580db186412357/src/Avalonia.Base/Media/TextFormatting/Unicode/LineBreakClass.cs",
+      "sha256": "e2dac104be99ebfd4a0ed424471cdfcfa2907b96ccdb61536f0cb08bb024e610"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AvaloniaUI/Avalonia/5d9e6d1b0e87337f74f233bead580db186412357/src/Avalonia.Base/Media/TextFormatting/Unicode/LineBreakEnumerator.cs",
+      "sha256": "4363d4e966f4e1f07e5b9a10fd9598593490148ec027d1bd443d28f5c129bd85"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AvaloniaUI/Avalonia/5d9e6d1b0e87337f74f233bead580db186412357/src/Avalonia.Base/Media/TextFormatting/Unicode/Script.cs",
+      "sha256": "991d220f5badfbe479a058912f1a97068c0721ab2d2d2c91d59939dd3f442710"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AvaloniaUI/Avalonia/5d9e6d1b0e87337f74f233bead580db186412357/src/Avalonia.Base/Media/TextFormatting/Unicode/ScriptExtensions.data.cs",
+      "sha256": "aef4ad588fd211a3768ad61606fe92fd532b3e962a9c3bd3bede10831fe292ec"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AvaloniaUI/Avalonia/5d9e6d1b0e87337f74f233bead580db186412357/src/Avalonia.Base/Media/TextFormatting/Unicode/SentenceBreakClass.cs",
+      "sha256": "bb3a9d8f66f0886c224645b7be7291ae124525150a34795b780d51b98ba46ce2"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AvaloniaUI/Avalonia/5d9e6d1b0e87337f74f233bead580db186412357/src/Avalonia.Base/Media/TextFormatting/Unicode/UnicodeData.cs",
+      "sha256": "4811e37500ff9f96401f3d06dc98fb2d0a39e30dd9c4eb303e287da4aa1e80e2"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AvaloniaUI/Avalonia/5d9e6d1b0e87337f74f233bead580db186412357/src/Avalonia.Base/Media/TextFormatting/Unicode/UnicodeData.Lookups.cs",
+      "sha256": "2244f1de93d087a529285cd509500a0043e983eb2f05913d8e6dc0a23a8cb9ad"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AvaloniaUI/Avalonia/5d9e6d1b0e87337f74f233bead580db186412357/src/Avalonia.Base/Media/TextFormatting/Unicode/UnicodeData.trie.cs",
+      "sha256": "55bf488a49f66e8a111110f79aa85e920b94aa7f5a58cddfcaf03f22985e97fc"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AvaloniaUI/Avalonia/5d9e6d1b0e87337f74f233bead580db186412357/src/Avalonia.Base/Media/TextFormatting/Unicode/UnicodeTrie.cs",
+      "sha256": "d797ae30ad72e4fefdb70a5711cfc9f1ae43de743a62cb5cc4ce55d64bc8d8d7"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AvaloniaUI/Avalonia/5d9e6d1b0e87337f74f233bead580db186412357/src/Avalonia.Base/Media/TextFormatting/Unicode/UnicodeTrieBuilder.Constants.cs",
+      "sha256": "12257d773fc4c2bede5532cb39c798465958c085c4a1759f13304165acae1397"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AvaloniaUI/Avalonia/5d9e6d1b0e87337f74f233bead580db186412357/src/Avalonia.Base/Media/TextFormatting/Unicode/Utf16Utils.cs",
+      "sha256": "86e4254140697819c36427b8c4a3a396e62080ae1fc2f50bd14f888fdc23d640"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AvaloniaUI/Avalonia/5d9e6d1b0e87337f74f233bead580db186412357/src/Avalonia.Base/Media/TextFormatting/Unicode/WordBreakClass.cs",
+      "sha256": "46d04d6880a491dda0d76fa8deeecc4485a2f507cbcf719c5aa2d2a4ebf9b7f7"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AvaloniaUI/Avalonia/5d9e6d1b0e87337f74f233bead580db186412357/src/Avalonia.Base/Media/TextFormatting/Unicode/WordBreakEnumerator.cs",
+      "sha256": "d8a693e0e0679b3883b75d22874918472a393a525450ac415e826746934ae3af"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AvaloniaUI/Avalonia/5d9e6d1b0e87337f74f233bead580db186412357/src/Avalonia.Base/Media/TextFormatting/Unicode/WordSegment.cs",
+      "sha256": "dae77bff69715593a5b7ecb65334b82d84d76f4640d2b677435c6bd63b57e705"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AvaloniaUI/Avalonia/5d9e6d1b0e87337f74f233bead580db186412357/src/Avalonia.Base/Utilities/ArrayBuilder.cs",
+      "sha256": "ca62598a778093ab80e8b234d8f78ecdf748745ee5b10009db3b59fb987d61bd"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AvaloniaUI/Avalonia/5d9e6d1b0e87337f74f233bead580db186412357/src/Avalonia.Base/Utilities/ArraySlice.cs",
+      "sha256": "eb0945b1f2f8ac8158298e08cc310302d8526d28f83734f689ed8cdc4b83ba53"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AvaloniaUI/Avalonia/5d9e6d1b0e87337f74f233bead580db186412357/src/Avalonia.Base/Utilities/BidiDictionary.cs",
+      "sha256": "b59e6aae578c5694f9ab00630da6c82de718616f37b1f4d07a27cee44d8d3400"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AvaloniaUI/Avalonia/5d9e6d1b0e87337f74f233bead580db186412357/src/Avalonia.Base/Utilities/ImmutableReadOnlyListStructEnumerator.cs",
+      "sha256": "9052e8e8cb1dba3f1be4815e40f2b290e8d07e51d4f79d916d3eed06026fcc34"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AvaloniaUI/Avalonia/5d9e6d1b0e87337f74f233bead580db186412357/src/Avalonia.Base/Utilities/MappedArraySlice.cs",
+      "sha256": "aee93c31d4c299a59512cdf17769cd738337085ca3f91693f1750ca06b1233cf"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AvaloniaUI/Avalonia/5d9e6d1b0e87337f74f233bead580db186412357/src/Avalonia.Base/Media/TextFormatting/FormattingBufferHelper.cs",
+      "sha256": "5d3e8846039f704fabab71aed23332695f39918490a5ea808abf40e33989e1dc"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AvaloniaUI/Avalonia/5d9e6d1b0e87337f74f233bead580db186412357/licence.md",
+      "sha256": "213814d306090074d234d760239ff0f67eb9b8d20eefb4d5631bb39dbe0b769b"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/unicode-org/icu/ddc6b66926bfac6036144ca9902992a0d6d50af9/LICENSE",
+      "sha256": "e09827667e0bb3c808b2a463548ba814a5e6249b67353234d70c8dfc2bcc417d"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/unicode-org/icu/ddc6b66926bfac6036144ca9902992a0d6d50af9/icu4c/source/data/brkitr/dictionaries/thaidict.txt",
+      "sha256": "3166abde40c0f44ab91c28f5ce96d7d1472cb7882e1c0bda0a72f8f69dba4274"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/unicode-org/icu/ddc6b66926bfac6036144ca9902992a0d6d50af9/icu4c/source/data/brkitr/dictionaries/laodict.txt",
+      "sha256": "3c876934a3fa81031d2333525eafaca6a7c9f842e3b98f18c38880420afb5d36"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/unicode-org/icu/ddc6b66926bfac6036144ca9902992a0d6d50af9/icu4c/source/data/brkitr/dictionaries/khmerdict.txt",
+      "sha256": "87bee2d17cd5148aa36957eb05409eefc124de8ad519b81b789298ef3e60b5d9"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/unicode-org/icu/ddc6b66926bfac6036144ca9902992a0d6d50af9/icu4c/source/data/brkitr/dictionaries/burmesedict.txt",
+      "sha256": "61d8abc3d9102b2f9bf0c9f44db0d7ab89b18172d8cd26832e4c83174bd8673b"
+    }
+  ],
+  "dictionaries": [
+    {
+      "language": "Thai",
+      "resource": "thaidict.txt.gz",
+      "entries": 26383,
+      "compressedBytes": 106111,
+      "sha256": "17760b54529f17f939a171cd3c305fb520a09b2ef0f626a114e32dca9ce08060"
+    },
+    {
+      "language": "Lao",
+      "resource": "laodict.txt.gz",
+      "entries": 30550,
+      "compressedBytes": 130891,
+      "sha256": "773f63db12f721b19e70a828d44637b3a482825e231567031d45a1b3896758c5"
+    },
+    {
+      "language": "Khmer",
+      "resource": "khmerdict.txt.gz",
+      "entries": 81028,
+      "compressedBytes": 370681,
+      "sha256": "4f453a77607c3263856df20cedb027d104918673138e656eb3b92723d7fe4484"
+    },
+    {
+      "language": "Burmese",
+      "resource": "burmesedict.txt.gz",
+      "entries": 41120,
+      "compressedBytes": 185091,
+      "sha256": "3fdbb42b9626ef00ab908c40551f5f68dbeb87f5b0a3014f98be285a03e8a0b4"
+    }
+  ],
+  "changes": [
+    "Import the runtime Unicode algorithms and trie data under internal Doroti namespaces.",
+    "In BidiAlgorithm, apply UAX #9 N0 to the working types and return no BD16 pairs on stack overflow.",
+    "Preserve dictionary notices separately and deduplicate, sort and compress the four word lists."
+  ]
+}

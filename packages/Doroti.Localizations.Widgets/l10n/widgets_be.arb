@@ -1,0 +1,20 @@
+{
+  "@@locale": "be",
+  "reorderItemToStart": "Перамясціць у пачатак",
+  "reorderItemToEnd": "Перамясціць у канец",
+  "reorderItemUp": "Перамясціць уверх",
+  "reorderItemDown": "Перамясціць уніз",
+  "reorderItemLeft": "Перамясціць улева",
+  "reorderItemRight": "Перамясціць управа",
+  "searchResultsFound": "Знойдзены вынікі пошуку",
+  "noResultsFound": "Вынікі не знойдзены",
+  "copyButtonLabel": "Капіраваць",
+  "cutButtonLabel": "Выразаць",
+  "pasteButtonLabel": "Уставіць",
+  "selectAllButtonLabel": "Выбраць усе",
+  "lookUpButtonLabel": "Знайсці",
+  "searchWebButtonLabel": "Пошук у сетцы",
+  "shareButtonLabel": "Абагуліць",
+  "radioButtonUnselectedLabel": "Не выбрана",
+  "textDirection": "ltr"
+}

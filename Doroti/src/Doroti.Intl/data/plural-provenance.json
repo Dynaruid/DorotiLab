@@ -6,13 +6,9 @@
   "sourceSha256": "69a30c57a621de9c52ec6ca95fe7bf9f06df6f8c13ca71a72e447b532c92cff7",
   "licenseUrl": "https://raw.githubusercontent.com/unicode-org/cldr/96e54b273d2da4ec6fbad350ba19ff23fa24a588/LICENSE",
   "licenseSha256": "65eb33419e22a297550a811b5b535f5e532f9a7e0114b516c0ea18afd53c3804",
-  "languages": [
-    "en",
-    "ko",
-    "ru",
-    "ar"
-  ],
-  "implementation": "CardinalPlural.cs",
-  "changes": "Hand-transcribed cardinal conditions only; decimal scale as visible precision; explicit precision requires exact representation; no ordinal, offset, compact exponent or runtime rule parser.",
-  "regeneration": "Review the pinned XML cardinal rules for en/ko/ru/ar, transcribe conditions in CardinalPlural.cs, update boundary fixtures in GlobalizationContract.cs, then rerun bounded native, trim/AOT and Web checks. No upstream generator is bundled."
+  "ruleGroups": 39,
+  "registeredLocaleEntries": 228,
+  "implementation": "CardinalPlural.cs and CardinalPluralRules.cs",
+  "changes": "Translate the pinned cardinal conditions into C# and bind them to decimal operands. Preserve visible scale and specialize exponent operands to zero for plain decimal input.",
+  "regeneration": "python Doroti/eng/generate-cardinal-plurals.py <pinned-plurals.xml> --examples <local-examples.tsv>"
 }

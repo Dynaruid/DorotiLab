@@ -1,0 +1,20 @@
+{
+  "@@locale": "ro",
+  "reorderItemToStart": "Mutați la început",
+  "reorderItemToEnd": "Mutați la sfârșit",
+  "reorderItemUp": "Mutați în sus",
+  "reorderItemDown": "Mutați în jos",
+  "reorderItemLeft": "Mutați la stânga",
+  "reorderItemRight": "Mutați la dreapta",
+  "searchResultsFound": "Am găsit rezultate ale căutării",
+  "noResultsFound": "Niciun rezultat",
+  "copyButtonLabel": "Copiați",
+  "cutButtonLabel": "Decupați",
+  "pasteButtonLabel": "Inserați",
+  "selectAllButtonLabel": "Selectați tot",
+  "lookUpButtonLabel": "Privire în sus",
+  "searchWebButtonLabel": "Căutați pe web",
+  "shareButtonLabel": "Trimiteți",
+  "radioButtonUnselectedLabel": "Neselectat",
+  "textDirection": "ltr"
+}

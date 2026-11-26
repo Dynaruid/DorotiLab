@@ -1,0 +1,20 @@
+{
+  "@@locale": "az",
+  "reorderItemToStart": "Əvvələ köçürün",
+  "reorderItemToEnd": "Sona köçürün",
+  "reorderItemUp": "Yuxarı köçürün",
+  "reorderItemDown": "Aşağı köçürün",
+  "reorderItemLeft": "Sola köçürün",
+  "reorderItemRight": "Sağa köçürün",
+  "searchResultsFound": "Axtarış nəticələri tapıldı",
+  "noResultsFound": "Nəticə tapılmadı",
+  "copyButtonLabel": "Kopyalayın",
+  "cutButtonLabel": "Kəsin",
+  "pasteButtonLabel": "Yerləşdirin",
+  "selectAllButtonLabel": "Hamısını seçin",
+  "lookUpButtonLabel": "Axtarın",
+  "searchWebButtonLabel": "Vebdə axtarın",
+  "shareButtonLabel": "Paylaşın",
+  "radioButtonUnselectedLabel": "Seçilmədi",
+  "textDirection": "ltr"
+}

@@ -1,0 +1,5 @@
+{
+  "@@locale": "ko",
+  "greeting": "{buyer}님, {count, plural, =0 {{kind, select, gift {선물 없음} other {항목 없음}}} other {{count}개}}",
+  "stamp": "날짜 {date}, 금액 {price}, 세율 {tax}, 시간 {clock}"
+}

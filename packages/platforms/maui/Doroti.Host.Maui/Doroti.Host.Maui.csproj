@@ -61,6 +61,22 @@
     <PackageReference Include="Xamarin.AndroidX.WebKit" />
     <PackageReference Include="SkiaSharp.NativeAssets.Android" />
   </ItemGroup>
+  <!-- Window and WebKit select the newer AndroidX Core and Collection line.
+       Keep Lifecycle and the exact-range Ktx siblings on compatible versions with MAUI 10. -->
+  <ItemGroup Condition="$(TargetFramework.StartsWith('net10.0-android'))">
+    <PackageReference Include="Xamarin.AndroidX.Collection.Ktx" />
+    <PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData" />
+    <PackageReference Include="Xamarin.AndroidX.Lifecycle.Process" />
+    <PackageReference Include="Xamarin.AndroidX.Lifecycle.Runtime.Ktx" />
+    <PackageReference Include="Xamarin.AndroidX.Lifecycle.ViewModel.Ktx" />
+    <PackageReference Include="Xamarin.AndroidX.Lifecycle.ViewModelSavedState" />
+    <PackageReference Include="Xamarin.AndroidX.SavedState.SavedState.Ktx" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(DorotiShapedParagraphs)' == 'true'">
+    <PackageReference Include="HarfBuzzSharp.NativeAssets.Android" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'" />
+    <PackageReference Include="HarfBuzzSharp.NativeAssets.iOS" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'" />
+    <PackageReference Include="HarfBuzzSharp.NativeAssets.MacCatalyst" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'" />
+  </ItemGroup>
   <!-- Mirror MSBuild's RID-agnostic reference handling during graph evaluation.
        dotnet watch identifies a project by path + TFM; propagating the native
        RID here creates a second instance of every shared framework dependency. -->

@@ -163,7 +163,10 @@ public readonly record struct DorotiTextInputStyle(
     double? letterSpacing,
     double? wordSpacing,
     double? lineHeight
-);
+)
+{
+    public Locale? locale { get; init; }
+}
 
 public enum DorotiFloatingCursorPhase
 {

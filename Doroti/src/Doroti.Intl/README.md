@@ -1,8 +1,6 @@
 # Doroti.Intl
 
-P0 qualification implementation of explicit .NET formatting and a small CLDR cardinal subset.
-The initial formatter profiles are `en-US` and `ko-KR`; neutral `en`/`ko` select those regions.
-The package does not register or replace any Widgets, Material or Cupertino delegate.
+`Doroti.Intl` provides explicit .NET formatting and CLDR 49 cardinal rules. It accepts normalized language, script and region tags. Neutral `en` and `ko` select `en-US` and `ko-KR`. The Tagalog profile uses `fil-PH` for formatting. Other neutral tags use the runtime's specific culture. Applications register widget delegates through the opt-in [localization packages](../../docs/localization/widget-packages.md).
 
 ```csharp
 var format = new Doroti.Intl.IntlFormatter("ko-KR");
@@ -11,20 +9,11 @@ bool valid = format.TryParseDate(date, out DateTime parsed);
 string price = format.FormatCurrency(1234.5m); // Culture default currency: KRW, .NET rounding.
 ```
 
-Culture objects are read-only and use `useUserOverride:false`. Widget dates use Gregorian
-years 1..9999, canonical four-digit-year input, `DateTimeStyles.None`, and no implicit timezone
-conversion. Native digits, arbitrary currency selection, compact notation, ICU skeletons and
-other cultures are outside this initial API. Numeric values are `long` or `decimal`; NaN and
-Infinity are excluded. Precision is 0..28. Number parsing follows .NET `NumberStyles.Number`,
-including its permissive grouping grammar; date parsing requires the canonical input pattern.
+Culture objects are read-only and use `useUserOverride:false`. Widget dates use Gregorian years 1–9999, canonical four-digit-year input and `DateTimeStyles.None`. Number formatting accepts `long` and `decimal` with up to 28 fractional digits. Number parsing uses the .NET `NumberStyles.Number` grammar. A macroregion with no single currency code reports `XXX` and formats with the runtime's generic currency symbol.
 
-Cardinal rules support language codes `en`, `ko`, `ru`, `ar` from CLDR 49. Pass the resolved
-language code rather than a locale tag. `1m` and `1.0m` retain their distinct visible precision.
-An explicit precision can pad/remove zeros but cannot silently round the input. Exact signed
-numeric message selectors take precedence over cardinal categories; `Other` is required.
-Ordinal rules, offset, `#`, runtime message parsing and locale negotiation are not provided.
+Cardinal rules use the 39 pinned CLDR 49 groups for plain decimals. Pass the resolved locale tag so regional rules such as `pt-PT` are used. `1m` and `1.0m` retain their distinct visible precision. An explicit precision can pad or remove zeros when the value is exactly representable. Exact signed numeric message selectors take precedence over cardinal categories, and each choice requires `Other`.
 
-The Web consumer owns ICU selection. For a Blazor WebAssembly runner requiring both profiles:
+The Web runner selects its ICU data. A Blazor runner serving a broad locale catalog can load the full file.
 
 ```xml
 <InvariantGlobalization>false</InvariantGlobalization>
@@ -32,8 +21,7 @@ The Web consumer owns ICU selection. For a Blazor WebAssembly runner requiring b
 ```
 
 A qualified CJK subset can use the SDK's `BlazorIcuDataFileName` instead. Browser/Console WASM
-uses its own `WasmIcuDataFileName`; the library does not alias these different SDK properties.
-Missing/invariant data fails explicitly. See [the .NET WASM ICU design](https://github.com/dotnet/runtime/blob/v10.0.15/docs/design/features/globalization-icu-wasm.md).
+uses `WasmIcuDataFileName`. The formatter rejects invariant mode and cultures the runtime cannot resolve. Validate the actual published data for each required culture. [The .NET WASM ICU design](https://github.com/dotnet/runtime/blob/v10.0.15/docs/design/features/globalization-icu-wasm.md)
 
 Run the bounded contract checks from the repository root:
 

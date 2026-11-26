@@ -1,0 +1,20 @@
+{
+  "@@locale": "et",
+  "reorderItemToStart": "Teisalda algusesse",
+  "reorderItemToEnd": "Teisalda lõppu",
+  "reorderItemUp": "Teisalda üles",
+  "reorderItemDown": "Teisalda alla",
+  "reorderItemLeft": "Teisalda vasakule",
+  "reorderItemRight": "Teisalda paremale",
+  "searchResultsFound": "Leiti otsingutulemusi",
+  "noResultsFound": "Tulemusi ei leitud",
+  "copyButtonLabel": "Kopeeri",
+  "cutButtonLabel": "Lõika",
+  "pasteButtonLabel": "Kleebi",
+  "selectAllButtonLabel": "Vali kõik",
+  "lookUpButtonLabel": "Look Up",
+  "searchWebButtonLabel": "Otsi veebist",
+  "shareButtonLabel": "Jagamine",
+  "radioButtonUnselectedLabel": "Pole valitud",
+  "textDirection": "ltr"
+}

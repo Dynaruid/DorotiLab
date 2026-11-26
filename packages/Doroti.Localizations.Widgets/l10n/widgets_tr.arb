@@ -1,0 +1,20 @@
+{
+  "@@locale": "tr",
+  "reorderItemToStart": "Başa taşı",
+  "reorderItemToEnd": "Sona taşı",
+  "reorderItemUp": "Yukarı taşı",
+  "reorderItemDown": "Aşağı taşı",
+  "reorderItemLeft": "Sola taşı",
+  "reorderItemRight": "Sağa taşı",
+  "searchResultsFound": "Arama sonuçları bulundu",
+  "noResultsFound": "Sonuç bulunamadı",
+  "copyButtonLabel": "Kopyala",
+  "cutButtonLabel": "Kes",
+  "pasteButtonLabel": "Yapıştır",
+  "selectAllButtonLabel": "Tümünü seç",
+  "lookUpButtonLabel": "Ara",
+  "searchWebButtonLabel": "Web'de Ara",
+  "shareButtonLabel": "Paylaş",
+  "radioButtonUnselectedLabel": "Seçili değil",
+  "textDirection": "ltr"
+}

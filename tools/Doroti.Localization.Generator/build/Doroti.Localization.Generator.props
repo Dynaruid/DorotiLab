@@ -1,0 +1,21 @@
+<Project>
+  <ItemGroup>
+    <CompilerVisibleProperty Include="RootNamespace" />
+    <CompilerVisibleProperty Include="DorotiLocalizationNamespace" />
+    <CompilerVisibleProperty Include="DorotiLocalizationClass" />
+    <CompilerVisibleProperty Include="DorotiLocalizationTemplate" />
+    <CompilerVisibleProperty Include="DorotiLocalizationLocales" />
+  </ItemGroup>
+  <Target Name="_DorotiRecordLocalizationInputs" BeforeTargets="CoreCompile" Condition="'$(DesignTimeBuild)' != 'true'">
+    <ItemGroup>
+      <_DorotiArbFile Include="@(AdditionalFiles)" Condition="'%(AdditionalFiles.Extension)' == '.arb'" />
+      <CustomAdditionalCompileInputs Include="$(IntermediateOutputPath)DorotiLocalization.inputs" />
+      <FileWrites Include="$(IntermediateOutputPath)DorotiLocalization.inputs" />
+    </ItemGroup>
+    <!-- MSBuild can compare the timestamps of remaining inputs after an ARB is removed.
+         Record membership so a removal invalidates CoreCompile as well. -->
+    <WriteLinesToFile File="$(IntermediateOutputPath)DorotiLocalization.inputs"
+                      Lines="ARB;@(_DorotiArbFile->'%(FullPath)')"
+                      Overwrite="true" WriteOnlyWhenDifferent="true" />
+  </Target>
+</Project>

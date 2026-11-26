@@ -83,6 +83,7 @@ internal sealed class WindowsPlatformViewHost : IDisposable
     );
 
     internal IEnumerable<IPlatformViewFactory> CreateFactories() =>
+        (IPlatformViewFactory[])
         [
             new DeferredFactory(this, "doroti/native-button"),
             new DeferredFactory(this, "doroti/native-editor"),

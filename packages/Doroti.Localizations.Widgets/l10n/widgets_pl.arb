@@ -1,0 +1,20 @@
+{
+  "@@locale": "pl",
+  "reorderItemToStart": "Przenieś na początek",
+  "reorderItemToEnd": "Przenieś na koniec",
+  "reorderItemUp": "Przenieś w górę",
+  "reorderItemDown": "Przenieś w dół",
+  "reorderItemLeft": "Przenieś w lewo",
+  "reorderItemRight": "Przenieś w prawo",
+  "searchResultsFound": "Znaleziono wyniki wyszukiwania",
+  "noResultsFound": "Brak wyników",
+  "copyButtonLabel": "Kopiuj",
+  "cutButtonLabel": "Wytnij",
+  "pasteButtonLabel": "Wklej",
+  "selectAllButtonLabel": "Zaznacz wszystko",
+  "lookUpButtonLabel": "Sprawdź",
+  "searchWebButtonLabel": "Szukaj w internecie",
+  "shareButtonLabel": "Udostępnij",
+  "radioButtonUnselectedLabel": "Nie wybrano",
+  "textDirection": "ltr"
+}

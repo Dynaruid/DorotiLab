@@ -1262,7 +1262,8 @@ public sealed class ParagraphBuilder
         // multiplier here shifts glyphs such as Switch thumb icons below their
         // em box. Keep the host request nullable; only hostless layout estimates.
         double? lineHeight = _style.height is { } multiplier ? fontSize * multiplier : null;
-        var view = PlatformDispatcher.current?.implicitView;
+        var dispatcher = PlatformDispatcher.current;
+        var view = dispatcher?.CurrentInvocationView ?? dispatcher?.implicitView;
         if (view is not null)
         {
             return view.LayoutParagraph(

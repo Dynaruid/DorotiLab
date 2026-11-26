@@ -1,0 +1,20 @@
+{
+  "@@locale": "ca",
+  "reorderItemToStart": "Mou al principi",
+  "reorderItemToEnd": "Mou al final",
+  "reorderItemUp": "Mou amunt",
+  "reorderItemDown": "Mou avall",
+  "reorderItemLeft": "Mou cap a l'esquerra",
+  "reorderItemRight": "Mou cap a la dreta",
+  "searchResultsFound": "S'han trobat resultats de cerca",
+  "noResultsFound": "No s'ha trobat cap resultat",
+  "copyButtonLabel": "Copia",
+  "cutButtonLabel": "Retalla",
+  "pasteButtonLabel": "Enganxa",
+  "selectAllButtonLabel": "Selecciona-ho tot",
+  "lookUpButtonLabel": "Mira amunt",
+  "searchWebButtonLabel": "Cerca al web",
+  "shareButtonLabel": "Comparteix",
+  "radioButtonUnselectedLabel": "No seleccionat",
+  "textDirection": "ltr"
+}

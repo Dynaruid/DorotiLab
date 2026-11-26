@@ -127,6 +127,8 @@ def main():
                     run(f"{kind}-contract", [publish / ("Doroti.Intl.Tests.exe" if os.name == "nt" else "Doroti.Intl.Tests"), "--profile"])
                     receipt[kind + "Size"] = sizes(publish)
             if args.pack:
+                run("pack-runtime", ["dotnet", "pack", ROOT / "Doroti/src/Doroti.Runtime/Doroti.Runtime.csproj", "-c", "Release",
+                                     "--artifacts-path", target / "build-pack", "-o", target / "packages"])
                 run("pack", ["dotnet", "pack", ROOT / "Doroti/src/Doroti.Intl/Doroti.Intl.csproj", "-c", "Release",
                              "--artifacts-path", target / "build-pack", "-o", target / "packages"])
                 consumer = target / "package-consumer"

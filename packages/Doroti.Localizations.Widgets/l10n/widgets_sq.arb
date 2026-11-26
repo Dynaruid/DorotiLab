@@ -1,0 +1,20 @@
+{
+  "@@locale": "sq",
+  "reorderItemToStart": "Lëvize në fillim",
+  "reorderItemToEnd": "Lëvize në fund",
+  "reorderItemUp": "Lëvize lart",
+  "reorderItemDown": "Lëvize poshtë",
+  "reorderItemLeft": "Lëvize majtas",
+  "reorderItemRight": "Lëvize djathtas",
+  "searchResultsFound": "U gjetën rezultate kërkimi",
+  "noResultsFound": "Nuk u gjet asnjë rezultat",
+  "copyButtonLabel": "Kopjo",
+  "cutButtonLabel": "Prit",
+  "pasteButtonLabel": "Ngjit",
+  "selectAllButtonLabel": "Zgjidh të gjitha",
+  "lookUpButtonLabel": "Kërko",
+  "searchWebButtonLabel": "Kërko në ueb",
+  "shareButtonLabel": "Ndaj",
+  "radioButtonUnselectedLabel": "Nuk është zgjedhur",
+  "textDirection": "ltr"
+}

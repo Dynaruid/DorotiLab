@@ -1,0 +1,20 @@
+{
+  "@@locale": "ka",
+  "reorderItemToStart": "დასაწყისში გადატანა",
+  "reorderItemToEnd": "ბოლოში გადატანა",
+  "reorderItemUp": "ზემოთ გადატანა",
+  "reorderItemDown": "ქვემოთ გადატანა",
+  "reorderItemLeft": "მარცხნივ გადატანა",
+  "reorderItemRight": "მარჯვნივ გადატანა",
+  "searchResultsFound": "ძიების შედეგები ნაპოვნია",
+  "noResultsFound": "შედეგები ვერ მოიძებნა",
+  "copyButtonLabel": "კოპირება",
+  "cutButtonLabel": "ამოჭრა",
+  "pasteButtonLabel": "ჩასმა",
+  "selectAllButtonLabel": "ყველას არჩევა",
+  "lookUpButtonLabel": "აიხედეთ ზემოთ",
+  "searchWebButtonLabel": "ვებში ძიება",
+  "shareButtonLabel": "გაზიარება",
+  "radioButtonUnselectedLabel": "არ არის არჩეული",
+  "textDirection": "ltr"
+}

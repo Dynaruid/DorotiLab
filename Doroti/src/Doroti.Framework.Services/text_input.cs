@@ -709,6 +709,7 @@ public class TextInputStyle : Diagnosticable
     public virtual double? letterSpacing { get; private set; }
     public virtual double? wordSpacing { get; private set; }
     public virtual double? lineHeight { get; private set; }
+    public Locale? locale { get; init; }
 
     public TextInputStyle(
         string? fontFamily = null,
@@ -755,7 +756,8 @@ public class TextInputStyle : Diagnosticable
             && Equals(__other.textAlign, textAlign)
             && (__other.letterSpacing == letterSpacing)
             && (__other.wordSpacing == wordSpacing)
-            && (__other.lineHeight == lineHeight);
+            && (__other.lineHeight == lineHeight)
+            && __other.locale == locale;
     }
 
     public override int GetHashCode()
@@ -768,7 +770,8 @@ public class TextInputStyle : Diagnosticable
             textAlign,
             letterSpacing,
             wordSpacing,
-            lineHeight
+            lineHeight,
+            locale
         );
     }
 
@@ -784,6 +787,7 @@ public class TextInputStyle : Diagnosticable
             ["letterSpacing"] = letterSpacing,
             ["wordSpacing"] = wordSpacing,
             ["lineHeight"] = lineHeight,
+            ["locale"] = locale?.toLanguageTag(),
         };
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
@@ -1820,7 +1824,7 @@ internal sealed class _HostTextInputControl : TextInputControl
                     style.letterSpacing,
                     style.wordSpacing,
                     style.lineHeight
-                )
+                ) { locale = style.locale }
             );
 
     private ITextInputHostCapability RequireCapability(string elementId) =>

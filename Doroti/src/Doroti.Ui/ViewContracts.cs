@@ -329,13 +329,41 @@ public readonly record struct Locale(
     string? scriptCode = null
 )
 {
-    public string toLanguageTag() =>
-        string.Join(
-            '-',
-            new[] { languageCode, scriptCode, countryCode }.Where(value =>
-                !string.IsNullOrEmpty(value)
-            )
-        );
+    public static bool TryParseLanguageTag(string? value, out Locale locale)
+    {
+        if (Doroti.Runtime.LocaleTag.TryParse(value, out var tag))
+        {
+            locale = new(tag.Language, tag.Region, tag.Script);
+            return true;
+        }
+        locale = default;
+        return false;
+    }
+
+    /// <summary>Returns the valid, distinct host preferences in order, with a fallback if none are usable.</summary>
+    public static IReadOnlyList<Locale> ParseLanguageTags(IEnumerable<string?> values, string? fallback = null)
+    {
+        var locales = new List<Locale>();
+        var seen = new HashSet<Locale>();
+        foreach (var value in values)
+        {
+            if (TryParseLanguageTag(value, out var locale) && seen.Add(locale)) locales.Add(locale);
+        }
+        if (locales.Count == 0)
+            locales.Add(TryParseLanguageTag(fallback, out var locale) ? locale : new("en", "US"));
+        return locales.AsReadOnly();
+    }
+
+    /// <summary>Normalizes the typed fields without inferring a script from a region or vice versa.</summary>
+    public Locale normalized() =>
+        Doroti.Runtime.LocaleTag.TryCreate(languageCode, scriptCode is "" ? null : scriptCode,
+            countryCode is "" ? null : countryCode, out var tag)
+            ? new(tag.Language, tag.Region, tag.Script)
+            : throw new ArgumentException($"Invalid locale '{toLanguageTag()}'.");
+
+    public string toLanguageTag() => languageCode
+        + (string.IsNullOrEmpty(scriptCode) ? "" : "-" + scriptCode)
+        + (string.IsNullOrEmpty(countryCode) ? "" : "-" + countryCode);
 }
 
 public sealed record ViewMetrics(
@@ -474,7 +502,7 @@ public sealed record PlatformConfiguration(
 
         return this with
         {
-            locales = Array.AsReadOnly(locales.ToArray()),
+            locales = Array.AsReadOnly(locales.Select(locale => locale.normalized()).Distinct().ToArray()),
         };
     }
 

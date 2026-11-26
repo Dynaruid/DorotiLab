@@ -2,6 +2,9 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(DorotiShapedParagraphs)' == 'true'">
+    <DefineConstants>$(DefineConstants);DOROTI_SHAPED_PARAGRAPHS</DefineConstants>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../../src/Doroti.Skia.Rendering/Doroti.Skia.Rendering.csproj" />
     <PackageReference Include="SkiaSharp.NativeAssets.Win32" />

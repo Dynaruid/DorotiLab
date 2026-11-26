@@ -1,0 +1,20 @@
+{
+  "@@locale": "or",
+  "reorderItemToStart": "ଆରମ୍ଭକୁ ମୁଭ କରନ୍ତୁ",
+  "reorderItemToEnd": "ଶେଷକୁ ମୁଭ କରନ୍ତୁ",
+  "reorderItemUp": "ଉପରକୁ ମୁଭ କରନ୍ତୁ",
+  "reorderItemDown": "ତଳକୁ ମୁଭ କରନ୍ତୁ",
+  "reorderItemLeft": "ବାମକୁ ମୁଭ କରନ୍ତୁ",
+  "reorderItemRight": "ଡାହାଣକୁ ମୁଭ କରନ୍ତୁ",
+  "searchResultsFound": "ସର୍ଚ୍ଚ ଫଳାଫଳ ମିଳିଛି",
+  "noResultsFound": "କୌଣସି ଫଳାଫଳ ମିଳିଲା ନାହିଁ",
+  "copyButtonLabel": "କପି କରନ୍ତୁ",
+  "cutButtonLabel": "କଟ କରନ୍ତୁ",
+  "pasteButtonLabel": "ପେଷ୍ଟ କରନ୍ତୁ",
+  "selectAllButtonLabel": "ସବୁ ଚୟନ କରନ୍ତୁ",
+  "lookUpButtonLabel": "ଉପରକୁ ଦେଖନ୍ତୁ",
+  "searchWebButtonLabel": "ୱେବ ସର୍ଚ୍ଚ କରନ୍ତୁ",
+  "shareButtonLabel": "ସେୟାର କରନ୍ତୁ",
+  "radioButtonUnselectedLabel": "ଚୟନ କରାଯାଇନାହିଁ",
+  "textDirection": "ltr"
+}

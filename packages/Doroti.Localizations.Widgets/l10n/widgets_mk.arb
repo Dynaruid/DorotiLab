@@ -1,0 +1,20 @@
+{
+  "@@locale": "mk",
+  "reorderItemToStart": "Преместете на почеток",
+  "reorderItemToEnd": "Преместете на крајот",
+  "reorderItemUp": "Преместете нагоре",
+  "reorderItemDown": "Преместете надолу",
+  "reorderItemLeft": "Преместете налево",
+  "reorderItemRight": "Преместете надесно",
+  "searchResultsFound": "Најдени се резултати од пребарувањето",
+  "noResultsFound": "Не се најдени резултати",
+  "copyButtonLabel": "Копирај",
+  "cutButtonLabel": "Исечи",
+  "pasteButtonLabel": "Залепи",
+  "selectAllButtonLabel": "Избери ги сите",
+  "lookUpButtonLabel": "Погледнете нагоре",
+  "searchWebButtonLabel": "Пребарајте на интернет",
+  "shareButtonLabel": "Сподели",
+  "radioButtonUnselectedLabel": "Не е избрано",
+  "textDirection": "ltr"
+}

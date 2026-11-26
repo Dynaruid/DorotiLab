@@ -1,0 +1,20 @@
+{
+  "@@locale": "id",
+  "reorderItemToStart": "Pindahkan ke awal",
+  "reorderItemToEnd": "Pindahkan ke akhir",
+  "reorderItemUp": "Naikkan",
+  "reorderItemDown": "Turunkan",
+  "reorderItemLeft": "Pindahkan ke kiri",
+  "reorderItemRight": "Pindahkan ke kanan",
+  "searchResultsFound": "Hasil penelusuran ditemukan",
+  "noResultsFound": "Tidak ditemukan hasil",
+  "copyButtonLabel": "Salin",
+  "cutButtonLabel": "Potong",
+  "pasteButtonLabel": "Tempel",
+  "selectAllButtonLabel": "Pilih semua",
+  "lookUpButtonLabel": "Cari",
+  "searchWebButtonLabel": "Telusuri di Web",
+  "shareButtonLabel": "Bagikan",
+  "radioButtonUnselectedLabel": "Tidak dipilih",
+  "textDirection": "ltr"
+}

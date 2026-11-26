@@ -1,0 +1,20 @@
+{
+  "@@locale": "cs",
+  "reorderItemToStart": "Přesunout na začátek",
+  "reorderItemToEnd": "Přesunout na konec",
+  "reorderItemUp": "Přesunout nahoru",
+  "reorderItemDown": "Přesunout dolů",
+  "reorderItemLeft": "Přesunout doleva",
+  "reorderItemRight": "Přesunout doprava",
+  "searchResultsFound": "Byly nalezeny výsledky vyhledávání",
+  "noResultsFound": "Nebyly nalezeny žádné výsledky",
+  "copyButtonLabel": "Kopírovat",
+  "cutButtonLabel": "Vyjmout",
+  "pasteButtonLabel": "Vložit",
+  "selectAllButtonLabel": "Vybrat vše",
+  "lookUpButtonLabel": "Vyhledat",
+  "searchWebButtonLabel": "Vyhledávat na webu",
+  "shareButtonLabel": "Sdílet",
+  "radioButtonUnselectedLabel": "Nevybráno",
+  "textDirection": "ltr"
+}

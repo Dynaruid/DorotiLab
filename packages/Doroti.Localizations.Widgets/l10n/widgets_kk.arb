@@ -1,0 +1,20 @@
+{
+  "@@locale": "kk",
+  "reorderItemToStart": "Басына өту",
+  "reorderItemToEnd": "Соңына өту",
+  "reorderItemUp": "Жоғарыға жылжыту",
+  "reorderItemDown": "Төменге жылжыту",
+  "reorderItemLeft": "Солға жылжыту",
+  "reorderItemRight": "Оңға жылжыту",
+  "searchResultsFound": "Табылған нәтижелер",
+  "noResultsFound": "Ешбір нәтиже табылмады",
+  "copyButtonLabel": "Көшіру",
+  "cutButtonLabel": "Қию",
+  "pasteButtonLabel": "Қою",
+  "selectAllButtonLabel": "Барлығын таңдау",
+  "lookUpButtonLabel": "Іздеу",
+  "searchWebButtonLabel": "Интернеттен іздеу",
+  "shareButtonLabel": "Бөлісу",
+  "radioButtonUnselectedLabel": "Таңдалмады",
+  "textDirection": "ltr"
+}

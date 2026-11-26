@@ -1,0 +1,12 @@
+{
+  "@@locale": "en",
+  "greeting": "'{Hello}' {buyer}: {count, plural, =0 {nothing} one {{kind, select, gift {a gift} other {one item}}} other {{count} items}}.",
+  "@greeting": { "placeholders": { "buyer": { "type": "String" }, "count": { "type": "decimal" }, "kind": { "type": "String" } } },
+  "stamp": "Date {date}, value {price}, tax {tax}, time {clock}",
+  "@stamp": { "placeholders": {
+    "date": { "type": "DateTime", "format": "yMd" },
+    "price": { "type": "decimal", "format": "currency" },
+    "tax": { "type": "decimal", "format": "percentPattern" },
+    "clock": { "type": "TimeOnly", "format": "Hm" }
+  } }
+}

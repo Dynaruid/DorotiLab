@@ -36,11 +36,11 @@ public sealed class WindowsOsDropTarget : IOsDragDropHostCapability, IOleDropTar
         if (clientWindow == 0 || GetWindowThreadProcessId(clientWindow, out var process) != _thread || process != Environment.ProcessId)
             throw new ArgumentException("The client HWND must belong to the calling UI thread.", nameof(clientWindow));
         _client = clientWindow;
-        _receiver = new(new(true, false, OsDropAction.Copy, [OsDropFormats.Files, OsDropFormats.Text, OsDropFormats.UriList]), dispatch);
+        _receiver = new(new(true, false, OsDropAction.Copy, new[] { OsDropFormats.Files, OsDropFormats.Text, OsDropFormats.UriList }), dispatch);
         Marshal.ThrowExceptionForHR(OleInitialize(0));
         try
         {
-            foreach (var window in (surfaces ?? [clientWindow]).Distinct())
+            foreach (var window in (surfaces ?? new[] { clientWindow }).Distinct())
             {
                 if (window == 0 || GetWindowThreadProcessId(window, out process) != _thread || process != Environment.ProcessId)
                     throw new ArgumentException("All drop surfaces must belong to the same owner UI thread.", nameof(surfaces));

@@ -19,6 +19,9 @@
     <Project Path="src/Doroti.Framework.Widgets/Doroti.Framework.Widgets.csproj" />
     <Project Path="../packages/Doroti.Cupertino/Doroti.Cupertino.csproj" />
     <Project Path="../packages/Doroti.Material/Doroti.Material.csproj" />
+    <Project Path="../packages/Doroti.Localizations.Widgets/Doroti.Localizations.Widgets.csproj" />
+    <Project Path="../packages/Doroti.Localizations.Cupertino/Doroti.Localizations.Cupertino.csproj" />
+    <Project Path="../packages/Doroti.Localizations.Material/Doroti.Localizations.Material.csproj" />
     <Project Path="../packages/Doroti.Icons.Material/Doroti.Icons.Material.csproj" />
     <Project Path="../packages/Doroti.Icons.Cupertino/Doroti.Icons.Cupertino.csproj" />
     <Project Path="../packages/Doroti.CustomCarousel/Doroti.CustomCarousel.csproj" />
@@ -45,6 +48,7 @@
     <Project Path="../packages/platforms/qt/Doroti.Target.Linux.Qt.linux-x64/Doroti.Target.Linux.Qt.linux-x64.csproj" />
   </Folder>
   <Project Path="src/Doroti.App.Sdk/Doroti.App.Sdk.csproj" />
+  <Project Path="../tools/Doroti.Localization.Generator/Doroti.Localization.Generator.csproj" />
   <Folder Name="/samples/">
     <Project Path="../samples/DorotiDemoApp/DorotiDemoApp.csproj" />
     <Project Path="../samples/DorotiDemoApp/windowsappsdk/DorotiDemoApp.WindowsAppSdk.csproj" />

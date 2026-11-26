@@ -1,0 +1,20 @@
+{
+  "@@locale": "bg",
+  "reorderItemToStart": "Преместване в началото",
+  "reorderItemToEnd": "Преместване в края",
+  "reorderItemUp": "Преместване нагоре",
+  "reorderItemDown": "Преместване надолу",
+  "reorderItemLeft": "Преместване наляво",
+  "reorderItemRight": "Преместване надясно",
+  "searchResultsFound": "Намерени резултати от търсенето",
+  "noResultsFound": "Няма намерени резултати",
+  "copyButtonLabel": "Копиране",
+  "cutButtonLabel": "Изрязване",
+  "pasteButtonLabel": "Поставяне",
+  "selectAllButtonLabel": "Избиране на всички",
+  "lookUpButtonLabel": "Look Up",
+  "searchWebButtonLabel": "Търсене в мрежата",
+  "shareButtonLabel": "Споделяне",
+  "radioButtonUnselectedLabel": "Не е избран",
+  "textDirection": "ltr"
+}

@@ -131,6 +131,7 @@ internal sealed class BrowserSemanticsTransport
             && previous.maxValue == node.maxValue && previous.maxValueLength == node.maxValueLength
             && previous.currentValueLength == node.currentValueLength && previous.scrollChildCount == node.scrollChildCount
             && previous.scrollIndex == node.scrollIndex && Nullable.Equals(previous.locale, node.locale)
+            && previous.textDirection == node.textDirection
             && (previous.controlsNodes ?? []).SequenceEqual(node.controlsNodes ?? []));
 
     private List<int> PruneUnreachable()
@@ -181,7 +182,8 @@ internal sealed class BrowserSemanticsTransport
             validationResult = node.validationResult.ToString(), hitTestBehavior = node.hitTestBehavior.ToString(),
             inputType = node.inputType.ToString(), node.minValue, node.maxValue, node.maxValueLength,
             node.currentValueLength, node.scrollPosition, node.scrollExtentMin, node.scrollExtentMax,
-            node.scrollChildCount, node.scrollIndex, node.controlsNodes, locale = node.locale?.ToString(),
+            node.scrollChildCount, node.scrollIndex, node.controlsNodes, locale = node.locale?.toLanguageTag(),
+            direction = node.textDirection switch { TextDirection.rtl => "rtl", TextDirection.ltr => "ltr", _ => null },
             flags = node.flags is null ? null : new
             {
                 @checked = node.flags.isChecked.ToString(), selected = node.flags.isSelected.toBoolOrNull(),

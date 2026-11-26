@@ -1596,6 +1596,13 @@ public class TextPainter
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
+    internal SemanticsTextGeometry? CaptureHostTextGeometry(string sourceText, long revision, Offset offset)
+    {
+        if (_layoutCache is not { } layout || !string.Equals(layout.paragraph.text, sourceText, StringComparison.Ordinal))
+            return null;
+        return layout.paragraph.CaptureHostTextGeometry(revision, offset + layout.paintOffset);
+    }
+
     public virtual GlyphInfo? getClosestGlyphForOffset(Offset offset)
     {
         DartRuntimePrimitives.Assert(() => _debugAssertTextLayoutIsValid);

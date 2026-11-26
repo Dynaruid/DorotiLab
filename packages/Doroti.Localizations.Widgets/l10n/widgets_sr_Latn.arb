@@ -1,0 +1,20 @@
+{
+  "@@locale": "sr-Latn",
+  "reorderItemToStart": "Pomerite na početak",
+  "reorderItemToEnd": "Pomerite na kraj",
+  "reorderItemUp": "Pomerite nagore",
+  "reorderItemDown": "Pomerite nadole",
+  "reorderItemLeft": "Pomerite ulevo",
+  "reorderItemRight": "Pomerite udesno",
+  "searchResultsFound": "Pronađeni su rezultati pretrage",
+  "noResultsFound": "Nije pronađen nijedan rezultat",
+  "copyButtonLabel": "Kopiraj",
+  "cutButtonLabel": "Iseci",
+  "pasteButtonLabel": "Nalepi",
+  "selectAllButtonLabel": "Izaberi sve",
+  "lookUpButtonLabel": "Pogled nagore",
+  "searchWebButtonLabel": "Pretraži veb",
+  "shareButtonLabel": "Deli",
+  "radioButtonUnselectedLabel": "Nije izabrano",
+  "textDirection": "ltr"
+}

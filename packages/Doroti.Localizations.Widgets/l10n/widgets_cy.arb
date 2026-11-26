@@ -1,0 +1,20 @@
+{
+  "@@locale": "cy",
+  "reorderItemToStart": "Symud i'r dechrau",
+  "reorderItemToEnd": "Symud i'r diwedd",
+  "reorderItemUp": "Symud i fyny",
+  "reorderItemDown": "Symud i lawr",
+  "reorderItemLeft": "Symud i'r chwith",
+  "reorderItemRight": "Symud i'r dde",
+  "searchResultsFound": "Canfuwyd canlyniadau chwilio",
+  "noResultsFound": "Ni chanfuwyd unrhyw ganlyniadau",
+  "copyButtonLabel": "Copïo",
+  "cutButtonLabel": "Torri",
+  "pasteButtonLabel": "Gludo",
+  "selectAllButtonLabel": "Dewis y cyfan",
+  "lookUpButtonLabel": "Chwilio",
+  "searchWebButtonLabel": "Chwilio'r We",
+  "shareButtonLabel": "Rhannu",
+  "radioButtonUnselectedLabel": "Heb ei dewis",
+  "textDirection": "ltr"
+}

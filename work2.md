@@ -3,7 +3,7 @@
 - 작성일: 2026-11-13
 - 검토 기준: DorotiLab `0a7fdcfe2ffa`, 현재 제품 소스와 공식 upstream 문서·소스
 - 채택 방향: **.NET 우선 + 부족한 국제화 기능만 보강.** 이전의 Dart `intl` 관리형 이식 우선안을 대체한다.
-- 상태: **PARTIAL — P0 포맷/데이터 시범 구현과 기능 검증 완료 (2026-11-16). 성능 인수는 미완료이며 P1–P5는 미착수이다.** 실제 코드·실행 범위·측정값·남은 작업은 §14에 기록했다. 아래 §0–§13은 2026-11-13에 정한 설계·인수 계획이며 전체 구현 완료를 뜻하지 않는다.
+- 상태: **PARTIAL — 공통 로케일 계약, 위젯 번역 패키지, ARB 생성기와 언어 확대를 구현했다.** P4는 공식 HarfBuzz와 C# 분석을 사용하는 제품 렌더러를 소스 빌드에서 선택할 수 있다. 구현과 검증은 §15–16에 기록한다. §14는 2026-11-16 P0 기준 기록이다.
 
 ## 0. 요약과 채택 결정
 
@@ -173,16 +173,13 @@ Rendering
 
 **.NET 포맷·위젯 번역의 도입은 새 native ICU나 paragraph backend 도입을 선행 조건으로 하지 않는다.** `StringInfo`도 문자소 처리에 재사용하지만, .NET globalization만으로 full bidi·언어별 word/line break·shaping이 제공된다고 보지 않는다.
 
-복잡문자 지원을 확대할 때 Flutter와 가까운 장기 후보는 **SkParagraph + SkUnicode/ICU + shaping backend**이다. HarfBuzz와 ICU는 서로의 대체재가 아니다. Unicode 분석·줄바꿈과 glyph shaping·positioning을 함께 연결해야 한다. 그 연결은 해당 script의 지원 선언에 필요한 별도 작업이며, 기본 Intl 어댑터를 native ICU wrapper로 바꾸는 작업은 아니다.
+고정된 SkiaSharp 4.156.0 Windows 및 Web 배포물에서 SkParagraph와 SkUnicode를 연결할 공개 API·심볼을 찾지 못했다. 플랫폼별 C++ 빌드와 배포를 피하기 위해 **SkiaSharp의 공식 HarfBuzz 패키지로 글리프를 합성하고 C#으로 문단을 배치하는 경로**를 선택했다. 데스크톱과 Web에서 같은 UTF-16 문단 계약을 사용한다.
 
-우선순위는 다음과 같다.
+1. 공식 HarfBuzz 패키지의 glyph ID, cluster와 position을 현재 Skia 캔버스에 전달한다.
+2. 양방향 정렬, 줄바꿈 및 언어별 단어 경계는 관리 코드에서 조합한다. UAX #9와 UAX #14 코드 재사용과 사전 기반 경계를 함께 검증한다.
+3. 고정 폰트로 동일한 shaping 결과가 paint, caret, selection과 semantics에 전달되는지 확인한다. 플랫폼별 패키지·라이선스·증분 크기를 확인한 뒤 제품 경로를 활성화한다.
 
-1. 현재 고정된 SkiaSharp 버전에서 필요한 paragraph API와 native export가 지원되는지 확인한다.
-2. 공식 API만으로 불가능하면 같은 Skia revision·빌드 옵션으로 만든 작은 C ABI bridge의 가능성을 실험한다.
-3. bridge가 가능한 경우에만 RID별 패키징과 공개 capability 변경을 확정한다.
-4. 기존 바이너리와 맞지 않는다면, 공식 SkiaSharp 유지와 custom Skia 배포 중 하나를 별도 아키텍처 결정으로 선택한다.
-
-이번 공개 소스 검색에서는 사용 가능한 공식 `SKParagraph` API를 확인하지 못했다. 이것은 **텍스트 backend 선택의 선결 검증 사항**이지, .NET 기반 국제화 전체의 도입 차단이나 비공개 C++ 심볼을 P/Invoke해도 된다는 뜻이 아니다.
+[공식 바이너리 검증과 관리 코드 후보](Doroti/docs/localization/paragraph-feasibility.md)
 
 **금지할 접근:** 다른 revision의 Skia C++ 객체를 `SKCanvas`/`SKTypeface` 포인터로 섞기, 이미 로드된 .NET·Qt ICU 내부 심볼을 추측해서 연결하기, 소유권이 없는 ICU 데이터 메모리를 재사용하기.
 
@@ -380,8 +377,8 @@ ICU MessageFormat 전체, Flutter parser 문법, MessageFormat 2는 동일하지
 
 **선행:** 해당 text backend·script의 지원 요구 확정. P2/P3과 독립 트랙이며, 기본 .NET 포맷 도입의 선행 조건이 아니다.
 
-- Windows와 net10 Web에서 paragraph 후보를 측정·그리기·hit test까지 연결하여 공식 API/native export·Skia ABI·데이터 중복을 판정한다.
-- 기존 바이너리와 연결할 수 없거나 custom Skia 배포가 필요하면 제품 변경 전에 backend·범위를 재결정한다. 성공하지 않은 실험을 지원 완료로 계산하지 않는다.
+- Windows와 net10 Web에서 공식 HarfBuzz 배포물과 C# 문단 후보를 측정·그리기·hit test까지 연결해 호환성과 데이터 중복을 확인한다.
+- 태국어처럼 사전 기반 분석이 필요한 문자권의 경계를 검증하고, 관리 코드 후보의 Unicode 데이터와 릴리스 정책을 확정한다.
 - shaping·Unicode 분석과 동일 결과의 paint/geometry/semantics를 연결한다.
 - mixed-direction, cluster 편집, 줄바꿈, font fallback, retained picture 수명을 검증한다.
 - Windows → Web 양 모드 → 나머지 지원 플랫폼 순서로 native 패키징을 자격 검증한다.
@@ -592,3 +589,96 @@ python Doroti/eng/run-with-timeout.py node packages/platforms/web/tests/browser-
 ```
 
 다음 구현 단위는 **P1**의 공통 태그 정규화·host 언어 목록·application/subtree locale 격리와 비동기 delegate 실패/역순 완료 검증이다. 특히 현재 `_LocalizationsState`의 dispatcher 갱신 경계는 수정하지 않았으므로 기존 계획대로 확인해야 한다. P2의 219개 리소스 번역/포맷 연결, P3의 ARB generator, P4의 native paragraph 타당성/전체 텍스트 동작, P5의 언어 확대·배포 최적화도 미착수이다. 이 절의 PASS를 그 작업들의 완료로 계산하지 않는다.
+
+## 15. 2026-11-26 로케일 계약, 패키지와 번역 확대
+
+### 구현 범위
+
+- WindowsAppSDK, MAUI, Qt, Web에서 언어 목록을 같은 태그 파서로 전달한다. 정규화는 language, script, region, 숫자 region, IANA의 주요 alias, 밑줄을 지원한다. `zh-CHS`와 `zh-CHT`는 각각 `zh-Hans`와 `zh-Hant`로 정규화한다. variant, extension과 private use 태그는 거부한다. 잘못된 host 항목은 다음 선호 항목으로 넘어가고, 목록이 비면 단일 host 언어를 시도한다. Web은 `navigator.languages` 변경도 기존 Worker transport로 전달한다.
+- 앱 로케일은 view의 앱 루트가 리소스를 로드한 시점에만 갱신한다. 하위 트리는 로드한 locale, delegate, semantics와 리소스를 함께 바꾼다. 비동기 요청이 겹치면 마지막 요청을 적용한다. 초기 실패는 오류를 보고하고 first-frame 대기를 풀며, 전환 실패는 이전 리소스를 유지한다. DOM semantics와 브라우저 편집 입력에 확정된 태그와 방향을 전달한다.
+- Opt-in 패키지는 Widgets 82개 언어 122개 태그, Material 82개 언어 122개 태그, Cupertino 81개 언어 121개 태그를 제공한다. 도입한 Flutter 기준본의 지역별 자원과 부모 언어 데이터를 사용한다. `zh-Hans`와 `zh-Hant`를 명시했고, Pashto는 Widgets와 Material에 포함된다. 기초 Flutter 위젯 영어 delegate는 패키지 없이 사용할 수 있다. [패키지 사용법](Doroti/docs/localization/widget-packages.md) · [고정 출처와 수정 내역](Doroti/docs/localization/widget-provenance.json)
+- `.NET`에서 Gregorian 표시 및 엄격한 날짜 입력, 시간 배치, 숫자, 통화와 percent를 처리한다. Tagalog의 포맷은 `fil-PH`를 선택하며 `es-419`처럼 단일 국가 통화가 없는 지역은 `XXX`를 반환한다. CLDR 49의 39개 cardinal 규칙 그룹을 고정하고 지역별 `pt-PT`를 지원한다. [Intl 계약](Doroti/src/Doroti.Intl/README.md)
+- 앱 ARB와 위젯 ARB는 같은 증분 생성기로 정적 C# 리소스를 만든다. 앱 코드는 `AdditionalFiles`로 입력을 선언한다. 생성기는 선택된 로케일의 누락 키, 중복 키, placeholder, 문법과 포맷 오류를 소스 위치로 보고한다. ARB 추가·삭제를 증분 빌드 입력에 포함한다. 소스 빌드에서는 `DorotiWidgetLocales`로 패키지에 포함할 태그를 줄일 수 있다. [ARB 생성기](tools/Doroti.Localization.Generator/README.md)
+
+### 실행 검증
+
+| 범위 | 결과 |
+| --- | --- |
+| Win-x64와 WSL Linux x64 리소스 | 두 환경에서 Widgets 122, Material 122, Cupertino 121 조합을 로드했다. Material의 윤일 round-trip, 숫자·통화·시간, Cupertino의 달력 필드 순서와 접근성 문자열까지 확인했다. |
+| Windows와 WSL Linux 로케일 계약 | 정규화, 우선순위, 다중 view와 subtree 격리, async 역순 완료, 초기 실패·전환 실패·dispose 시 first-frame 대기 해제를 검증했다. |
+| CLDR 49 | 고정 XML의 39개 그룹에서 추출한 plain decimal 예제 1,651개 통과. 지역별 `pt-PT`, `pt-BR` 및 소수점 뒤 0의 차이도 계약 검사에 포함했다. |
+| 독립 Intl 소비 | Windows SDK 10.0.403, trim·self-contained, NativeAOT 실행과 `Doroti.Intl`·`Doroti.Runtime` NuGet 복원 및 계약 실행이 통과했다. |
+| 독립 analyzer 소비 | SDK 10.0.403과 11.0.100에서 analyzer NuGet 복원, 생성 코드 실행, 위치가 있는 `DLOC001`, 오류 후 복구와 ARB 삭제 후 registry 갱신이 통과했다. SDK 10에서 생성된 코드를 포함한 Windows NativeAOT 실행도 확인했다. |
+| Web compatible Debug | SDK 10.0.403/net10/Mono 10.0.15, Chromium `158.0.8127.18`. `/`와 `/demo/`에서 첫 화면과 선호 목록 순서 변경에 따른 en-US→ko-KR 전환을 확인했다. 앱 ARB, Material 버튼 라벨, 하위 트리 `lang`, 열린 DOM 입력의 `lang`/`dir`이 함께 갱신됐다. `/demo/`에서 full ICU `icudt.oh1zvcfom8.dat`를 요청했다. 파일은 1,526,128 bytes이며 SHA-256은 `b4ee4ee58ccc4d549a2816e8c40a9ecce40bf5ec26ba9cd5d89ac1e5191cf1ae`이다. |
+| Web threaded Debug | 같은 SDK·런타임에서 `DorotiWidgetLocales=ko`와 CJK ICU를 적용해 `/demo/`에서 동일한 언어 전환·UI·DOM 계약을 확인했다. 실제 요청된 `icudt_CJK.tjcz0u77k5.dat`는 956,416 bytes이며 SHA-256은 `4992ed42745cd09930a8769bd155153fb4f7b813d2798cf1cc39e9c4fa549c79`이다. |
+| 소스 로케일 선택 | `DorotiWidgetLocales=ko`에서 세 패키지가 en/ko만 등록하고 한국어 리소스를 로드했다. 같은 SDK 10 Debug의 trim 전 위젯 DLL 3개 합계는 전체 1,407,488 bytes, en/ko 73,216 bytes였다. |
+| 기본 앱과 WindowsAppSDK | 기본 Demo의 빌드와 dependencies를 확인했다. 기본 앱에 Intl·위젯 번역·ARB 생성기 참조가 없었다. WinRT analyzer가 요구한 배열 타입을 지정한 뒤 WindowsAppSDK Demo 로케일 probe를 빌드하고 실행했다. 실제 프로세스의 UI Automation 트리에서 한국어 앱 ARB와 Material 문구, 영어 하위 트리 문구를 확인했다. |
+| 위젯 NuGet 산출물 | 세 패키지를 로컬로 pack하고 각 패키지의 README, 출처 JSON과 Flutter 라이선스가 들어 있는지 확인했다. |
+
+저장소 루트에서 아래 계약을 실행한다. Windows에서 SDK별 로컬 analyzer output이 겹치면 `--artifacts-path`로 빌드 경로를 지정한다. 명령당 1,200초 제한을 적용한다.
+
+```powershell
+python Doroti/eng/run-with-timeout.py dotnet run --project Doroti/tests/Doroti.Localization.Tests --artifacts-path Doroti/artifacts/work2-native -p:UseSharedCompilation=false
+python Doroti/eng/run-with-timeout.py dotnet run --project Doroti/tests/Doroti.Localization.Tests --artifacts-path Doroti/artifacts/work2-selected -p:DorotiWidgetLocales=ko -- --selected
+python Doroti/eng/validate-localization-generator.py Doroti/artifacts/work2-native/bin/Doroti.Localization.Tests/debug --sdk 11
+python Doroti/eng/validate-localization-generator.py Doroti/artifacts/work2-native/bin/Doroti.Localization.Tests/debug --sdk 10 --aot
+```
+
+브라우저 검증은 Demo의 `DorotiIntlProbe=localizations` 빌드를 사용한다. SDK 10을 선택한 디렉터리에서 `DorotiWebExecutionMode=compatible`와 `BlazorWebAssemblyLoadAllGlobalizationData=true`로 publish하고, 출력 `wwwroot`를 검증기의 첫 번째 인자로 전달한다.
+
+```powershell
+python Doroti/eng/run-with-timeout.py node packages/platforms/web/tests/browser-widget-localization.mjs Doroti/artifacts/work2-web/compatible/wwwroot compatible /demo/
+python Doroti/eng/run-with-timeout.py node packages/platforms/web/tests/browser-widget-localization.mjs Doroti/artifacts/work2-web/threaded/wwwroot threaded /demo/
+```
+
+### P4와 전체 인수
+
+공식 `SkiaSharp.HarfBuzz` 4.156.0과 `HarfBuzzSharp` 14.4.0.100으로 Windows와 Chromium Web compatible/threaded에서 아랍어 연결, 데바나가리 모음 재배치, ZWJ 이모지의 UTF-16 클러스터를 확인했다. RichTextKit 검증에서 혼합 LTR·RTL hit test와 선택 영역의 그림 재생이 통과했다. 공백 없는 태국어의 단어 경계는 RichTextKit에서 첫 위치만 반환했고 Windows의 ICU4N은 예상한 단어와 줄 경계를 찾았다. 사전 기반 경계를 포함한 관리 코드 문단 조합, 제품 renderer 통합, 다른 runner·지원 브라우저, 실제 IME·접근성, 크기·성능 인수가 남아 있다. [문단 후보 검증과 재현 명령](Doroti/docs/localization/paragraph-feasibility.md)
+
+## 16. P4 제품 문단 opt-in
+
+- `-p:DorotiShapedParagraphs=true`로 기존 `ParagraphBuilder`와 `SkiaSceneRenderer` 사이에 합성 문단을 연결한다. HarfBuzz에 locale과 UTF-16 입력을 전달한다. 글리프 위치, 줄, 글자 클러스터, 선택 영역, 단어 경계를 같은 레이아웃에서 만든다. 기록된 `Picture`가 위치가 지정된 글리프를 보유한다.
+- Avalonia 12.2.0의 Unicode 17.0.0 분석 코드를 고정했다. UAX #9 테스트로 찾은 괄호 뒤 결합문자의 레벨 처리를 수정하고, 괄호 스택 한도에서는 해당 run의 괄호 쌍을 비운다. [Unicode 입력·라이선스·변경 내역](Doroti/docs/localization/paragraph-unicode-provenance.json)
+- ICU 79.1의 태국어 단어 목록을 106,111 bytes 리소스로 포함한다. C#에서 문자소를 기준으로 단어 경계의 후보를 찾고, 선택과 줄바꿈이 같은 경계를 사용한다.
+- Windows x64, Windows NativeAOT, WSL Linux x64와 Chromium의 Web compatible·threaded에서 혼합 양방향 텍스트, 데바나가리·ZWJ 이모지 UTF-16 범위, 태국어 단어 선택·줄바꿈, CRLF, 줄바꿈 affinity, 말줄임표, relayout·dispose·폰트 무효화 후 동일한 픽셀을 확인했다. opt-in WindowsAppSDK Demo의 한국어 앱·Material 문구와 영어 하위 트리 문구도 UI Automation에서 확인했다.
+- SDK 10 compatible Web Demo도 opt-in으로 publish했고, Chromium의 `/`와 `/demo/`에서 리소스·하위 트리·활성 DOM 입력 언어 전환이 통과했다. 배포 검증은 명시한 `DorotiWebBuildId`로 통과했다. 같은 full ICU profile에서 native WASM과 관련 관리 어셈블리의 Brotli 합계는 379,811 bytes 증가했다.
+- Unicode 17.0.0 표준 자료의 bidi 91,707개, line break 19,338개, word break 1,944개, grapheme 766개가 통과했다. 기본 렌더러의 spaced-text 21건과 retained shadow/text 24건도 통과했다. opt-in renderer 패키지에서 Unicode 출처와 배포 라이선스를 확인했다. [제품 경로 검증](Doroti/docs/localization/paragraph-feasibility.md)
+- Windows Release의 고정 폰트 CPU 측정에서 영어 레이아웃 p95는 짧은 문구 11.0→55.8µs, 긴 문단 162.8→906.4µs였다. 기록한 그림의 paint p95는 각각 6.3→4.6µs와 95.0→22.4µs였다. 영어 레이아웃 예산과 실제 프레임 인수가 남아 있어 소스 빌드에서 opt-in을 유지한다. [측정 범위와 명령](Doroti/docs/localization/paragraph-feasibility.md)
+
+## 17. P4 문단 재배치와 OpenType
+
+- 뷰마다 최근 문단 16개와 UTF-16 코드 단위 및 글리프 합계 16,384개를 한도로 합성 결과를 재사용한다. 폭을 바꾸면 줄과 좌표를 다시 배치한다. 양쪽 폭에서 줄바꿈과 왼쪽 정렬 결과가 같으면 기존 좌표를 사용한다. 글꼴이 바뀌면 다음 배치에 새 글꼴을 적용한다. 이미 기록한 그림은 당시의 글리프 위치를 보유한다.
+- 패키지에 포함된 공식 HarfBuzzSharp API로 OpenType 기능과 Skia의 가변 글꼴 좌표를 전달한다. C# 경계 계산은 일반 Unicode 경로와 동등한 ASCII 줄바꿈을 빠르게 처리하고, 단어 경계를 처음 요청할 때 계산한다.
+- Windows x64 JIT·NativeAOT, Linux x64 JIT, Chromium compatible·threaded에서 폭 변경, 정렬, 캐시 대체, 글꼴 교체 후 좌표와 retained paint를 확인했다. 아라비아 숫자의 비례·고정폭 옵션과 글꼴 폭 축을 바꾸면 배치 폭과 실제 픽셀이 달라졌다. 기본 스타일의 고정 문단 PNG는 다섯 실행 환경에서 각각 이전 결과와 해시가 같았다. Unicode 17 표준 113,755건과 ASCII 경계 비교 23건도 통과했다.
+- 같은 SDK 10 Web 산출물을 Firefox 159.0과 WebKit 27.2의 두 모드에서도 실행했다. 분리 설정, 문단 검증과 Chromium과 동일한 기본 문단 PNG 해시를 확인했다.
+- 같은 Windows x64 CPU fixture의 새 문단 반복 생성 p95는 초기 HarfBuzz 대비 짧은 영어 57.8→16.0µs, 줄바꿈 영어 912.1→155.5µs, 혼합 문단 2,056.4→707.2µs였다. 짧은 영어와 폭 또는 내용이 바뀌는 일부 영어 시나리오에서 §10.3의 10% 예산이 남는다. 합성 문단은 `-p:DorotiShapedParagraphs=true`로 사용할 수 있다. [측정 내역](Doroti/docs/localization/paragraph-feasibility.md#reflow-and-opentype)
+
+## 18. Android ARM64 실제 앱 검증
+
+- .NET 10 runner에서 AndroidX Window와 WebKit이 선택한 Core의 의존 버전에 맞춰 Lifecycle 2.11.0.1, Collection Ktx 1.6.0.1, SavedState Ktx 1.5.0.1을 고정했다. 접근성 브리지는 현재 AndroidX Core가 제공하는 정수형 체크 상태를 사용한다.
+- 앱 시작을 막던 Android Skia의 4.154.0 해시를 서명 검증을 통과한 공식 `SkiaSharp.NativeAssets.Android` 4.156.0의 ARM64 및 x64 해시로 갱신했다. ARM64 검증 APK의 Skia 바이너리는 공식 패키지의 파일과 동일했고 HarfBuzzSharp도 ARM64 ELF로 포함됐다.
+- SDK 10.0.403 Debug의 opt-in Demo를 Galaxy SM-S931N의 Android API 37에서 실행했다. 설치된 APK 해시를 확인했고, 앱별 언어를 `en-US`에서 `ko-KR`로 전환하자 `2 localized items`와 `Cancel`이 `현지화 항목 2개`와 `취소`로 바뀌었다. 영어 하위 트리의 `One localized item`을 화면과 Android 접근성 트리에서 확인했다. 검증 후 테스트 패키지를 제거했다.
+- 이 실행은 Android ARM64의 시작과 로케일 전환을 검증했다. Android x64 실행, SDK 11의 `maui-android` workload가 필요한 profile, 실제 IME 조합과 TalkBack 인수는 남아 있다. [Android 재현 명령](Doroti/docs/localization/paragraph-feasibility.md#android-demo)
+
+## 19. P4 접근성 문자 경계와 사전 확대
+
+- `ParagraphBuilder`가 현재 view의 문단 capability를 선택한다. 화면과 caret이 쓰는 UTF-16 클러스터, 방향, 줄과 사각형을 접근성 텍스트에도 전달한다. 사각형을 변환하거나 native wire로 보낼 때도 그 경계를 유지한다. 말줄임표 뒤 원문은 논리 경계를 유지하고 표시된 클러스터만 사각형을 갖는다.
+- 태국어에 쓰던 C# 단어 분할을 ICU 79.1의 라오어·크메르어·미얀마어 사전으로 확장했다. 각 사전은 처음 필요한 시점에 로드한다. 세 리소스의 gzip 합계는 686,663 bytes이며, 원본 revision·해시·저작권 고지를 보존했다. [사전 출처와 크기](Doroti/docs/localization/paragraph-feasibility.md#accessibility-geometry-and-dictionary-coverage)
+- Windows 제품 probe에서 두 view를 등록하고 아랍어 합자, CRLF, 데바나가리, ZWJ 이모지의 접근성 경계와 실제 선택·hit test를 확인했다. 라오어·크메르어·미얀마어의 공백 없는 예문에서 동일한 UTF-16 지점으로 단어 선택과 줄바꿈을 처리했고, 각 줄의 픽셀 출력을 검사했다.
+- 같은 제품 probe는 Windows x64 NativeAOT와 WSL Linux x64 JIT에서도 통과했다. 두 환경과 Windows JIT에서 고정 예문의 PNG 해시가 각 환경의 이전 실행과 같았다. 렌더러 NuGet에 사전 4개의 고지와 출처 JSON이 포함되는 것도 확인했다.
+- Windows Release 스크롤 회귀가 통과했다. Debug에서는 caret·selection 회귀를 통과한 뒤 `InheritedDependencyRegression`의 `didChangeDependencies` 호출이 framework의 현재 build target 검사에서 중단됐다.
+- Unicode 17.0.0의 bidi·문자소·단어·줄바꿈 113,755건과 ASCII 줄바꿈 비교 23건을 다시 실행했다. 렌더러의 spaced-text 21건, retained shadow/text 24건, Web raster 기본 정책과 폰트 변형 회귀도 통과했다.
+- Linux x64에서 서명이 검증된 공식 SkiaSharp 4.156.0의 관리·네이티브 라이브러리 해시를 허용 목록에 추가했다. WSL의 Qt 6.10.2 개발 빌드에서 Vulkan 소프트웨어 드라이버로 데모를 `en-US`와 `ko-KR`로 각각 시작했다. 두 화면에서 앱 ARB와 Material 번역, 영어 하위 트리를 확인했다.
+- SDK 11.0.100, net10.0.15의 Web compatible Release/AOT를 Chromium 158.0.8127.18에서 실행했다. 확장 제품 probe가 비격리 모드에서 네 언어의 단어 선택·줄바꿈 및 복합 문자의 접근성 경계를 확인했다. 초기 실행 중 빠졌던 host 시간 범위는 probe에서 제공한다.
+
+## 20. 2026-11-26 중간 마무리
+
+**PAUSED / PARTIAL.** 작업 트리의 변경사항과 §15–19의 검증 결과를 보존했다. 합성 문단은 `-p:DorotiShapedParagraphs=true`로 활성화한다. 재개는 사용자가 요청할 때 진행한다.
+
+| 범위 | 중단 시점과 다음 검증 |
+| --- | --- |
+| Web SDK 11 threaded Release/AOT | 초기 산출물은 제품 probe의 host 시간 범위 누락으로 실행에서 실패했다. 범위를 제공한 compatible 빌드는 통과했다. 수정본 threaded는 IL 최적화 중 중지했다. 같은 Firefox·WebKit 실행과 최신 제품 변경의 나머지 SDK·빌드 모드 검증도 남아 있다. |
+| Linux Qt 6.12.0 | 고정 Framework SDK를 WSL 작업용 캐시에 설치했고 WebEngine을 끈 native shim을 빌드했다. 배포 번들의 Qt 런타임 수집 중 중지했다. 번들 빌드를 마친 뒤 두 로케일로 데모를 띄우고 AT-SPI 트리를 확인해야 한다. §19의 화면 확인은 Qt 6.10.2 개발 빌드 범위다. |
+| 제품 인수 | Android x64 및 Apple 지원 runner, 실제 IME 조합과 운영체제별 보조 기술의 텍스트 탐색, §10.3의 영어 p95 및 실제 기기·프레임 예산이 남아 있다. |
+
+원시 로그와 화면은 삭제 가능한 `Doroti/artifacts/work2-paragraph/semantics`에 있다. Web 재개에는 [제품 probe 재현 명령](Doroti/docs/localization/paragraph-feasibility.md#reproduce-the-probe)의 SDK를 11.0.100으로 선택하고 `-c Release -p:RunAOTCompilation=true -p:DorotiShapedParagraphs=true -p:WasmEnableThreads=true`를 사용한다. Qt 재개에는 [공식 SDK 설치 및 배포 설정](packages/platforms/qt/qt-runtime.md#explicit-sdk-installation)과 `-p:DorotiIntlProbe=localizations -p:DorotiShapedParagraphs=true -p:DorotiQtWebEngine=false`를 사용한다.

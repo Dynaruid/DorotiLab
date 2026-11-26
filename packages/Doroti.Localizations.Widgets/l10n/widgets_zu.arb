@@ -1,0 +1,20 @@
+{
+  "@@locale": "zu",
+  "reorderItemToStart": "Yisa ekuqaleni",
+  "reorderItemToEnd": "Yisa ekugcineni",
+  "reorderItemUp": "Iya phezulu",
+  "reorderItemDown": "Iya phansi",
+  "reorderItemLeft": "Hambisa kwesokunxele",
+  "reorderItemRight": "Yisa kwesokudla",
+  "searchResultsFound": "Imiphumela yokusesha itholakele",
+  "noResultsFound": "Ayikho imiphumela etholakele",
+  "copyButtonLabel": "Kopisha",
+  "cutButtonLabel": "Sika",
+  "pasteButtonLabel": "Namathisela",
+  "selectAllButtonLabel": "Khetha konke",
+  "lookUpButtonLabel": "Bheka Phezulu",
+  "searchWebButtonLabel": "Sesha Iwebhu",
+  "shareButtonLabel": "Yabelana",
+  "radioButtonUnselectedLabel": "Ayikhethiwe",
+  "textDirection": "ltr"
+}

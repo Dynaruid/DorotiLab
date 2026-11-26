@@ -8,6 +8,7 @@
     <DorotiPackageReadmeSource>$(MSBuildProjectDirectory)/README.md</DorotiPackageReadmeSource>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="../Doroti.Runtime/Doroti.Runtime.csproj" />
     <DorotiLicense Include="../../LICENSES/Unicode-3.0.txt" />
     <None Include="data/plural-provenance.json" Pack="true" PackagePath="provenance/" />
   </ItemGroup>

@@ -1,0 +1,21 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <ParagraphProbeFontDirectory Condition="'$(ParagraphProbeFontDirectory)' == ''">$(MSBuildThisFileDirectory)../../artifacts/work2-paragraph/fonts</ParagraphProbeFontDirectory>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(DorotiShapedParagraphs)' != 'true'">
+    <Compile Include="../ParagraphProbe.cs" Link="ParagraphProbe.cs" />
+    <PackageReference Include="SkiaSharp.HarfBuzz" Version="4.156.0" />
+    <PackageReference Include="Topten.RichTextKit" Version="0.6.175" />
+  </ItemGroup>
+  <PropertyGroup Condition="'$(DorotiShapedParagraphs)' == 'true'">
+    <DefineConstants>$(DefineConstants);DOROTI_SHAPED_PARAGRAPHS</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(DorotiShapedParagraphs)' == 'true'">
+    <Compile Include="../ProductParagraphProbe.cs" Link="ProductParagraphProbe.cs" />
+    <ProjectReference Include="../../../src/Doroti.Framework.Rendering/Doroti.Framework.Rendering.csproj" />
+    <ProjectReference Include="../../../src/Doroti.Skia.Rendering/Doroti.Skia.Rendering.csproj" />
+  </ItemGroup>
+</Project>

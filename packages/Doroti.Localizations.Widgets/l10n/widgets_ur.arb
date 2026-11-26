@@ -1,0 +1,20 @@
+{
+  "@@locale": "ur",
+  "reorderItemToStart": "شروع میں منتقل کریں",
+  "reorderItemToEnd": "آخر میں منتقل کریں",
+  "reorderItemUp": "اوپر منتقل کریں",
+  "reorderItemDown": "نیچے منتقل کریں",
+  "reorderItemLeft": "بائیں منتقل کریں",
+  "reorderItemRight": "دائیں منتقل کریں",
+  "searchResultsFound": "تلاش کے نتائج مل گئے",
+  "noResultsFound": "کوئی نتائج نہیں ملے",
+  "copyButtonLabel": "کاپی کریں",
+  "cutButtonLabel": "کٹ کریں",
+  "pasteButtonLabel": "پیسٹ کریں",
+  "selectAllButtonLabel": "سبھی کو منتخب کریں",
+  "lookUpButtonLabel": "تفصیل دیکھیں",
+  "searchWebButtonLabel": "ویب تلاش کریں",
+  "shareButtonLabel": "اشتراک کریں",
+  "radioButtonUnselectedLabel": "غیر منتخب کردہ",
+  "textDirection": "rtl"
+}

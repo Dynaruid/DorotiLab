@@ -6,6 +6,7 @@
     <IsAotCompatible>true</IsAotCompatible>
   </PropertyGroup>
   <ItemGroup>
+    <InternalsVisibleTo Include="Doroti.Framework.Rendering" />
     <ProjectReference Include="..\Doroti.Runtime\Doroti.Runtime.csproj" />
     <ProjectReference Include="..\Doroti.Ui\Doroti.Ui.csproj" />
     <ProjectReference Include="..\Doroti.Framework.Foundation\Doroti.Framework.Foundation.csproj" />

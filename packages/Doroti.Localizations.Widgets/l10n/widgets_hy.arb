@@ -1,0 +1,20 @@
+{
+  "@@locale": "hy",
+  "reorderItemToStart": "Տեղափոխել սկիզբ",
+  "reorderItemToEnd": "Տեղափոխել վերջ",
+  "reorderItemUp": "Տեղափոխել վերև",
+  "reorderItemDown": "Տեղափոխել ներքև",
+  "reorderItemLeft": "Տեղափոխել ձախ",
+  "reorderItemRight": "Տեղափոխել աջ",
+  "searchResultsFound": "Գտնվել են արդյունքներ",
+  "noResultsFound": "Ոչինչ չի գտնվել",
+  "copyButtonLabel": "Պատճենել",
+  "cutButtonLabel": "Կտրել",
+  "pasteButtonLabel": "Տեղադրել",
+  "selectAllButtonLabel": "Նշել բոլորը",
+  "lookUpButtonLabel": "Փնտրել",
+  "searchWebButtonLabel": "Որոնել համացանցում",
+  "shareButtonLabel": "Կիսվել",
+  "radioButtonUnselectedLabel": "Ընտրված չէ",
+  "textDirection": "ltr"
+}

@@ -106,6 +106,8 @@ The Dart-to-C# compiler is an optional source import and behavior-comparison too
 | [Cupertino sample](samples/DorotiSampleApp2/README.md) | Cupertino components, profile input, and appearance settings on Windows / Web |
 | [Custom carousel sample](samples/DorotiCarouselApp/README.md) | Five customizable carousel demos with snapping, looping, transforms, and controllers |
 | [Material components demo](samples/DorotiDemoApp/README.md) | Standalone copy of the Testbed Components page |
+| [Widget localization](Doroti/docs/localization/widget-packages.md) | Opt-in Widgets, Cupertino and Material translations and locale selection |
+| [ARB localization generator](tools/Doroti.Localization.Generator/README.md) | Typed app resources, plural rules and .NET formatting |
 | [iOS / Android / Web / Windows helper](helpers/deploy-helper/README.md) | Mobile install and launch, Web Release AOT previews, and Windows Native AOT publish and launch |
 | [Dart-to-C# compiler](tools/Doroti.DartToCSharp/README.md) | Optional source import and migration tooling |
 | [WGSL compiler](tools/Doroti.Wgsl/README.md) | Shader compilation, backend profiles, and application integration |

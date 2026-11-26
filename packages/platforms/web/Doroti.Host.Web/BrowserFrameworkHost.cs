@@ -31,7 +31,7 @@ public sealed class BrowserFrameworkHost : IDisposable
         if (options.DecoderUrl is null)
             throw new ArgumentException("Automatic fallback downloads require a WOFF2 DecoderUrl.", nameof(options));
         options = options with { PreferredLanguage = options.PreferredLanguage
-            ?? _views.Values.FirstOrDefault().Host?.Snapshot.LanguageTag ?? "en" };
+            ?? _views.Values.FirstOrDefault().Host?.Configuration.locales.FirstOrDefault().toLanguageTag() ?? "en" };
         _fontFallbackLoader = new(_fallbackFonts, async (url, token) =>
         {
             var bytes = await http.GetByteArrayAsync(url, token);

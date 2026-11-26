@@ -1,0 +1,20 @@
+{
+  "@@locale": "mn",
+  "reorderItemToStart": "Эхлэл рүү зөөх",
+  "reorderItemToEnd": "Төгсгөл рүү зөөх",
+  "reorderItemUp": "Дээш зөөх",
+  "reorderItemDown": "Доош зөөх",
+  "reorderItemLeft": "Зүүн тийш зөөх",
+  "reorderItemRight": "Баруун тийш зөөх",
+  "searchResultsFound": "Хайлтын илэрцүүд олдлоо",
+  "noResultsFound": "Илэрц олдсонгүй",
+  "copyButtonLabel": "Хуулах",
+  "cutButtonLabel": "Таслах",
+  "pasteButtonLabel": "Буулгах",
+  "selectAllButtonLabel": "Бүгдийг сонгох",
+  "lookUpButtonLabel": "Дээшээ харах",
+  "searchWebButtonLabel": "Вебээс хайх",
+  "shareButtonLabel": "Хуваалцах",
+  "radioButtonUnselectedLabel": "Сонгоогүй",
+  "textDirection": "ltr"
+}

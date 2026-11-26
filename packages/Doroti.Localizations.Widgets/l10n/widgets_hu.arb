@@ -1,0 +1,20 @@
+{
+  "@@locale": "hu",
+  "reorderItemToStart": "Áthelyezés az elejére",
+  "reorderItemToEnd": "Áthelyezés a végére",
+  "reorderItemUp": "Áthelyezés felfelé",
+  "reorderItemDown": "Áthelyezés lefelé",
+  "reorderItemLeft": "Áthelyezés balra",
+  "reorderItemRight": "Áthelyezés jobbra",
+  "searchResultsFound": "Rendelkezésre állnak keresési találatok",
+  "noResultsFound": "Nincs találat",
+  "copyButtonLabel": "Másolás",
+  "cutButtonLabel": "Kivágás",
+  "pasteButtonLabel": "Beillesztés",
+  "selectAllButtonLabel": "Összes kijelölése",
+  "lookUpButtonLabel": "Felfelé nézés",
+  "searchWebButtonLabel": "Keresés az interneten",
+  "shareButtonLabel": "Megosztás",
+  "radioButtonUnselectedLabel": "Nincs kiválasztva",
+  "textDirection": "ltr"
+}

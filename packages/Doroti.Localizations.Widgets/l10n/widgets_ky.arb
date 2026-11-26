@@ -1,0 +1,20 @@
+{
+  "@@locale": "ky",
+  "reorderItemToStart": "Башына жылдыруу",
+  "reorderItemToEnd": "Аягына жылдыруу",
+  "reorderItemUp": "Жогору жылдыруу",
+  "reorderItemDown": "Төмөн жылдыруу",
+  "reorderItemLeft": "Солго жылдыруу",
+  "reorderItemRight": "Оңго жылдыруу",
+  "searchResultsFound": "Изделген нерсе табылды",
+  "noResultsFound": "Эч нерсе табылган жок",
+  "copyButtonLabel": "Көчүрүү",
+  "cutButtonLabel": "Кесүү",
+  "pasteButtonLabel": "Чаптоо",
+  "selectAllButtonLabel": "Баарын тандоо",
+  "lookUpButtonLabel": "Издөө",
+  "searchWebButtonLabel": "Интернеттен издөө",
+  "shareButtonLabel": "Бөлүшүү",
+  "radioButtonUnselectedLabel": "Тандалган жок",
+  "textDirection": "ltr"
+}

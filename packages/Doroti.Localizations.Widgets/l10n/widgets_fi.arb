@@ -1,0 +1,20 @@
+{
+  "@@locale": "fi",
+  "reorderItemToStart": "Siirrä alkuun",
+  "reorderItemToEnd": "Siirrä loppuun",
+  "reorderItemUp": "Siirrä ylös",
+  "reorderItemDown": "Siirrä alas",
+  "reorderItemLeft": "Siirrä vasemmalle",
+  "reorderItemRight": "Siirrä oikealle",
+  "searchResultsFound": "Hakutuloksia löytyi",
+  "noResultsFound": "Ei tuloksia",
+  "copyButtonLabel": "Kopioi",
+  "cutButtonLabel": "Leikkaa",
+  "pasteButtonLabel": "Liitä",
+  "selectAllButtonLabel": "Valitse kaikki",
+  "lookUpButtonLabel": "Hae",
+  "searchWebButtonLabel": "Hae verkosta",
+  "shareButtonLabel": "Jaa",
+  "radioButtonUnselectedLabel": "Ei valittu",
+  "textDirection": "ltr"
+}

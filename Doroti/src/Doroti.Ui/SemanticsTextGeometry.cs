@@ -8,27 +8,40 @@ public sealed record SemanticsTextRun(int Start, int End, Rect Bounds, int LineS
 /// <summary>UTF-16 ranges from actual paragraph layout; no node-rectangle approximation.</summary>
 public sealed class SemanticsTextGeometry
 {
+    private readonly int[] _characterBoundaries;
+
     public string Text { get; }
     public long Revision { get; }
     public IReadOnlyList<SemanticsTextRun> Runs { get; }
     public IReadOnlyList<int> CharacterBoundaries { get; }
 
     public SemanticsTextGeometry(string text, long revision, IEnumerable<SemanticsTextRun> runs)
+        : this(text, revision, DefaultBoundaries(text), runs.ToArray())
+    { }
+
+    // Both arrays are owned by the geometry and can be shared with projections.
+    internal SemanticsTextGeometry(string text, long revision, int[] boundaries, SemanticsTextRun[] runs)
     {
-        ArgumentNullException.ThrowIfNull(text);
-        var values = runs.ToArray();
-        if (values.Any(r => r.Start < 0 || r.End < r.Start || r.End > text.Length || !r.Bounds.IsFinite
+        if (runs.Any(r => r.Start < 0 || r.End < r.Start || r.End > text.Length || !r.Bounds.IsFinite
             || r.LineStart < 0 || r.LineEnd < r.LineStart || r.LineEnd > text.Length))
             throw new ArgumentException("Invalid layout text range.", nameof(runs));
         Text = text; Revision = revision;
-        Runs = Array.AsReadOnly(values);
-        CharacterBoundaries = Array.AsReadOnly(StringInfo.ParseCombiningCharacters(text).Append(text.Length).Distinct().ToArray());
+        Runs = Array.AsReadOnly(runs);
+        _characterBoundaries = boundaries;
+        CharacterBoundaries = Array.AsReadOnly(boundaries);
+    }
+
+    private static int[] DefaultBoundaries(string text)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+        return [.. StringInfo.ParseCombiningCharacters(text), text.Length];
     }
 
     public int Snap(int offset, bool forward = false)
     {
         offset = Math.Clamp(offset, 0, Text.Length);
-        return forward ? CharacterBoundaries.First(b => b >= offset) : CharacterBoundaries.Last(b => b <= offset);
+        var index = Array.BinarySearch(_characterBoundaries, offset);
+        return index >= 0 ? offset : _characterBoundaries[forward ? ~index : ~index - 1];
     }
 
     public IReadOnlyList<Rect> Bounds(int start, int end) => Runs.Where(r => r.End > start && r.Start < end && !r.Bounds.isEmpty)
@@ -47,11 +60,12 @@ public sealed class SemanticsTextGeometry
         return Text.Length == 0 ? 0 : -1;
     }
 
-    public SemanticsTextGeometry Transform(Func<Rect, Rect> transform, Rect? clip = null) => new(Text, Revision,
-        Runs.Select(run => run with { Bounds = clip is { } value ? transform(run.Bounds).intersect(value) : transform(run.Bounds) }));
+    public SemanticsTextGeometry Transform(Func<Rect, Rect> transform, Rect? clip = null) => new(Text, Revision, _characterBoundaries,
+        Runs.Select(run => run with { Bounds = clip is { } value ? transform(run.Bounds).intersect(value) : transform(run.Bounds) }).ToArray());
 
     public bool ContentEquals(SemanticsTextGeometry? other) => ReferenceEquals(this, other)
-        || other is not null && Text == other.Text && Revision == other.Revision && Runs.SequenceEqual(other.Runs);
+        || other is not null && Text == other.Text && Revision == other.Revision
+            && _characterBoundaries.AsSpan().SequenceEqual(other._characterBoundaries) && Runs.SequenceEqual(other.Runs);
 
     public SemanticsTextGeometryWire ToWire() => new(Text, Revision, CharacterBoundaries.ToArray(),
         Runs.Select(r => new SemanticsTextRunWire(r.Start, r.End, r.Bounds.left, r.Bounds.top, r.Bounds.right, r.Bounds.bottom,

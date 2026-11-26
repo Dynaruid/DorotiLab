@@ -1,0 +1,20 @@
+{
+  "@@locale": "af",
+  "reorderItemToStart": "Skuif na die begin",
+  "reorderItemToEnd": "Skuif na die einde",
+  "reorderItemUp": "Skuif op",
+  "reorderItemDown": "Skuif af",
+  "reorderItemLeft": "Skuif na links",
+  "reorderItemRight": "Skuif na regs",
+  "searchResultsFound": "Soekresultate gevind",
+  "noResultsFound": "Geen resultate gekry nie",
+  "copyButtonLabel": "Kopieer",
+  "cutButtonLabel": "Knip",
+  "pasteButtonLabel": "Plak",
+  "selectAllButtonLabel": "Kies alles",
+  "lookUpButtonLabel": "Kyk op",
+  "searchWebButtonLabel": "Deursoek web",
+  "shareButtonLabel": "Deel",
+  "radioButtonUnselectedLabel": "Nie gekies nie",
+  "textDirection": "ltr"
+}

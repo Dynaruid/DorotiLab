@@ -1,0 +1,20 @@
+{
+  "@@locale": "ru",
+  "reorderItemToStart": "Переместить в начало",
+  "reorderItemToEnd": "Переместить в конец",
+  "reorderItemUp": "Переместить вверх",
+  "reorderItemDown": "Переместить вниз",
+  "reorderItemLeft": "Переместить влево",
+  "reorderItemRight": "Переместить вправо",
+  "searchResultsFound": "Поиск дал результаты",
+  "noResultsFound": "Ничего не найдено",
+  "copyButtonLabel": "Копировать",
+  "cutButtonLabel": "Вырезать",
+  "pasteButtonLabel": "Вставить",
+  "selectAllButtonLabel": "Выбрать все",
+  "lookUpButtonLabel": "Найти",
+  "searchWebButtonLabel": "Искать в интернете",
+  "shareButtonLabel": "Поделиться",
+  "radioButtonUnselectedLabel": "Не выбрано",
+  "textDirection": "ltr"
+}

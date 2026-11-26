@@ -71,6 +71,7 @@ interface HostSnapshot {
   visible: boolean;
   focused: boolean;
   languageTag: string;
+  languageTags?: readonly string[];
   brightness: string;
   operatingSystem: string;
   generation: number;

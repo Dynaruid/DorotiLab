@@ -1,0 +1,20 @@
+{
+  "@@locale": "nl",
+  "reorderItemToStart": "Naar het begin verplaatsen",
+  "reorderItemToEnd": "Naar het einde verplaatsen",
+  "reorderItemUp": "Omhoog verplaatsen",
+  "reorderItemDown": "Omlaag verplaatsen",
+  "reorderItemLeft": "Naar links verplaatsen",
+  "reorderItemRight": "Naar rechts verplaatsen",
+  "searchResultsFound": "Zoekresultaten gevonden",
+  "noResultsFound": "Geen resultaten gevonden",
+  "copyButtonLabel": "Kopiëren",
+  "cutButtonLabel": "Knippen",
+  "pasteButtonLabel": "Plakken",
+  "selectAllButtonLabel": "Alles selecteren",
+  "lookUpButtonLabel": "Opzoeken",
+  "searchWebButtonLabel": "Op internet zoeken",
+  "shareButtonLabel": "Delen",
+  "radioButtonUnselectedLabel": "Niet geselecteerd",
+  "textDirection": "ltr"
+}

@@ -1,0 +1,20 @@
+{
+  "@@locale": "lv",
+  "reorderItemToStart": "Pārvietot uz sākumu",
+  "reorderItemToEnd": "Pārvietot uz beigām",
+  "reorderItemUp": "Pārvietot uz augšu",
+  "reorderItemDown": "Pārvietot uz leju",
+  "reorderItemLeft": "Pārvietot pa kreisi",
+  "reorderItemRight": "Pārvietot pa labi",
+  "searchResultsFound": "Tika atrasti meklēšanas rezultāti",
+  "noResultsFound": "Netika atrasts neviens rezultāts",
+  "copyButtonLabel": "Kopēt",
+  "cutButtonLabel": "Izgriezt",
+  "pasteButtonLabel": "Ielīmēt",
+  "selectAllButtonLabel": "Atlasīt visu",
+  "lookUpButtonLabel": "Meklēt",
+  "searchWebButtonLabel": "Meklēt tīmeklī",
+  "shareButtonLabel": "Kopīgot",
+  "radioButtonUnselectedLabel": "Nav atlasīts",
+  "textDirection": "ltr"
+}

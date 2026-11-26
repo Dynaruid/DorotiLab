@@ -84,7 +84,7 @@ internal sealed partial class MauiViewEnvironment
             false,
             workspace.AccessibilityDisplayShouldReduceMotion
         );
-        Locales = NSLocale.PreferredLanguages.Select(ParseLocale).ToArray();
+        Locales = ParseLocales(NSLocale.PreferredLanguages);
         Use24Hour =
             NSDateFormatter.GetDateFormatFromTemplate("j", 0, NSLocale.CurrentLocale)?.Contains('a')
             == false;

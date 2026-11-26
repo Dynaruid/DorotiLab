@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../../Doroti/eng/Doroti.Common.props" />
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <PackageId>Doroti.Localization.Generator</PackageId>
+    <Version>0.4.1-beta</Version>
+    <Description>Build-time ARB localization generator for Doroti applications.</Description>
+    <IsRoslynComponent>true</IsRoslynComponent>
+    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+    <!-- The supported compiler hosts are the .NET 10 and 11 SDK CLIs. The analyzer uses their built-in JSON runtime. -->
+    <NoWarn>$(NoWarn);RS1041</NoWarn>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+    <NoPackageAnalysis>true</NoPackageAnalysis>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" PrivateAssets="all" />
+    <AdditionalFiles Include="AnalyzerReleases.*.md" />
+    <None Include="$(OutputPath)$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Update="build/Doroti.Localization.Generator.props" Pack="true" PackagePath="build/Doroti.Localization.Generator.props" />
+    <None Update="README.md" Pack="true" PackagePath="/" />
+    <None Include="../../Doroti/LICENSES/Unicode-3.0.txt" Pack="true" PackagePath="licenses/" />
+    <None Include="../../Doroti/src/Doroti.Intl/data/plural-provenance.json" Pack="true" PackagePath="provenance/" />
+    <Compile Include="../../Doroti/src/Doroti.Runtime/LocaleTag.cs" Link="LocaleTag.cs" />
+    <Compile Include="../../Doroti/src/Doroti.Intl/CardinalPlural.cs" Link="CardinalPlural.cs" />
+    <Compile Include="../../Doroti/src/Doroti.Intl/CardinalPluralRules.cs" Link="CardinalPluralRules.cs" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,20 @@
+{
+  "@@locale": "en-GB",
+  "reorderItemToStart": "Move to the start",
+  "reorderItemToEnd": "Move to the end",
+  "reorderItemUp": "Move up",
+  "reorderItemDown": "Move down",
+  "reorderItemLeft": "Move to the left",
+  "reorderItemRight": "Move to the right",
+  "searchResultsFound": "Search results found",
+  "noResultsFound": "No results found",
+  "copyButtonLabel": "Copy",
+  "cutButtonLabel": "Cut",
+  "pasteButtonLabel": "Paste",
+  "selectAllButtonLabel": "Select all",
+  "lookUpButtonLabel": "Look up",
+  "searchWebButtonLabel": "Search Web",
+  "shareButtonLabel": "Share",
+  "radioButtonUnselectedLabel": "Not selected",
+  "textDirection": "ltr"
+}

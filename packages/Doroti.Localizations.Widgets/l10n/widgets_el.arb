@@ -1,0 +1,20 @@
+{
+  "@@locale": "el",
+  "reorderItemToStart": "Μετακίνηση στην αρχή",
+  "reorderItemToEnd": "Μετακίνηση στο τέλος",
+  "reorderItemUp": "Μετακίνηση προς τα πάνω",
+  "reorderItemDown": "Μετακίνηση προς τα κάτω",
+  "reorderItemLeft": "Μετακίνηση αριστερά",
+  "reorderItemRight": "Μετακίνηση δεξιά",
+  "searchResultsFound": "Βρέθηκαν αποτελέσματα αναζήτησης",
+  "noResultsFound": "Δεν βρέθηκαν αποτελέσματα",
+  "copyButtonLabel": "Αντιγραφή",
+  "cutButtonLabel": "Αποκοπή",
+  "pasteButtonLabel": "Επικόλληση",
+  "selectAllButtonLabel": "Επιλογή όλων",
+  "lookUpButtonLabel": "Look Up",
+  "searchWebButtonLabel": "Αναζήτηση στον ιστό",
+  "shareButtonLabel": "Κοινή χρήση",
+  "radioButtonUnselectedLabel": "Δεν έχει επιλεγεί",
+  "textDirection": "ltr"
+}

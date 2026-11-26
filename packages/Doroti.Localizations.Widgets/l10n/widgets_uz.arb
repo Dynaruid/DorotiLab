@@ -1,0 +1,20 @@
+{
+  "@@locale": "uz",
+  "reorderItemToStart": "Boshiga siljitish",
+  "reorderItemToEnd": "Oxiriga siljitish",
+  "reorderItemUp": "Tepaga siljitish",
+  "reorderItemDown": "Pastga siljitish",
+  "reorderItemLeft": "Chapga siljitish",
+  "reorderItemRight": "Oʻngga siljitish",
+  "searchResultsFound": "Qidiruv natijalari topildi",
+  "noResultsFound": "Hech narsa topilmadi",
+  "copyButtonLabel": "Nusxa olish",
+  "cutButtonLabel": "Kesib olish",
+  "pasteButtonLabel": "Joylash",
+  "selectAllButtonLabel": "Hammasi",
+  "lookUpButtonLabel": "Tepaga qarang",
+  "searchWebButtonLabel": "Internetdan qidirish",
+  "shareButtonLabel": "Ulashish",
+  "radioButtonUnselectedLabel": "Tanlanmagan",
+  "textDirection": "ltr"
+}

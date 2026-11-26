@@ -208,7 +208,7 @@ internal sealed class MauiHostAdapter
 #if WINDOWS || MACCATALYST || IOS || ANDROID || MACOS
     public PlatformConfiguration Configuration =>
         new(
-            _environment.Locales ?? new Locale[] { ToLocale(CultureInfo.CurrentUICulture) },
+            _environment.Locales ?? Locale.ParseLanguageTags([], CultureInfo.CurrentUICulture.Name),
             Application.Current?.RequestedTheme == AppTheme.Dark
                 ? Brightness.dark
                 : Brightness.light,
@@ -1211,11 +1211,4 @@ internal sealed class MauiHostAdapter
     private void HandleRequestedThemeChanged(object? sender, AppThemeChangedEventArgs args) =>
         ConfigurationChanged?.Invoke(Configuration);
 
-    private static Locale ToLocale(CultureInfo culture)
-    {
-        var pieces = culture.Name.Split('-', StringSplitOptions.RemoveEmptyEntries);
-        return pieces.Length > 1
-            ? new(pieces[0], pieces[^1])
-            : new(culture.TwoLetterISOLanguageName);
-    }
 }

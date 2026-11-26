@@ -1,0 +1,20 @@
+{
+  "@@locale": "sl",
+  "reorderItemToStart": "Premakni na začetek",
+  "reorderItemToEnd": "Premakni na konec",
+  "reorderItemUp": "Premakni navzgor",
+  "reorderItemDown": "Premakni navzdol",
+  "reorderItemLeft": "Premakni levo",
+  "reorderItemRight": "Premakni desno",
+  "searchResultsFound": "Najdeni so rezultati iskanja",
+  "noResultsFound": "Ni rezultatov",
+  "copyButtonLabel": "Kopiraj",
+  "cutButtonLabel": "Izreži",
+  "pasteButtonLabel": "Prilepi",
+  "selectAllButtonLabel": "Izberi vse",
+  "lookUpButtonLabel": "Pogled gor",
+  "searchWebButtonLabel": "Iskanje v spletu",
+  "shareButtonLabel": "Deli",
+  "radioButtonUnselectedLabel": "Ni izbrano",
+  "textDirection": "ltr"
+}

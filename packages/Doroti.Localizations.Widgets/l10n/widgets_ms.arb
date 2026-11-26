@@ -1,0 +1,20 @@
+{
+  "@@locale": "ms",
+  "reorderItemToStart": "Alih ke permulaan",
+  "reorderItemToEnd": "Alih ke penghujung",
+  "reorderItemUp": "Alih ke atas",
+  "reorderItemDown": "Alih ke bawah",
+  "reorderItemLeft": "Alih ke kiri",
+  "reorderItemRight": "Alih ke kanan",
+  "searchResultsFound": "Hasil carian ditemukan",
+  "noResultsFound": "Tiada hasil carian ditemukan",
+  "copyButtonLabel": "Salin",
+  "cutButtonLabel": "Potong",
+  "pasteButtonLabel": "Tampal",
+  "selectAllButtonLabel": "Pilih semua",
+  "lookUpButtonLabel": "Lihat ke Atas",
+  "searchWebButtonLabel": "Buat carian pada Web",
+  "shareButtonLabel": "Kongsi",
+  "radioButtonUnselectedLabel": "Tidak dipilih",
+  "textDirection": "ltr"
+}

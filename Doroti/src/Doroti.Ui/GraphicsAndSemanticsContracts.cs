@@ -1830,7 +1830,7 @@ public sealed record ParagraphRequest(
     internal bool DeferLayout { get; init; }
 }
 
-internal sealed record ParagraphHostLineSnapshot(
+internal readonly record struct ParagraphHostLineSnapshot(
     int Start,
     int End,
     bool HardBreak,
@@ -1842,7 +1842,7 @@ internal sealed record ParagraphHostLineSnapshot(
     double Baseline
 );
 
-internal sealed record ParagraphHostGraphemeSnapshot(
+internal readonly record struct ParagraphHostGraphemeSnapshot(
     int Start,
     int End,
     double Left,
@@ -1851,11 +1851,16 @@ internal sealed record ParagraphHostGraphemeSnapshot(
     double Bottom,
     double StrutTop,
     double StrutBottom,
-    TextDirection Direction
+    TextDirection Direction,
+    int LineIndex = 0
 );
 
+internal interface IParagraphHostLayout : IDisposable
+{
+    (double Width, ParagraphHostLayoutSnapshot Snapshot) Layout(double availableWidth);
+}
+
 internal sealed record ParagraphHostLayoutSnapshot(
-    double Width,
     double Height,
     double AlphabeticBaseline,
     double IdeographicBaseline,
@@ -1863,10 +1868,10 @@ internal sealed record ParagraphHostLayoutSnapshot(
     double MaxIntrinsicWidth,
     double LongestLine,
     bool DidExceedMaxLines,
-    ulong MetricsHash,
-    IReadOnlyList<double> CodeUnitAdvances,
     IReadOnlyList<ParagraphHostLineSnapshot> Lines,
-    IReadOnlyList<ParagraphHostGraphemeSnapshot> Graphemes
+    ReadOnlyMemory<ParagraphHostGraphemeSnapshot> Graphemes,
+    Lazy<int[]>? WordBoundaries = null,
+    object? PaintPayload = null
 );
 
 public sealed class Paragraph : IDisposable
@@ -1878,7 +1883,8 @@ public sealed class Paragraph : IDisposable
     private readonly int[] _graphemeStarts;
     private double[] _codeUnitAdvances;
     private List<ParagraphLine> _lines = [];
-    private ParagraphHostGraphemeSnapshot[]? _hostGraphemes;
+    private ReadOnlyMemory<ParagraphHostGraphemeSnapshot>? _hostGraphemes;
+    private Lazy<int[]>? _hostWordBoundaries;
     private double? _hostMinIntrinsicWidth;
     private double? _hostMaxIntrinsicWidth;
     private double? _hostLongestLine;
@@ -1886,6 +1892,9 @@ public sealed class Paragraph : IDisposable
     private double? _hostIdeographicBaseline;
 
     private bool _paintingSnapshot;
+    private IParagraphHostLayout? _hostLayout;
+    private ParagraphHostLayoutSnapshot? _appliedHostLayout;
+    internal object? HostPaintPayload { get; private set; }
     internal bool IsPaintingSnapshot => _paintingSnapshot;
     internal Paragraph SnapshotForPainting()
     {
@@ -1898,6 +1907,9 @@ public sealed class Paragraph : IDisposable
         var snapshot = (Paragraph)MemberwiseClone();
         snapshot._disposed = 0;
         snapshot._paintingSnapshot = true;
+        snapshot._hostLayout = null;
+        if (HostPaintPayload is not null)
+            return snapshot;
         snapshot._lines = new(_lines);
         snapshot.TextRuns = Array.AsReadOnly(
             TextRuns
@@ -1918,19 +1930,31 @@ public sealed class Paragraph : IDisposable
         IReadOnlyList<double>? codeUnitAdvances = null,
         IReadOnlyList<ParagraphTextRun>? textRuns = null
     )
+        : this(text, width, height, fontSize, maxLines, fontFamily, color, codeUnitAdvances, textRuns, null)
+    { }
+
+    internal Paragraph(ParagraphRequest request, ParagraphTextRun[] runs, IParagraphHostLayout layout)
+        : this(request.Text, 0, 0, request.FontSize, request.MaxLines, request.FontFamily, request.Color, null, runs, layout)
+    { }
+
+    private Paragraph(string text, double width, double height, double fontSize, long? maxLines,
+        string? fontFamily, Color? color, IReadOnlyList<double>? codeUnitAdvances,
+        IReadOnlyList<ParagraphTextRun>? textRuns, IParagraphHostLayout? layout)
     {
         this.text = text;
         this.fontSize = Math.Max(1, fontSize);
         this.fontFamily = fontFamily;
         this.color = color ?? new Color(0xFF000000);
-        TextRuns = (textRuns ?? []).ToArray();
-        _graphemeStarts = System.Globalization.StringInfo.ParseCombiningCharacters(text);
+        _hostLayout = layout;
+        TextRuns = layout is null ? (textRuns ?? []).ToArray() : textRuns!;
+        _graphemeStarts = layout is null ? System.Globalization.StringInfo.ParseCombiningCharacters(text) : [];
         _lineHeight = height > 0 ? height : this.fontSize * 1.2;
         _codeUnitAdvances =
+            layout is not null ? [] :
             codeUnitAdvances is { Count: var count } && count == text.Length
                 ? codeUnitAdvances.Select(value => Math.Max(0, value)).ToArray()
                 : CreateFallbackAdvances(text, this.fontSize);
-        _naturalWidth = ComputeNaturalWidth(text, _codeUnitAdvances);
+        _naturalWidth = layout is null ? ComputeNaturalWidth(text, _codeUnitAdvances) : 0;
         _maxLines = maxLines;
         this.width = width;
         this.height = height;
@@ -1963,6 +1987,7 @@ public sealed class Paragraph : IDisposable
     public void layout(ParagraphConstraints constraints)
     {
         if (_paintingSnapshot) throw new InvalidOperationException("A recorded paragraph snapshot is immutable.");
+        ObjectDisposedException.ThrowIf(debugDisposed, this);
         var availableWidth = constraints.width;
         if (double.IsNaN(availableWidth) || availableWidth < 0)
         {
@@ -1972,12 +1997,21 @@ public sealed class Paragraph : IDisposable
             );
         }
 
+        if (_hostLayout is { } layoutHost)
+        {
+            var (placedWidth, snapshot) = layoutHost.Layout(availableWidth);
+            ApplyHostLayout(placedWidth, snapshot);
+            return;
+        }
+
         _hostMinIntrinsicWidth = null;
         _hostMaxIntrinsicWidth = null;
         _hostLongestLine = null;
         _hostAlphabeticBaseline = null;
         _hostIdeographicBaseline = null;
         _hostGraphemes = null;
+        _hostWordBoundaries = null;
+        HostPaintPayload = null;
         width = double.IsFinite(availableWidth) ? Math.Max(0, availableWidth) : _naturalWidth;
         _lines = BuildLines(width);
         didExceedMaxLines = _maxLines.HasValue && _lines.Count > _maxLines.Value;
@@ -2013,16 +2047,16 @@ public sealed class Paragraph : IDisposable
         if (_hostGraphemes is { } graphemes)
         {
             var useStrutHeight = boxHeightStyle == BoxHeightStyle.strut;
-            return graphemes
-                .Where(value => value.Start < clampedEnd && value.End > clampedStart)
-                .Select(value => new TextBox(
-                    value.Left,
-                    useStrutHeight ? value.StrutTop : value.Top,
-                    value.Right,
-                    useStrutHeight ? value.StrutBottom : value.Bottom,
-                    value.Direction
-                ))
-                .ToList();
+            var hostBoxes = new List<TextBox>();
+            var values = graphemes.Span;
+            for (var i = FirstHostGraphemeEndingAfter(values, clampedStart); i < values.Length; i++)
+            {
+                var value = values[i];
+                if (value.Start >= clampedEnd) break;
+                hostBoxes.Add(new(value.Left, useStrutHeight ? value.StrutTop : value.Top,
+                    value.Right, useStrutHeight ? value.StrutBottom : value.Bottom, value.Direction));
+            }
+            return hostBoxes;
         }
 
         var boxes = new List<TextBox>();
@@ -2062,17 +2096,17 @@ public sealed class Paragraph : IDisposable
     {
         if (_hostGraphemes is { Length: > 0 } graphemes)
         {
-            var glyph = ClosestGrapheme(graphemes, offset);
+            var hostLineIndex = LineIndexAtY(offset.dy);
+            if (ClosestGrapheme(graphemes.Span, offset, hostLineIndex) is not { } glyph)
+                return new TextPosition(_lines[hostLineIndex].Start);
+            var hostLine = _lines[hostLineIndex];
+            if (hostLine.HardBreak && glyph.Start == hostLine.End)
+                return new TextPosition(glyph.Start);
             var afterMidpoint = offset.dx >= (glyph.Left + glyph.Right) / 2;
-            return new TextPosition(
-                glyph.Direction == TextDirection.rtl
-                    ? afterMidpoint
-                        ? glyph.Start
-                        : glyph.End
-                    : afterMidpoint
-                        ? glyph.End
-                        : glyph.Start
-            );
+            var atEnd = afterMidpoint == (glyph.Direction == TextDirection.ltr);
+            return atEnd
+                ? new TextPosition(glyph.End, TextAffinity.upstream)
+                : new TextPosition(glyph.Start);
         }
         if (_lines.Count == 0)
         {
@@ -2114,6 +2148,13 @@ public sealed class Paragraph : IDisposable
             offset--;
         }
 
+        if (_hostWordBoundaries?.Value is { } boundaries)
+        {
+            var index = Array.BinarySearch(boundaries, offset);
+            if (index < 0) index = ~index - 1;
+            return new TextRange(boundaries[index], boundaries[index + 1]);
+        }
+
         // Boundaries describe the character at offset, including whitespace.
         // Returning the preceding word at a space makes forward word movement
         // return the current caret offset forever. Keep hard breaks separate so
@@ -2148,6 +2189,15 @@ public sealed class Paragraph : IDisposable
     public TextRange getLineBoundary(TextPosition position)
     {
         var offset = Math.Clamp(checked((int)position.offset), 0, text.Length);
+        if (_hostGraphemes is not null && position.affinity == TextAffinity.downstream)
+        {
+            var lineIndex = _lines.FindLastIndex(candidate => candidate.Start == offset);
+            if (lineIndex >= 0)
+            {
+                var next = _lines[lineIndex];
+                return new TextRange(next.Start, next.End);
+            }
+        }
         var line = FindLine(offset);
         return line is null ? TextRange.empty : new TextRange(line.Value.Start, line.Value.End);
     }
@@ -2189,10 +2239,9 @@ public sealed class Paragraph : IDisposable
         var offset = checked((int)codeUnitOffset);
         if (_hostGraphemes is { } graphemes)
         {
-            var glyph = graphemes.FirstOrDefault(value =>
-                offset >= value.Start && offset < value.End
-            );
-            return glyph is null ? null : ToGlyphInfo(glyph);
+            var values = graphemes.Span;
+            var index = FirstHostGraphemeEndingAfter(values, offset);
+            return index < values.Length && values[index].Start <= offset ? ToGlyphInfo(values[index]) : null;
         }
         var clusterStart = ClusterStart(offset);
         var clusterEnd = NextClusterEnd(clusterStart);
@@ -2218,7 +2267,9 @@ public sealed class Paragraph : IDisposable
     {
         if (_hostGraphemes is { Length: > 0 } graphemes)
         {
-            return ToGlyphInfo(ClosestGrapheme(graphemes, offset));
+            return ClosestGrapheme(graphemes.Span, offset, LineIndexAtY(offset.dy)) is { } glyph
+                ? ToGlyphInfo(glyph)
+                : null;
         }
 
         if (text.Length == 0)
@@ -2229,17 +2280,62 @@ public sealed class Paragraph : IDisposable
         return getGlyphInfoAt(Math.Min(position.offset, text.Length - 1));
     }
 
-    public void Dispose() => Interlocked.Exchange(ref _disposed, 1);
+    internal SemanticsTextGeometry? CaptureHostTextGeometry(long revision, Offset paintOffset)
+    {
+        if (_hostGraphemes is not { } graphemes) return null;
+
+        var hasPosition = double.IsFinite(paintOffset.dx) && double.IsFinite(paintOffset.dy);
+        var runs = hasPosition ? new SemanticsTextRun[graphemes.Length] : [];
+        var boundaries = new List<int>(graphemes.Length + 1) { 0 };
+        var clusters = graphemes.Span;
+        for (var i = 0; i < clusters.Length; i++)
+        {
+            ref readonly var cluster = ref clusters[i];
+            AppendUnplacedBoundaries(cluster.Start);
+            boundaries.Add(cluster.End);
+            if (hasPosition)
+            {
+                var line = _lines[cluster.LineIndex];
+                var bounds = new Rect(cluster.Left, cluster.Top, cluster.Right, cluster.Bottom).shift(paintOffset);
+                runs[i] = new(cluster.Start, cluster.End, bounds, line.Start, line.End, cluster.Direction);
+            }
+        }
+        AppendUnplacedBoundaries(text.Length);
+        return new SemanticsTextGeometry(text, revision, boundaries.ToArray(), runs);
+
+        // Truncated or otherwise unplaced source text still has logical boundaries.
+        void AppendUnplacedBoundaries(int end)
+        {
+            for (var start = boundaries[^1]; start < end; )
+            {
+                start += System.Globalization.StringInfo.GetNextTextElementLength(text.AsSpan(start, end - start));
+                boundaries.Add(start);
+            }
+        }
+    }
+
+    public void Dispose()
+    {
+        if (Interlocked.Exchange(ref _disposed, 1) != 0) return;
+        Interlocked.Exchange(ref _hostLayout, null)?.Dispose();
+        _appliedHostLayout = null;
+        HostPaintPayload = null;
+    }
 
     public void dispose() => Dispose();
 
-    internal void ApplyHostLayout(ParagraphHostLayoutSnapshot snapshot)
+    private void ApplyHostLayout(double placedWidth, ParagraphHostLayoutSnapshot snapshot)
     {
-        ArgumentNullException.ThrowIfNull(snapshot);
         ObjectDisposedException.ThrowIf(debugDisposed, this);
+        if (!IsNonnegativeFinite(placedWidth))
+            throw new InvalidDataException("The host returned a non-finite or negative paragraph width.");
+        if (ReferenceEquals(_appliedHostLayout, snapshot))
+        {
+            width = placedWidth;
+            return;
+        }
         if (
-            !IsNonnegativeFinite(snapshot.Width)
-            || !IsNonnegativeFinite(snapshot.Height)
+            !IsNonnegativeFinite(snapshot.Height)
             || !IsNonnegativeFinite(snapshot.AlphabeticBaseline)
             || !IsNonnegativeFinite(snapshot.IdeographicBaseline)
             || !IsNonnegativeFinite(snapshot.MinIntrinsicWidth)
@@ -2249,16 +2345,6 @@ public sealed class Paragraph : IDisposable
         {
             throw new InvalidDataException(
                 "The host returned non-finite or negative paragraph geometry."
-            );
-        }
-
-        if (
-            snapshot.CodeUnitAdvances.Count != text.Length
-            || snapshot.CodeUnitAdvances.Any(value => !IsNonnegativeFinite(value))
-        )
-        {
-            throw new InvalidDataException(
-                "The host paragraph advance table does not match the UTF-16 text."
             );
         }
 
@@ -2297,15 +2383,14 @@ public sealed class Paragraph : IDisposable
             );
         }
 
-        var graphemes = new ParagraphHostGraphemeSnapshot[snapshot.Graphemes.Count];
         var previousEnd = 0;
-        for (var index = 0; index < graphemes.Length; index++)
+        foreach (ref readonly var grapheme in snapshot.Graphemes.Span)
         {
-            var grapheme = snapshot.Graphemes[index];
             if (
                 grapheme.Start < previousEnd
                 || grapheme.End <= grapheme.Start
                 || grapheme.End > text.Length
+                || (uint)grapheme.LineIndex >= (uint)lines.Count
                 || !double.IsFinite(grapheme.Left)
                 || !double.IsFinite(grapheme.Top)
                 || !double.IsFinite(grapheme.Right)
@@ -2322,11 +2407,10 @@ public sealed class Paragraph : IDisposable
                 );
             }
 
-            graphemes[index] = grapheme;
             previousEnd = grapheme.End;
         }
 
-        width = snapshot.Width;
+        width = placedWidth;
         height = snapshot.Height;
         _naturalWidth = snapshot.MaxIntrinsicWidth;
         if (lines.Count != 0)
@@ -2334,9 +2418,10 @@ public sealed class Paragraph : IDisposable
             _lineHeight = lines[0].Height;
         }
 
-        _codeUnitAdvances = snapshot.CodeUnitAdvances.ToArray();
         _lines = lines;
-        _hostGraphemes = graphemes;
+        _hostGraphemes = snapshot.Graphemes;
+        _hostWordBoundaries = snapshot.WordBoundaries;
+        HostPaintPayload = snapshot.PaintPayload;
         _hostMinIntrinsicWidth = snapshot.MinIntrinsicWidth;
         _hostMaxIntrinsicWidth = snapshot.MaxIntrinsicWidth;
         _hostLongestLine = snapshot.LongestLine;
@@ -2344,42 +2429,50 @@ public sealed class Paragraph : IDisposable
         _hostIdeographicBaseline = snapshot.IdeographicBaseline;
         didExceedMaxLines = snapshot.DidExceedMaxLines;
         numberOfLines = lines.Count;
+        _appliedHostLayout = snapshot;
     }
 
     private static bool IsNonnegativeFinite(double value) => double.IsFinite(value) && value >= 0;
 
-    private static ParagraphHostGraphemeSnapshot ClosestGrapheme(
-        IReadOnlyList<ParagraphHostGraphemeSnapshot> graphemes,
-        Offset offset
+    private int LineIndexAtY(double y)
+    {
+        var index = _lines.FindIndex(line => y < line.Top + line.Height);
+        return index < 0 ? _lines.Count - 1 : index;
+    }
+
+    private static ParagraphHostGraphemeSnapshot? ClosestGrapheme(
+        ReadOnlySpan<ParagraphHostGraphemeSnapshot> graphemes,
+        Offset offset,
+        int lineIndex
     )
     {
-        var closest = graphemes[0];
-        var closestDistance = SquaredDistance(closest, offset);
-        for (var index = 1; index < graphemes.Count; index++)
+        ParagraphHostGraphemeSnapshot? closest = null;
+        var closestDistance = double.PositiveInfinity;
+        foreach (ref readonly var grapheme in graphemes)
         {
-            var distance = SquaredDistance(graphemes[index], offset);
-            if (distance >= closestDistance)
+            if (grapheme.LineIndex < lineIndex) continue;
+            if (grapheme.LineIndex > lineIndex) break;
+            var distance = Math.Max(grapheme.Left - offset.dx, Math.Max(0, offset.dx - grapheme.Right));
+            if (distance < closestDistance)
             {
-                continue;
+                closest = grapheme;
+                closestDistance = distance;
             }
-
-            closest = graphemes[index];
-            closestDistance = distance;
         }
         return closest;
     }
 
-    private static double SquaredDistance(ParagraphHostGraphemeSnapshot grapheme, Offset offset)
+    private static int FirstHostGraphemeEndingAfter(ReadOnlySpan<ParagraphHostGraphemeSnapshot> graphemes, int offset)
     {
-        var dx =
-            offset.dx < grapheme.Left ? grapheme.Left - offset.dx
-            : offset.dx > grapheme.Right ? offset.dx - grapheme.Right
-            : 0;
-        var dy =
-            offset.dy < grapheme.Top ? grapheme.Top - offset.dy
-            : offset.dy > grapheme.Bottom ? offset.dy - grapheme.Bottom
-            : 0;
-        return (dx * dx) + (dy * dy);
+        var low = 0;
+        var high = graphemes.Length;
+        while (low < high)
+        {
+            var middle = low + (high - low) / 2;
+            if (graphemes[middle].End <= offset) low = middle + 1;
+            else high = middle;
+        }
+        return low;
     }
 
     private static GlyphInfo ToGlyphInfo(ParagraphHostGraphemeSnapshot grapheme) =>
@@ -3295,7 +3388,10 @@ public sealed record SemanticsNodeUpdate(
     IReadOnlyList<double>? coordinateTransform = null,
     long? platformViewId = null,
     SemanticsTextGeometry? textGeometry = null
-);
+)
+{
+    public TextDirection? textDirection { get; init; }
+}
 
 public enum SemanticsUpdateUrgency
 {
@@ -3643,6 +3739,7 @@ public static class SemanticsUpdateDiffer
         }
 
         hash.Add(node.locale);
+        hash.Add(node.textDirection);
         if (node.textGeometry is { } geometry)
         {
             hash.Add(geometry.Text, StringComparer.Ordinal);
@@ -3774,6 +3871,7 @@ public static class SemanticsUpdateDiffer
             || previous.scrollIndex != current.scrollIndex
             || !SequenceEqual(previous.controlsNodes, current.controlsNodes)
             || previous.locale != current.locale
+            || previous.textDirection != current.textDirection
         )
         {
             result |= SemanticsNodeProperty.metadata;
@@ -3901,7 +3999,7 @@ public sealed class SemanticsUpdateBuilder
                     ? matrix.ToArray()
                     : Matrix4.identity().storage.ToArray(),
                 NormalizeOptionalLong(platformViewId)
-            )
+            ) { textDirection = textDirection }
         );
     }
 

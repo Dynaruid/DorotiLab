@@ -1,0 +1,20 @@
+{
+  "@@locale": "vi",
+  "reorderItemToStart": "Di chuyển lên đầu danh sách",
+  "reorderItemToEnd": "Di chuyển xuống cuối danh sách",
+  "reorderItemUp": "Di chuyển lên",
+  "reorderItemDown": "Di chuyển xuống",
+  "reorderItemLeft": "Di chuyển sang trái",
+  "reorderItemRight": "Di chuyển sang phải",
+  "searchResultsFound": "Có kết quả tìm kiếm",
+  "noResultsFound": "Không tìm thấy kết quả",
+  "copyButtonLabel": "Sao chép",
+  "cutButtonLabel": "Cắt",
+  "pasteButtonLabel": "Dán",
+  "selectAllButtonLabel": "Chọn tất cả",
+  "lookUpButtonLabel": "Tra cứu",
+  "searchWebButtonLabel": "Tìm kiếm trên web",
+  "shareButtonLabel": "Chia sẻ",
+  "radioButtonUnselectedLabel": "Chưa chọn",
+  "textDirection": "ltr"
+}

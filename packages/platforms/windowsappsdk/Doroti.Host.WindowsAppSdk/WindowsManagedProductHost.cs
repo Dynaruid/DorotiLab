@@ -124,7 +124,7 @@ internal sealed unsafe partial class WindowsManagedProductHost
 
     internal nint ChildHwnd => _native.ChildHwnd;
     internal nint TopLevelHwnd => _native.TopLevelHwnd;
-    internal IReadOnlyList<nint> DropWindows => [_native.TopLevelHwnd, _native.ChildHwnd, _native.OpaqueChildHwnd];
+    internal IReadOnlyList<nint> DropWindows => new[] { _native.TopLevelHwnd, _native.ChildHwnd, _native.OpaqueChildHwnd };
     internal WindowsResizeCoordinatorSnapshot ResizeSnapshot => _coordinator.Snapshot();
     internal object FrameSchedulingTiming => _frameTiming.Snapshot();
     internal object? FrameworkWorkTiming => !FrameworkWorkCounters.Enabled ? null
@@ -1148,31 +1148,10 @@ internal sealed unsafe partial class WindowsManagedProductHost
         RequestInvalidate();
     }
 
-    private static IReadOnlyList<Locale> ResolveLocales()
-    {
-        var languages = Windows.System.UserProfile.GlobalizationPreferences.Languages;
-        if (languages.Count > 0)
-        {
-            return languages
-                .Select(tag =>
-                {
-                    var pieces = tag.Split('-');
-                    return new Locale(
-                        pieces[0],
-                        pieces.Skip(1).FirstOrDefault(p => p.Length is 2 or 3),
-                        pieces.Skip(1).FirstOrDefault(p => p.Length == 4)
-                    );
-                })
-                .ToArray();
-        }
-
-        var parts = CultureInfo.CurrentUICulture.Name.Split(
-            '-',
-            StringSplitOptions.RemoveEmptyEntries
-        );
-        return (Locale[])
-            [new Locale(parts.FirstOrDefault() ?? "en", parts.Skip(1).FirstOrDefault())];
-    }
+    private static IReadOnlyList<Locale> ResolveLocales() => Locale.ParseLanguageTags(
+        Windows.System.UserProfile.GlobalizationPreferences.Languages,
+        CultureInfo.CurrentUICulture.Name
+    );
 
     private TimeSpan MapTimestamp(long qpc)
     {

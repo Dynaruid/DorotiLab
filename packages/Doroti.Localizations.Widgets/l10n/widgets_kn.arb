@@ -1,0 +1,20 @@
+{
+  "@@locale": "kn",
+  "reorderItemToStart": "ಪ್ರಾರಂಭಕ್ಕೆ ಸರಿಸಿ",
+  "reorderItemToEnd": "ಕೊನೆಗೆ ಸರಿಸಿ",
+  "reorderItemUp": "ಮೇಲೆ ಸರಿಸಿ",
+  "reorderItemDown": "ಕೆಳಗೆ ಸರಿಸಿ",
+  "reorderItemLeft": "ಎಡಕ್ಕೆ ಸರಿಸಿ",
+  "reorderItemRight": "ಬಲಕ್ಕೆ ಸರಿಸಿ",
+  "searchResultsFound": "ಹುಡುಕಾಟ ಫಲಿತಾಂಶಗಳು ಕಂಡುಬಂದಿವೆ",
+  "noResultsFound": "ಯಾವುದೇ ಫಲಿತಾಂಶಗಳು ಕಂಡುಬಂದಿಲ್ಲ",
+  "copyButtonLabel": "ಕಾಪಿ ಮಾಡಿ",
+  "cutButtonLabel": "ಕತ್ತರಿಸಿ",
+  "pasteButtonLabel": "ಅಂಟಿಸಿ",
+  "selectAllButtonLabel": "ಎಲ್ಲವನ್ನೂ ಆಯ್ಕೆ ಮಾಡಿ",
+  "lookUpButtonLabel": "ಮೇಲೆ ನೋಡಿ",
+  "searchWebButtonLabel": "ವೆಬ್‌ನಲ್ಲಿ ಹುಡುಕಿ",
+  "shareButtonLabel": "ಹಂಚಿಕೊಳ್ಳಿ",
+  "radioButtonUnselectedLabel": "ಆಯ್ಕೆಮಾಡಲಾಗಿಲ್ಲ",
+  "textDirection": "ltr"
+}

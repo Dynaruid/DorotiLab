@@ -5,6 +5,7 @@
     <IsDorotiProduct>true</IsDorotiProduct>
   </PropertyGroup>
   <ItemGroup>
+    <InternalsVisibleTo Include="Doroti.Framework.Painting" />
     <InternalsVisibleTo Include="Doroti.Framework.Widgets" />
     <InternalsVisibleTo Include="Doroti.Hosting" />
     <InternalsVisibleTo Include="Doroti.Skia.Rendering" />

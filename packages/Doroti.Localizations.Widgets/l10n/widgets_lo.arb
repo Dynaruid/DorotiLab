@@ -1,0 +1,20 @@
+{
+  "@@locale": "lo",
+  "reorderItemToStart": "ຍ້າຍໄປເລີ່ມຕົ້ນ",
+  "reorderItemToEnd": "ຍ້າຍໄປສິ້ນສຸດ",
+  "reorderItemUp": "ຍ້າຍຂຶ້ນ",
+  "reorderItemDown": "ຍ້າຍລົງ",
+  "reorderItemLeft": "ຍ້າຍໄປຊ້າຍ",
+  "reorderItemRight": "ຍ້າຍໄປຂວາ",
+  "searchResultsFound": "ພົບຜົນການຊອກຫາ",
+  "noResultsFound": "ບໍ່ພົບຜົນການຊອກຫາ",
+  "copyButtonLabel": "ສຳເນົາ",
+  "cutButtonLabel": "ຕັດ",
+  "pasteButtonLabel": "ວາງ",
+  "selectAllButtonLabel": "ເລືອກທັງໝົດ",
+  "lookUpButtonLabel": "ຊອກຫາຂໍ້ມູນ",
+  "searchWebButtonLabel": "ຊອກຫາຢູ່ອິນເຕີເນັດ",
+  "shareButtonLabel": "ແບ່ງປັນ",
+  "radioButtonUnselectedLabel": "ບໍ່ໄດ້ເລືອກ",
+  "textDirection": "ltr"
+}

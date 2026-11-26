@@ -434,14 +434,7 @@ internal sealed unsafe class QtHostAdapter
         bool highContrast = false
     )
     {
-        var locales = languageTags
-            .Split('\n', StringSplitOptions.RemoveEmptyEntries)
-            .Select(ParseLocale)
-            .ToArray();
-        if (locales.Length == 0)
-        {
-            locales = ResolveLocales().ToArray();
-        }
+        var locales = Locale.ParseLanguageTags(languageTags.Split('\n'), CultureInfo.CurrentUICulture.Name);
 
         var next = Configuration with
         {
@@ -450,7 +443,7 @@ internal sealed unsafe class QtHostAdapter
             alwaysUse24HourFormat = alwaysUse24HourFormat,
             accessibilityFeatures = new(false, false, false, false, highContrast, false, false),
         };
-        if (next != Configuration)
+        if (!next.HasSameValues(Configuration))
         {
             Configuration = next;
             ConfigurationChanged?.Invoke(next);
@@ -647,22 +640,8 @@ internal sealed unsafe class QtHostAdapter
         GC.KeepAlive(InputReceived);
     }
 
-    private static IReadOnlyList<Locale> ResolveLocales()
-    {
-        var parts = CultureInfo.CurrentUICulture.Name.Split(
-            '-',
-            StringSplitOptions.RemoveEmptyEntries
-        );
-        return [new Locale(parts.FirstOrDefault() ?? "en", parts.Skip(1).FirstOrDefault())];
-    }
-
-    private static Locale ParseLocale(string tag)
-    {
-        var parts = tag.Split('-', StringSplitOptions.RemoveEmptyEntries);
-        var script = parts.FirstOrDefault(part => part.Length == 4);
-        var country = parts.Skip(1).FirstOrDefault(part => part.Length is 2 or 3 && part != script);
-        return new(parts.FirstOrDefault() ?? "en", country, script);
-    }
+    private static IReadOnlyList<Locale> ResolveLocales() =>
+        Locale.ParseLanguageTags([], CultureInfo.CurrentUICulture.Name);
 
     private TimeSpan MapTimestamp(long nativeMicroseconds)
     {

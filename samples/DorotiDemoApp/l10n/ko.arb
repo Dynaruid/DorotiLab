@@ -1,0 +1,4 @@
+{
+  "@@locale": "ko",
+  "caption": "{count, plural, other {현지화 항목 {count}개}}"
+}

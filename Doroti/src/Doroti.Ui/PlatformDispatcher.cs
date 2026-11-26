@@ -260,22 +260,33 @@ public sealed class PlatformDispatcher : IDisposable
     public double? paragraphSpacingOverride => configurationSnapshot?.paragraphSpacingOverride;
     public FrameData frameData => new(Volatile.Read(ref _frameNumber));
 
-    public void setApplicationLocale(Locale locale) => applicationLocale = locale;
+    private Locale? _applicationLocale;
 
-    public Locale? applicationLocale { get; private set; }
+    public void setApplicationLocale(Locale locale) => setApplicationLocale(locale, CurrentInvocationView);
+
+    public void setApplicationLocale(Locale locale, DorotiView? view)
+    {
+        if (view is null) _applicationLocale = locale;
+        else view.ApplicationLocale = locale;
+    }
+
+    public Locale? applicationLocale =>
+        (CurrentInvocationView ?? implicitView)?.ApplicationLocale ?? _applicationLocale;
 
     public Locale? computePlatformResolvedLocale(List<Locale> supportedLocales)
     {
         ArgumentNullException.ThrowIfNull(supportedLocales);
+        if (supportedLocales.Count == 0) return null;
+        var supported = supportedLocales.Select(locale => locale.normalized()).ToArray();
         foreach (var preferred in locales)
         {
-            var exact = supportedLocales.FirstOrDefault(candidate => candidate == preferred);
+            var exact = supported.FirstOrDefault(candidate => candidate == preferred);
             if (exact != default)
             {
                 return exact;
             }
 
-            var language = supportedLocales.FirstOrDefault(candidate =>
+            var language = supported.FirstOrDefault(candidate =>
                 string.Equals(
                     candidate.languageCode,
                     preferred.languageCode,
@@ -287,7 +298,7 @@ public sealed class PlatformDispatcher : IDisposable
                 return language;
             }
         }
-        return supportedLocales.FirstOrDefault();
+        return supported[0];
     }
 
     public double scaleFontSize(double unscaledFontSize)
@@ -1160,6 +1171,8 @@ public sealed class DorotiView : IDisposable
         );
 
     public PlatformConfiguration? environmentConfiguration => _environmentConfiguration;
+
+    internal Locale? ApplicationLocale { get; set; }
 
     public void Show()
     {

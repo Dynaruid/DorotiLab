@@ -1,0 +1,20 @@
+{
+  "@@locale": "ps",
+  "reorderItemToStart": "Move to the start",
+  "reorderItemToEnd": "Move to the end",
+  "reorderItemUp": "Move up",
+  "reorderItemDown": "Move down",
+  "reorderItemLeft": "Move left",
+  "reorderItemRight": "Move right",
+  "searchResultsFound": "Search results found",
+  "noResultsFound": "No results found",
+  "copyButtonLabel": "کاپی",
+  "cutButtonLabel": "کم کړئ",
+  "pasteButtonLabel": "پیټ کړئ",
+  "selectAllButtonLabel": "غوره کړئ",
+  "lookUpButtonLabel": "Look Up",
+  "searchWebButtonLabel": "Search Web",
+  "shareButtonLabel": "Share...",
+  "radioButtonUnselectedLabel": "Not selected",
+  "textDirection": "rtl"
+}

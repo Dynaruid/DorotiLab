@@ -1,0 +1,20 @@
+{
+  "@@locale": "fa",
+  "reorderItemToStart": "انتقال به ابتدا",
+  "reorderItemToEnd": "انتقال به انتها",
+  "reorderItemUp": "انتقال به بالا",
+  "reorderItemDown": "انتقال به پایین",
+  "reorderItemLeft": "انتقال به راست",
+  "reorderItemRight": "انتقال به چپ",
+  "searchResultsFound": "نتایج جستجو پیدا شد",
+  "noResultsFound": "نتیجه‌ای پیدا نشد",
+  "copyButtonLabel": "کپی کردن",
+  "cutButtonLabel": "برش",
+  "pasteButtonLabel": "جای‌گذاری",
+  "selectAllButtonLabel": "انتخاب همه",
+  "lookUpButtonLabel": "جستجو",
+  "searchWebButtonLabel": "جستجو در وب",
+  "shareButtonLabel": "هم‌رسانی کردن",
+  "radioButtonUnselectedLabel": "انتخاب‌نشده",
+  "textDirection": "rtl"
+}

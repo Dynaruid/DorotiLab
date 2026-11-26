@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../../../tools/Doroti.Localization.Generator/build/Doroti.Localization.Generator.props" />
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <DorotiLocalizationClass>ContractLocalizations</DorotiLocalizationClass>
+    <DorotiLocalizationNamespace>Doroti.Localization.Tests</DorotiLocalizationNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../../packages/Doroti.Localizations.Material/Doroti.Localizations.Material.csproj" />
+    <ProjectReference Include="../../../tools/Doroti.Localization.Generator/Doroti.Localization.Generator.csproj"
+                      OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <AdditionalFiles Include="l10n/*.arb" />
+  </ItemGroup>
+</Project>

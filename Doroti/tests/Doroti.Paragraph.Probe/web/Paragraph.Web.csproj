@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RuntimeFrameworkVersion>10.0.15</RuntimeFrameworkVersion>
+    <UseMonoRuntime>true</UseMonoRuntime>
+    <WasmBuildNative>true</WasmBuildNative>
+    <WasmEnableThreads Condition="'$(WasmEnableThreads)' == ''">false</WasmEnableThreads>
+    <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <Import Project="../Packages.props" />
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="$(RuntimeFrameworkVersion)" />
+    <PackageReference Include="SkiaSharp.NativeAssets.WebAssembly" Version="4.156.0" />
+    <PackageReference Include="HarfBuzzSharp.NativeAssets.WebAssembly" Version="14.4.0.100" />
+    <Content Include="$(ParagraphProbeFontDirectory)/*.ttf" Link="wwwroot/fonts/%(Filename)%(Extension)" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

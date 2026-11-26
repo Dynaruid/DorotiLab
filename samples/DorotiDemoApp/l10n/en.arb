@@ -1,0 +1,5 @@
+{
+  "@@locale": "en",
+  "caption": "{count, plural, one {One localized item} other {{count} localized items}}",
+  "@caption": { "placeholders": { "count": { "type": "long" } } }
+}

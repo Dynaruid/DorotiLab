@@ -24,7 +24,7 @@ public static partial class AppLibrary
     {
         if ((preferredLocales is null) || !Enumerable.Any(preferredLocales))
         {
-            return supportedLocales.First();
+            return supportedLocales.First().normalized();
         }
         DartMap<string, Locale> allSupportedLocales = new DartMap<string, Locale>().cast<
             string,
@@ -46,8 +46,9 @@ public static partial class AppLibrary
             string?,
             Locale
         >();
-        foreach (var locale in supportedLocales)
+        foreach (var declaredLocale in supportedLocales)
         {
+            var locale = declaredLocale.normalized();
             allSupportedLocales.putIfAbsent(
                 $"{locale.languageCode}_{locale.scriptCode}_{locale.countryCode}",
                 () => locale
@@ -67,7 +68,7 @@ public static partial class AppLibrary
         Locale? matchesCountryCode = default!;
         for (var localeIndex = 0L; localeIndex < checked(preferredLocales.Count); localeIndex += 1L)
         {
-            Locale userLocale = preferredLocales[(int)localeIndex];
+            Locale userLocale = preferredLocales[(int)localeIndex].normalized();
             if (
                 allSupportedLocales.ContainsKey(
                     $"{userLocale.languageCode}_{userLocale.scriptCode}_{userLocale.countryCode}"
@@ -134,7 +135,7 @@ public static partial class AppLibrary
                     && !(
                         ((localeIndex + 1L) < checked(preferredLocales.Count))
                         && (
-                            preferredLocales[(int)(localeIndex + 1L)].languageCode
+                            preferredLocales[(int)(localeIndex + 1L)].normalized().languageCode
                             == userLocale.languageCode
                         )
                     )
@@ -169,7 +170,7 @@ public static partial class AppLibrary
             }
         }
         Locale resolvedLocale =
-            (matchesLanguageCode ?? matchesCountryCode) ?? supportedLocales.First();
+            (matchesLanguageCode ?? matchesCountryCode) ?? supportedLocales.First().normalized();
         return resolvedLocale;
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
@@ -669,6 +670,7 @@ internal class _WidgetsAppState__app : State<WidgetsApp>, WidgetsBindingObserver
             if (!__late__localizationsResolver_initialized)
             {
                 __late__localizationsResolver = new LocalizationsResolver(
+                    view: LookupBoundary.getInheritedWidgetOfExactType<_ViewScope__view>(context)?.view,
                     locale: widget.locale,
                     localeListResolutionCallback: widget.localeListResolutionCallback,
                     localeResolutionCallback: widget.localeResolutionCallback,
@@ -725,6 +727,12 @@ internal class _WidgetsAppState__app : State<WidgetsApp>, WidgetsBindingObserver
         _updateRouting();
         WidgetsBinding.instance.addObserver(this);
         _appLifecycleState = WidgetsBinding.instance.lifecycleState;
+    }
+
+    public override void didChangeDependencies()
+    {
+        base.didChangeDependencies();
+        _localizationsResolver.UpdateView(View.maybeOf(context));
     }
 
     public override void didUpdateWidget(WidgetsApp oldWidget)

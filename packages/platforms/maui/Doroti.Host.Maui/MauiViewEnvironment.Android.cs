@@ -267,11 +267,7 @@ internal sealed partial class MauiViewEnvironment
         Gestures = ViewOcclusion.SafeEdges(view, bounds, gestures);
         var resources = native.Resources!;
         var configuration = resources.Configuration!;
-        Locales = configuration
-            .Locales?.ToLanguageTags()
-            ?.Split(',', StringSplitOptions.RemoveEmptyEntries)
-            .Select(ParseLocale)
-            .ToArray();
+        Locales = ParseLocales(configuration.Locales?.ToLanguageTags()?.Split(',') ?? []);
         if (FontScaler is null || TextScale != configuration.FontScale)
         {
             TextScale = configuration.FontScale;

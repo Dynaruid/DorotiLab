@@ -1,5 +1,7 @@
 <Project>
   <Import Project="../../Doroti/src/Doroti.App.Sdk/Sdk/Sdk.props" />
+  <Import Project="../../tools/Doroti.Localization.Generator/build/Doroti.Localization.Generator.props"
+          Condition="'$(DorotiIntlProbe)' == 'localizations'" />
   <PropertyGroup>
     <AssemblyName>DorotiDemoApp</AssemblyName>
     <RootNamespace>DorotiDemoApp</RootNamespace>
@@ -12,6 +14,11 @@
   <PropertyGroup Condition="'$(DorotiIntlProbe)' == 'adapter'">
     <DefineConstants>$(DefineConstants);DOROTI_INTL_RENDER_ADAPTER</DefineConstants>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(DorotiIntlProbe)' == 'localizations'">
+    <DefineConstants>$(DefineConstants);DOROTI_WIDGET_LOCALIZATION_PROBE</DefineConstants>
+    <DorotiLocalizationClass>ProbeLocalizations</DorotiLocalizationClass>
+    <DorotiLocalizationNamespace>DorotiDemoApp</DorotiLocalizationNamespace>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../../Doroti/src/Doroti.Hosting/Doroti.Hosting.csproj" />
     <ProjectReference Include="../../packages/Doroti.Material/Doroti.Material.csproj" />
@@ -19,6 +26,12 @@
     <EmbeddedResource Include="assets/fonts/Roboto-*.ttf" LogicalName="MaterialSample.%(Filename)%(Extension)" />
     <EmbeddedResource Include="assets/images/mae-mu-9002s2VnOAY-unsplash.webp" LogicalName="MaterialSample.image.webp" />
     <DorotiLicense Include="src/Components/LICENSE.flutter;assets/fonts/LICENSE.roboto.txt" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(DorotiIntlProbe)' == 'localizations'">
+    <AdditionalFiles Include="l10n/*.arb" />
+    <ProjectReference Include="../../packages/Doroti.Localizations.Material/Doroti.Localizations.Material.csproj" />
+    <ProjectReference Include="../../tools/Doroti.Localization.Generator/Doroti.Localization.Generator.csproj"
+                      OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
   </ItemGroup>
   <Import Project="../../Doroti/src/Doroti.App.Sdk/Sdk/Sdk.targets" />
 </Project>

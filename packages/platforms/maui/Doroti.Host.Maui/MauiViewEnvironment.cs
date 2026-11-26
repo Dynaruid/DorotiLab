@@ -30,12 +30,8 @@ internal sealed partial class MauiViewEnvironment : IDisposable
     internal bool? Use24Hour { get; private set; }
     internal IReadOnlyList<Locale>? Locales { get; private set; }
 
-    private static Locale ParseLocale(string tag)
-    {
-        var parts = tag.Split('-');
-        var script = parts.Skip(1).FirstOrDefault(part => part.Length == 4);
-        return new(parts[0], parts.Skip(1).FirstOrDefault(part => part.Length is 2 or 3), script);
-    }
+    private static IReadOnlyList<Locale> ParseLocales(IEnumerable<string?> tags) =>
+        Locale.ParseLanguageTags(tags, System.Globalization.CultureInfo.CurrentUICulture.Name);
 
     internal event Action? Changed;
 

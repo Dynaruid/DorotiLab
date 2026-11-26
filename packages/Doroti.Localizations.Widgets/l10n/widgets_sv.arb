@@ -1,0 +1,20 @@
+{
+  "@@locale": "sv",
+  "reorderItemToStart": "Flytta till början",
+  "reorderItemToEnd": "Flytta till slutet",
+  "reorderItemUp": "Flytta uppåt",
+  "reorderItemDown": "Flytta nedåt",
+  "reorderItemLeft": "Flytta åt vänster",
+  "reorderItemRight": "Flytta åt höger",
+  "searchResultsFound": "Sökresultat hittades",
+  "noResultsFound": "Inga resultat hittades",
+  "copyButtonLabel": "Kopiera",
+  "cutButtonLabel": "Klipp ut",
+  "pasteButtonLabel": "Klistra in",
+  "selectAllButtonLabel": "Markera allt",
+  "lookUpButtonLabel": "Titta upp",
+  "searchWebButtonLabel": "Sök på webben",
+  "shareButtonLabel": "Dela",
+  "radioButtonUnselectedLabel": "Inte markerad",
+  "textDirection": "ltr"
+}

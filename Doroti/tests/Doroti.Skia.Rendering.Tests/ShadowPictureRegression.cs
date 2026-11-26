@@ -125,7 +125,7 @@ internal static class ShadowPictureRegression
         Check(!(bool)deferred.GetValue(browser)!, "cache promotion resumes when scrolling settles");
         Console.WriteLine("PASS: Web raster promotion opt-in, unchanged default host policy, scroll/quiet interval and settled resumption");
     }
-    private sealed class Host : ISkiaSceneRendererHost
+    internal sealed class Host : ISkiaSceneRendererHost
     {
         public long InputSequence => 0;
         public long SurfaceGeneration => 1;

@@ -28,12 +28,24 @@ internal static class RenderSemanticsTextGeometry
         if (Geometry.TryGetValue(painter, out var cached)
             && cached.LayoutRevision == painter.layoutGeometryRevision && cached.Offset == offset)
             return cached.Snapshot;
-        var text = painter.text?.toPlainText(includeSemanticsLabels: false) ?? "";
+        var text = painter.plainText;
         if (text.Length > 32768)
         {
             Geometry.Remove(painter);
             return null; // Explicit bounded geometry; oversized text has no TextPattern.
         }
+        var revision = Interlocked.Increment(ref _revision);
+        var snapshot = painter.CaptureHostTextGeometry(text, revision, offset)
+            ?? CaptureFallback(painter, text, revision, offset);
+        var cache = Geometry.GetValue(painter, static _ => new Cache());
+        cache.LayoutRevision = painter.layoutGeometryRevision;
+        cache.Offset = offset;
+        cache.Snapshot = snapshot;
+        return snapshot;
+    }
+
+    private static SemanticsTextGeometry CaptureFallback(TextPainter painter, string text, long revision, Offset offset)
+    {
         var boundaries = StringInfo.ParseCombiningCharacters(text).Append(text.Length).ToArray();
         var runs = new List<SemanticsTextRun>();
         for (var i = 0; i < boundaries.Length - 1; i++)
@@ -43,12 +55,7 @@ internal static class RenderSemanticsTextGeometry
             foreach (var box in painter.getBoxesForSelection(new TextSelection(baseOffset: start, extentOffset: end)))
                 runs.Add(new(start, end, box.toRect().shift(offset), checked((int)line.start), checked((int)line.end), box.direction));
         }
-        var snapshot = new SemanticsTextGeometry(text, Interlocked.Increment(ref _revision), runs);
-        var cache = Geometry.GetValue(painter, static _ => new Cache());
-        cache.LayoutRevision = painter.layoutGeometryRevision;
-        cache.Offset = offset;
-        cache.Snapshot = snapshot;
-        return snapshot;
+        return new SemanticsTextGeometry(text, revision, runs);
     }
 
     internal static void ShowRange(SemanticsTextGeometry? geometry, int start, int end, Action<Rect> show)

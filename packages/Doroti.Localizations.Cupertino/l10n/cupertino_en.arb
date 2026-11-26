@@ -1,0 +1,115 @@
+{
+  "@@locale": "en",
+  "datePickerDateOrder": "mdy",
+  "datePickerDateTimeOrder": "date_time_dayPeriod",
+  "todayLabel": "Today",
+  "alertDialogLabel": "Alert",
+  "tabSemanticsLabel": "Tab {tabIndex} of {tabCount}",
+  "@tabSemanticsLabel": {
+    "placeholders": {
+      "tabIndex": {
+        "type": "long",
+        "format": "decimalPattern"
+      },
+      "tabCount": {
+        "type": "long",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "cutButtonLabel": "Cut",
+  "copyButtonLabel": "Copy",
+  "pasteButtonLabel": "Paste",
+  "clearButtonLabel": "Clear",
+  "noSpellCheckReplacementsLabel": "No Replacements Found",
+  "selectAllButtonLabel": "Select All",
+  "lookUpButtonLabel": "Look Up",
+  "searchWebButtonLabel": "Search Web",
+  "shareButtonLabel": "Share...",
+  "searchTextFieldPlaceholderLabel": "Search",
+  "modalBarrierDismissLabel": "Dismiss",
+  "menuDismissLabel": "Dismiss menu",
+  "cancelButtonLabel": "Cancel",
+  "backButtonLabel": "Back",
+  "expansionTileExpandedHint": "double tap to collapse",
+  "expansionTileCollapsedHint": "double tap to expand",
+  "expansionTileExpandedTapHint": "Collapse",
+  "expansionTileCollapsedTapHint": "Expand for more details",
+  "expandedHint": "Collapsed",
+  "collapsedHint": "Expanded",
+  "datePickerHourSemanticsLabel": "{hour, plural, one {{hour} o'clock} other {{hour} o'clock}}",
+  "@datePickerHourSemanticsLabel": {
+    "placeholders": {
+      "hour": {
+        "type": "long",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "datePickerMinuteSemanticsLabel": "{minute, plural, one {1 minute} other {{minute} minutes}}",
+  "@datePickerMinuteSemanticsLabel": {
+    "placeholders": {
+      "minute": {
+        "type": "long",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "timerPickerHourLabel": "{hour, plural, one {hour} other {hours}}",
+  "@timerPickerHourLabel": {
+    "placeholders": {
+      "hour": {
+        "type": "long",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "timerPickerHourLabels": "hour\nhours",
+  "timerPickerMinuteLabel": "{minute, plural, one {min.} other {min.}}",
+  "@timerPickerMinuteLabel": {
+    "placeholders": {
+      "minute": {
+        "type": "long",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "timerPickerMinuteLabels": "min.",
+  "timerPickerSecondLabel": "{second, plural, one {sec.} other {sec.}}",
+  "@timerPickerSecondLabel": {
+    "placeholders": {
+      "second": {
+        "type": "long",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "timerPickerSecondLabels": "sec.",
+  "datePickerYearLabel": "{year}",
+  "@datePickerYearLabel": {
+    "placeholders": {
+      "year": {
+        "type": "String"
+      }
+    }
+  },
+  "datePickerDayLabel": "{day}",
+  "@datePickerDayLabel": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "datePickerDayWithWeekday": "{weekday} {day}",
+  "@datePickerDayWithWeekday": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "weekday": {
+        "type": "String"
+      }
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "@@locale": "am",
+  "reorderItemToStart": "ወደ መጀመሪያ ውሰድ",
+  "reorderItemToEnd": "ወደ መጨረሻ ውሰድ",
+  "reorderItemUp": "ወደ ላይ ውሰድ",
+  "reorderItemDown": "ወደ ታች ውሰድ",
+  "reorderItemLeft": "ወደ ግራ ውሰድ",
+  "reorderItemRight": "ወደ ቀኝ ውሰድ",
+  "searchResultsFound": "የፍለጋ ውጤቶች ተገኝተዋል",
+  "noResultsFound": "ምንም ውጤቶች አልተገኙም",
+  "copyButtonLabel": "ቅዳ",
+  "cutButtonLabel": "ቁረጥ",
+  "pasteButtonLabel": "ለጥፍ",
+  "selectAllButtonLabel": "ሁሉንም ምረጥ",
+  "lookUpButtonLabel": "ይመልከቱ",
+  "searchWebButtonLabel": "ድርን ፈልግ",
+  "shareButtonLabel": "አጋራ",
+  "radioButtonUnselectedLabel": "አልተመረጠም",
+  "textDirection": "ltr"
+}

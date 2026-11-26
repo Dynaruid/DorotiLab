@@ -1,0 +1,20 @@
+{
+  "@@locale": "uk",
+  "reorderItemToStart": "Перемістити на початок",
+  "reorderItemToEnd": "Перемістити в кінець",
+  "reorderItemUp": "Перемістити вгору",
+  "reorderItemDown": "Перемістити вниз",
+  "reorderItemLeft": "Перемістити ліворуч",
+  "reorderItemRight": "Перемістити праворуч",
+  "searchResultsFound": "Знайдено результати пошуку",
+  "noResultsFound": "Результатів не знайдено",
+  "copyButtonLabel": "Копіювати",
+  "cutButtonLabel": "Вирізати",
+  "pasteButtonLabel": "Вставити",
+  "selectAllButtonLabel": "Вибрати всі",
+  "lookUpButtonLabel": "Шукати",
+  "searchWebButtonLabel": "Пошук в Інтернеті",
+  "shareButtonLabel": "Поділитися",
+  "radioButtonUnselectedLabel": "Не вибрано",
+  "textDirection": "ltr"
+}

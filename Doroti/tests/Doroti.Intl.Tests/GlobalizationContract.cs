@@ -26,9 +26,9 @@ public static class GlobalizationContract
         Check(korean.FormatDate(new DateTime(2024, 2, 29), WidgetDateFormat.Full) == "2024년 2월 29일 목요일", "Korean culture resources");
         Check(new IntlFormatter("en").LocaleName == "en-US", "explicit neutral English policy");
         Check(new IntlFormatter("KO-kr").LocaleName == "ko-KR", "case-insensitive profile selection");
-        Throws<CultureNotFoundException>(() => new IntlFormatter("fr-FR"));
+        Throws<CultureNotFoundException>(() => new IntlFormatter("qaaa-QZ"));
         Throws<CultureNotFoundException>(() => new IntlFormatter("en-US-u-ca-buddhist"));
-        Throws<CultureNotFoundException>(() => new IntlFormatter("ko_KR"));
+        Check(new IntlFormatter("ko_KR").LocaleName == "ko-KR", "underscore profile normalization");
         Throws<ArgumentNullException>(() => new IntlFormatter(null!));
 
         var originalCulture = CultureInfo.CurrentCulture;
@@ -130,8 +130,11 @@ public static class GlobalizationContract
         Throws<ArgumentException>(() => CardinalPlural.Select("en", 1.5m, 0));
         Throws<ArgumentOutOfRangeException>(() => CardinalPlural.Select("en", 1m, 29));
         Throws<ArgumentOutOfRangeException>(() => CardinalPlural.Select("en", 1m, -1));
-        Throws<ArgumentException>(() => CardinalPlural.Select("fr", 1m));
-        Throws<ArgumentException>(() => CardinalPlural.Select("en-US", 1m));
+        Check(CardinalPlural.Select("fr", 0m) == PluralCategory.One, "French cardinal zero");
+        Check(CardinalPlural.Select("en-US", 1m) == PluralCategory.One, "regional default cardinal rule");
+        Check(CardinalPlural.Select("pt-PT", 0m) == PluralCategory.Other && CardinalPlural.Select("pt-BR", 0m) == PluralCategory.One,
+            "European and Brazilian Portuguese use distinct cardinal rules");
+        Throws<ArgumentException>(() => CardinalPlural.Select("qaaa-QZ", 1m));
         var exact = new Dictionary<decimal, string> { [0] = "zero exact", [1] = "one exact", [-1] = "negative exact" };
         var categories = new Dictionary<PluralCategory, string> { [PluralCategory.One] = "one", [PluralCategory.Other] = "other" };
         Check(CardinalPlural.SelectMessage("en", 0, exact, categories) == "zero exact", "=0 precedes other");

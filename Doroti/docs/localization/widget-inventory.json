@@ -6,109 +6,109 @@
   "sections": {
     "Widgets": {
       "source": "Doroti/src/Doroti.Framework.Widgets/localizations.cs",
-      "sha256": "fc02fa5b2aa4a981c7d52da7dc82bf3c63ef8a7a5ca51f6d4bb0528bc1d4e011",
+      "sha256": "9ed218a428bfb6bb1265721f7606b4acee0fa4f1a677de43b7a050c0d2cf2055",
       "memberCount": 17,
       "members": [
         {
           "name": "textDirection",
           "signature": "TextDirection textDirection { get; }",
-          "line": 136,
+          "line": 123,
           "category": "locale-calendar-hour-direction-policy"
         },
         {
           "name": "reorderItemToStart",
           "signature": "string reorderItemToStart { get; }",
-          "line": 137,
+          "line": 124,
           "category": "translated-message-or-interpolation"
         },
         {
           "name": "reorderItemToEnd",
           "signature": "string reorderItemToEnd { get; }",
-          "line": 138,
+          "line": 125,
           "category": "translated-message-or-interpolation"
         },
         {
           "name": "reorderItemUp",
           "signature": "string reorderItemUp { get; }",
-          "line": 139,
+          "line": 126,
           "category": "translated-message-or-interpolation"
         },
         {
           "name": "reorderItemDown",
           "signature": "string reorderItemDown { get; }",
-          "line": 140,
+          "line": 127,
           "category": "translated-message-or-interpolation"
         },
         {
           "name": "reorderItemLeft",
           "signature": "string reorderItemLeft { get; }",
-          "line": 141,
+          "line": 128,
           "category": "translated-message-or-interpolation"
         },
         {
           "name": "reorderItemRight",
           "signature": "string reorderItemRight { get; }",
-          "line": 142,
+          "line": 129,
           "category": "translated-message-or-interpolation"
         },
         {
           "name": "searchResultsFound",
           "signature": "string searchResultsFound { get; }",
-          "line": 143,
+          "line": 130,
           "category": "translated-message-or-interpolation"
         },
         {
           "name": "noResultsFound",
           "signature": "string noResultsFound { get; }",
-          "line": 144,
+          "line": 131,
           "category": "translated-message-or-interpolation"
         },
         {
           "name": "copyButtonLabel",
           "signature": "string copyButtonLabel { get; }",
-          "line": 145,
+          "line": 132,
           "category": "translated-message-or-interpolation"
         },
         {
           "name": "cutButtonLabel",
           "signature": "string cutButtonLabel { get; }",
-          "line": 146,
+          "line": 133,
           "category": "translated-message-or-interpolation"
         },
         {
           "name": "pasteButtonLabel",
           "signature": "string pasteButtonLabel { get; }",
-          "line": 147,
+          "line": 134,
           "category": "translated-message-or-interpolation"
         },
         {
           "name": "selectAllButtonLabel",
           "signature": "string selectAllButtonLabel { get; }",
-          "line": 148,
+          "line": 135,
           "category": "translated-message-or-interpolation"
         },
         {
           "name": "lookUpButtonLabel",
           "signature": "string lookUpButtonLabel { get; }",
-          "line": 149,
+          "line": 136,
           "category": "translated-message-or-interpolation"
         },
         {
           "name": "searchWebButtonLabel",
           "signature": "string searchWebButtonLabel { get; }",
-          "line": 150,
+          "line": 137,
           "category": "translated-message-or-interpolation"
         },
         {
           "name": "shareButtonLabel",
           "signature": "string shareButtonLabel { get; }",
-          "line": 151,
+          "line": 138,
           "category": "translated-message-or-interpolation"
         },
         {
           "name": "radioButtonUnselectedLabel",
           "signature": "string radioButtonUnselectedLabel { get; }",
-          "line": 152,
+          "line": 139,
           "category": "translated-message-or-interpolation"
         }
       ]

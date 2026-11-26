@@ -5,18 +5,6 @@ using Doroti.Ui;
 
 namespace Doroti.Framework.Widgets;
 
-internal class _Pending__localizations
-{
-    public virtual ILocalizationsDelegate @delegate { get; private set; } = default!;
-    public virtual Future<object> futureValue { get; private set; } = default!;
-
-    internal _Pending__localizations(ILocalizationsDelegate @delegate, Future<object> futureValue)
-    {
-        this.@delegate = @delegate;
-        this.futureValue = futureValue;
-    }
-}
-
 public static partial class LocalizationsLibrary
 {
     internal static ILocalizationsDelegate RequireDelegate(object value) =>
@@ -32,7 +20,6 @@ public static partial class LocalizationsLibrary
     )
     {
         var output = new DartMap<Type, object>();
-        List<_Pending__localizations>? pendingList = default!;
         var types = new HashSet<Type>();
         var delegates = new List<ILocalizationsDelegate>();
         foreach (var delegateLocal in allDelegates.Select(RequireDelegate))
@@ -43,60 +30,60 @@ public static partial class LocalizationsLibrary
                 delegates.Add(delegateLocal);
             }
         }
-        foreach (var delegateAlternate in delegates)
+
+        List<Task<(Type Type, object Resource)>>? pending = null;
+        try
         {
-            Future inputValue = delegateAlternate.loadUntyped(locale);
-            object? completedValue = null;
-            Future<object> futureValueLocal = inputValue.then<object>(
-                (object? value) =>
+            foreach (var localizationDelegate in delegates)
+            {
+                var type = localizationDelegate.type;
+                var result = localizationDelegate.loadUntyped(locale).then<(Type, object)>(value =>
+                    (type, value ?? throw new InvalidOperationException($"{type.Name} returned a null resource.")));
+                if (result is SynchronousFuture<(Type, object)>)
                 {
-                    return completedValue =
-                        value
-                        ?? throw new InvalidOperationException(
-                            "A localization delegate must return a resource."
-                        );
-                    throw new InvalidOperationException(
-                        "Callback completed without returning a value."
-                    );
+                    output[type] = result.asTask().GetAwaiter().GetResult().Item2;
                 }
-            );
-            if (completedValue is not null)
-            {
-                Type typeLocal = delegateAlternate.type;
-                DartRuntimePrimitives.Assert(() => !output.ContainsKey(typeLocal));
-                output[typeLocal] = completedValue;
-            }
-            else
-            {
-                pendingList ??= new List<_Pending__localizations>();
-                pendingList.Add(new _Pending__localizations(delegateAlternate, futureValueLocal));
+                else
+                {
+                    (pending ??= []).Add(result.asTask());
+                }
             }
         }
-        if (pendingList is null)
+        catch
         {
-            return new SynchronousFuture<DartMap<Type, object>>(output);
+            if (pending is not null) _ = ObserveFailureAsync(Task.WhenAll(pending));
+            throw;
         }
-        return DartAsyncRuntime
-            .wait<object>(pendingList.map<_Pending__localizations, Future>((p) => p.futureValue))
-            .then(
-                (values) =>
-                {
-                    DartRuntimePrimitives.Assert(() =>
-                        checked(values.Count) == checked((long)pendingList!.Count)
-                    );
-                    for (var i = 0L; i < checked(values.Count); i += 1L)
-                    {
-                        Type typeAlternate = pendingList![(int)i].@delegate.type;
-                        DartRuntimePrimitives.Assert(() => !output.ContainsKey(typeAlternate));
-                        output[typeAlternate] = values[(int)i];
-                    }
-                    return output;
-                    throw new InvalidOperationException(
-                        "Callback completed without returning a value."
-                    );
-                }
-            );
-        throw new InvalidOperationException("Control flow completed without returning a value.");
+
+        return pending is null
+            ? new SynchronousFuture<DartMap<Type, object>>(output)
+            : Future<DartMap<Type, object>>.fromTask(CompletePendingAsync(pending, output));
+    }
+
+    private static async Task<DartMap<Type, object>> CompletePendingAsync(
+        List<Task<(Type Type, object Resource)>> pending, DartMap<Type, object> output)
+    {
+        try
+        {
+            // A failed delegate must release the frame even if another delegate never completes.
+            await foreach (var completed in Task.WhenEach(pending).ConfigureAwait(false))
+            {
+                var (type, resource) = await completed.ConfigureAwait(false);
+                output[type] = resource;
+            }
+            return output;
+        }
+        catch
+        {
+            _ = ObserveFailureAsync(Task.WhenAll(pending));
+            throw;
+        }
+    }
+
+    internal static async Task ObserveFailureAsync(Task task)
+    {
+        try { await task.ConfigureAwait(false); }
+        catch { /* The current request reports its first error. */ }
     }
 }
 
@@ -209,28 +196,27 @@ public class DefaultWidgetsLocalizations : WidgetsLocalizations
 internal class _LocalizationsScope__localizations : InheritedWidget
 {
     public virtual Locale locale { get; private set; } = default!;
-    public virtual _LocalizationsState__localizations localizationsState { get; private set; } =
-        default!;
+    public IReadOnlyList<object> delegates { get; }
     public virtual DartMap<Type, object> typeToResources { get; private set; } = default!;
 
     internal _LocalizationsScope__localizations(
         Key? key = null,
         Locale locale = default!,
-        _LocalizationsState__localizations localizationsState = default!,
+        IReadOnlyList<object> delegates = default!,
         DartMap<Type, object> typeToResources = default!,
         Widget child = default!
     )
         : base(key: key, child: child)
     {
         this.locale = locale;
-        this.localizationsState = localizationsState;
+        this.delegates = delegates;
         this.typeToResources = typeToResources;
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget)
     {
         var __old = (_LocalizationsScope__localizations)oldWidget;
-        return !Equals(typeToResources, __old.typeToResources);
+        return locale != __old.locale || !ReferenceEquals(typeToResources, __old.typeToResources);
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
@@ -251,7 +237,7 @@ public class Localizations : StatefulWidget
     )
         : base(key: key)
     {
-        this.locale = locale;
+        this.locale = locale.normalized();
         this.delegates = delegates;
         this.child = child;
         this.isApplicationLevel = isApplicationLevel;
@@ -297,21 +283,10 @@ public class Localizations : StatefulWidget
                     )
                 );
             }
-            if (scope.localizationsState.locale is null)
-            {
-                throw DartRuntimePrimitives.AsException(
-                    FlutterError.Create(
-                        "Localizations.localeOf found a Localizations widget that had a unexpected null locale.\n"
-                    )
-                );
-            }
             return true;
             throw new InvalidOperationException("Callback completed without returning a value.");
         });
-        return (
-            scope!.localizationsState.locale
-            ?? throw new global::System.NullReferenceException("A required value was null.")
-        );
+        return scope!.locale;
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
@@ -319,7 +294,7 @@ public class Localizations : StatefulWidget
     {
         _LocalizationsScope__localizations? scope =
             context.dependOnInheritedWidgetOfExactType<_LocalizationsScope__localizations>();
-        return scope?.localizationsState.locale;
+        return scope?.locale;
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
@@ -331,11 +306,7 @@ public class Localizations : StatefulWidget
             () => scope is not null,
             () => (object?)"a Localizations ancestor was not found"
         );
-        return new List<object>(
-            DartRuntimePrimitives.ConvertEnumerable<object>(
-                scope!.localizationsState.widget.delegates
-            )
-        );
+        return new List<object>(scope!.delegates);
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
@@ -343,7 +314,7 @@ public class Localizations : StatefulWidget
     {
         _LocalizationsScope__localizations? scope =
             context.dependOnInheritedWidgetOfExactType<_LocalizationsScope__localizations>();
-        return scope is null ? default : scope.localizationsState.resourcesFor<T>(type);
+        return scope is null ? default : (T?)scope.typeToResources.GetValueOrDefault(type);
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
@@ -362,38 +333,24 @@ internal class _LocalizationsState__localizations : State<Localizations>
 {
     internal virtual GlobalKey<IState> _localizedResourcesScopeKey { get; private set; } =
         GlobalKey<IState>.Create();
-    internal virtual DartMap<Type, object> _typeToResources { get; set; } =
-        new DartMap<Type, object>();
-    internal virtual Locale? _locale { get; set; } = default;
-
-    public virtual Locale? locale
-    {
-        get => _locale;
-        set
-        {
-            var locale = value;
-            DartRuntimePrimitives.Assert(() => locale is not null);
-            if (Equals(_locale, locale))
-            {
-                return;
-            }
-            WidgetsBinding.instance.platformDispatcher.setApplicationLocale(
-                (
-                    locale
-                    ?? throw new global::System.NullReferenceException("A required value was null.")
-                )
-            );
-            _locale = (
-                locale
-                ?? throw new global::System.NullReferenceException("A required value was null.")
-            );
-        }
-    }
+    private DartMap<Type, object> _typeToResources = new();
+    private IReadOnlyList<object> _loadedDelegates = [];
+    private Locale? _locale;
+    private DorotiView? _ownerView;
+    private FlutterErrorDetails? _initialLoadError;
+    private CancellationTokenSource? _pendingLoad;
+    private RendererBinding? _deferredRenderer;
 
     public override void initState()
     {
         base.initState();
         load((widget.locale));
+    }
+
+    public override void didChangeDependencies()
+    {
+        base.didChangeDependencies();
+        if (!ReferenceEquals(_ownerView, View.maybeOf(context))) load(widget.locale);
     }
 
     internal virtual bool _anyDelegatesShouldReload(Localizations old)
@@ -431,64 +388,131 @@ internal class _LocalizationsState__localizations : State<Localizations>
     public override void didUpdateWidget(Localizations old)
     {
         base.didUpdateWidget(old);
-        if ((!Equals(widget.locale, old.locale)) || _anyDelegatesShouldReload(old))
+        if (widget.locale != old.locale || widget.isApplicationLevel != old.isApplicationLevel
+            || _anyDelegatesShouldReload(old))
         {
-            load((widget.locale));
+            load(widget.locale);
         }
     }
 
     public virtual void load(Locale locale)
     {
-        IEnumerable<object> delegatesLocal = widget.delegates;
-        if (!Enumerable.Any(delegatesLocal))
+        CancelPendingLoad();
+        var view = LookupBoundary.getInheritedWidgetOfExactType<_ViewScope__view>(context)?.view;
+        _ownerView = view;
+        using var viewScope = view?.EnterInvocationScope();
+        var delegates = widget.delegates.ToArray();
+        _initialLoadError = null;
+        try
         {
-            this.locale = (locale);
-            return;
-        }
-        DartMap<Type, object>? typeToResources = default!;
-        Future<DartMap<Type, object>> typeToResourcesFuture = LocalizationsLibrary
-            ._loadAll(((locale)), delegatesLocal.Cast<dynamic>())
-            .then(
-                (value) =>
-                {
-                    return typeToResources = value.cast<Type, object>();
-                    throw new InvalidOperationException(
-                        "Callback completed without returning a value."
-                    );
-                }
+            var resources = LocalizationsLibrary._loadAll(locale, delegates);
+            if (resources is SynchronousFuture<DartMap<Type, object>>)
+            {
+                ApplyResources(locale, view, delegates, resources.asTask().GetAwaiter().GetResult());
+                ReleaseFirstFrame();
+                return;
+            }
+
+            var owner = DorotiExecutionContext.CaptureDispatcher()
+                ?? throw new InvalidOperationException("Asynchronous localizations require a framework dispatcher.");
+            if (_locale is null && _deferredRenderer is null)
+            {
+                _deferredRenderer = RendererBinding.instance;
+                _deferredRenderer.deferFirstFrame();
+            }
+            var request = new CancellationTokenSource();
+            _pendingLoad = request;
+            DartRuntimePrimitives.ObserveTask(
+                CompleteLoadAsync(resources.asTask(), request, owner, locale, view, delegates),
+                "localization resource load"
             );
-        if (typeToResources is not null)
-        {
-            _typeToResources = typeToResources!;
-            this.locale = (locale);
         }
-        else
+        catch (Exception error)
         {
-            RendererBinding.instance.deferFirstFrame();
-            DartRuntimePrimitives.Ignore(
-                typeToResourcesFuture.then(
-                    (value) =>
-                    {
-                        if (mounted)
-                        {
-                            setState(() =>
-                            {
-                                _typeToResources = value;
-                                this.locale = (locale);
-                            });
-                        }
-                        RendererBinding.instance.allowFirstFrame();
-                    }
-                )
-            );
+            ReleaseFirstFrame();
+            ReportLoadError(locale, error);
         }
     }
 
-    public virtual T resourcesFor<T>(Type type)
+    private async Task CompleteLoadAsync(Task<DartMap<Type, object>> loading,
+        CancellationTokenSource request, DorotiCallbackDispatcher owner, Locale locale,
+        DorotiView? view, IReadOnlyList<object> delegates)
     {
-        var resources = ((T?)_typeToResources.GetValueOrDefault(type))!;
-        return resources;
-        throw new InvalidOperationException("Control flow completed without returning a value.");
+        var token = request.Token;
+        DartMap<Type, object>? resources = null;
+        Exception? failure = null;
+        try { resources = await loading.WaitAsync(token).ConfigureAwait(false); }
+        catch (Exception error) { failure = error; }
+
+        if (token.IsCancellationRequested)
+        {
+            _ = LocalizationsLibrary.ObserveFailureAsync(loading);
+            return;
+        }
+        try
+        {
+            await owner.PostAsync(() =>
+            {
+                if (!mounted || !ReferenceEquals(_pendingLoad, request)) return;
+                _pendingLoad = null;
+                request.Dispose();
+                try
+                {
+                    setState(() =>
+                    {
+                        if (failure is not null) ReportLoadError(locale, failure);
+                        else ApplyResources(locale, view, delegates, resources!);
+                    });
+                }
+                finally { ReleaseFirstFrame(); }
+            }).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (owner.Lifetime.IsCancellationRequested || token.IsCancellationRequested) { }
+    }
+
+    private void ApplyResources(Locale locale, DorotiView? view, IReadOnlyList<object> delegates,
+        DartMap<Type, object> resources)
+    {
+        if (resources.GetValueOrDefault(typeof(WidgetsLocalizations)) is not WidgetsLocalizations)
+        {
+            ReportLoadError(locale, new InvalidOperationException("No WidgetsLocalizations resource was loaded."));
+            return;
+        }
+        if (widget.isApplicationLevel)
+            WidgetsBinding.instance.platformDispatcher.setApplicationLocale(locale, view);
+        _typeToResources = resources;
+        _loadedDelegates = delegates;
+        _locale = locale;
+    }
+
+    private void ReportLoadError(Locale locale, Exception error)
+    {
+        var details = new FlutterErrorDetails(error, library: "widgets library",
+            context: new ErrorDescription($"while loading localization resources for {locale.toLanguageTag()}"));
+        if (_locale is null) _initialLoadError = details;
+        FlutterError.reportError(details);
+    }
+
+    private void CancelPendingLoad()
+    {
+        var request = _pendingLoad;
+        _pendingLoad = null;
+        request?.Cancel();
+        request?.Dispose();
+    }
+
+    private void ReleaseFirstFrame()
+    {
+        var renderer = _deferredRenderer;
+        _deferredRenderer = null;
+        renderer?.allowFirstFrame();
+    }
+
+    public override void dispose()
+    {
+        CancelPendingLoad();
+        ReleaseFirstFrame();
+        base.dispose();
     }
 
     internal virtual TextDirection _textDirection
@@ -507,10 +531,10 @@ internal class _LocalizationsState__localizations : State<Localizations>
     {
         if (_locale is null)
         {
-            return SizedBox.CreateShrink();
+            return _initialLoadError is { } error ? ErrorWidget.builder(error) : SizedBox.CreateShrink();
         }
         return new Semantics(
-            localeForSubtree: widget.isApplicationLevel ? null : widget.locale,
+            localeForSubtree: _locale,
             container: !widget.isApplicationLevel,
             textDirection: _textDirection,
             child: new _LocalizationsScope__localizations(
@@ -519,7 +543,7 @@ internal class _LocalizationsState__localizations : State<Localizations>
                     _locale
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
-                localizationsState: this,
+                delegates: _loadedDelegates,
                 typeToResources: _typeToResources,
                 child: new Directionality(textDirection: _textDirection, child: widget.child!)
             )
@@ -530,6 +554,9 @@ internal class _LocalizationsState__localizations : State<Localizations>
 
 public class LocalizationsResolver : ChangeNotifier, WidgetsBindingObserver
 {
+    private readonly WidgetsBinding _binding;
+    private DorotiView? _view;
+    private IReadOnlyList<Locale> _normalizedSupportedLocales;
     internal virtual IEnumerable<dynamic>? _localizationsDelegates { get; set; } = default;
     internal virtual Func<
         List<Locale>?,
@@ -551,23 +578,33 @@ public class LocalizationsResolver : ChangeNotifier, WidgetsBindingObserver
         Func<List<Locale>?, IEnumerable<Locale>, Locale?>? localeListResolutionCallback = null,
         Func<Locale?, IEnumerable<Locale>, Locale?>? localeResolutionCallback = null,
         IEnumerable<dynamic>? localizationsDelegates = null
+    ) : this(null, supportedLocales, locale, localeListResolutionCallback,
+        localeResolutionCallback, localizationsDelegates) { }
+
+    internal LocalizationsResolver(
+        DorotiView? view,
+        IEnumerable<Locale> supportedLocales,
+        Locale? locale = null,
+        Func<List<Locale>?, IEnumerable<Locale>, Locale?>? localeListResolutionCallback = null,
+        Func<Locale?, IEnumerable<Locale>, Locale?>? localeResolutionCallback = null,
+        IEnumerable<dynamic>? localizationsDelegates = null
     )
     {
+        _binding = WidgetsBinding.instance;
+        _view = view;
         _locale = locale;
         _localeListResolutionCallback = localeListResolutionCallback;
         _localeResolutionCallback = localeResolutionCallback;
         _localizationsDelegates = localizationsDelegates;
         _supportedLocales = supportedLocales;
-        _resolvedLocale = _resolveLocales(
-            WidgetsBinding.instance.platformDispatcher.locales.ToList(),
-            supportedLocales
-        );
-        WidgetsBinding.instance.addObserver(this);
+        _normalizedSupportedLocales = supportedLocales.Select(value => value.normalized()).Distinct().ToArray();
+        _resolvedLocale = _resolveLocales(PreferredLocales(), _normalizedSupportedLocales);
+        _binding.addObserver(this);
     }
 
     public override void dispose()
     {
-        WidgetsBinding.instance.removeObserver(this);
+        _binding.removeObserver(this);
         base.dispose();
     }
 
@@ -579,15 +616,19 @@ public class LocalizationsResolver : ChangeNotifier, WidgetsBindingObserver
         IEnumerable<Locale> supportedLocales
     )
     {
+        var supportedChanged = !ReferenceEquals(_supportedLocales, supportedLocales);
+        var resolutionChanged = supportedChanged || _localeListResolutionCallback != localeListResolutionCallback
+            || _localeResolutionCallback != localeResolutionCallback;
         _locale = locale;
         _localeListResolutionCallback = localeListResolutionCallback;
         _localeResolutionCallback = localeResolutionCallback;
         _localizationsDelegates = localizationsDelegates;
-        if (!Equals(_supportedLocales, supportedLocales))
+        if (supportedChanged)
         {
             _supportedLocales = supportedLocales;
-            _updateResolvedLocale(WidgetsBinding.instance.platformDispatcher.locales.ToList());
+            _normalizedSupportedLocales = supportedLocales.Select(value => value.normalized()).Distinct().ToArray();
         }
+        if (resolutionChanged) _updateResolvedLocale(PreferredLocales());
     }
 
     public virtual Locale locale
@@ -643,10 +684,22 @@ public class LocalizationsResolver : ChangeNotifier, WidgetsBindingObserver
     public virtual Func<Locale?, IEnumerable<Locale>, Locale?>? localeResolutionCallback =>
         _localeResolutionCallback;
     public virtual IEnumerable<Locale> supportedLocales =>
-        DartRuntimePrimitives.ConvertValue<IEnumerable<Locale>>(_supportedLocales);
+        _normalizedSupportedLocales;
+
+    private List<Locale> PreferredLocales() =>
+        (_view?.environmentConfiguration?.locales ?? _binding.platformDispatcher.locales).ToList();
+
+    internal void UpdateView(DorotiView? view)
+    {
+        if (ReferenceEquals(_view, view)) return;
+        _view = view;
+        _updateResolvedLocale(PreferredLocales());
+    }
 
     public virtual void didChangeLocales(List<Locale>? locales)
     {
+        if (_view is not null && _binding.platformDispatcher.CurrentInvocationView is { } sender
+            && !ReferenceEquals(_view, sender)) return;
         _updateResolvedLocale(locales);
     }
 
@@ -665,6 +718,7 @@ public class LocalizationsResolver : ChangeNotifier, WidgetsBindingObserver
         IEnumerable<Locale> supportedLocales
     )
     {
+        preferredLocales = preferredLocales?.Select(value => value.normalized()).Distinct().ToList();
         if (localeListResolutionCallback is not null)
         {
             Locale? locale = localeListResolutionCallback!(preferredLocales, supportedLocales);
@@ -674,7 +728,7 @@ public class LocalizationsResolver : ChangeNotifier, WidgetsBindingObserver
                     locale
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
-                return ((locale__32547__value32633));
+                return locale__32547__value32633.normalized();
             }
         }
         if (localeResolutionCallback is not null)
@@ -691,7 +745,7 @@ public class LocalizationsResolver : ChangeNotifier, WidgetsBindingObserver
                     localeLocal
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
-                return ((locale__32838__value33016));
+                return locale__32838__value33016.normalized();
             }
         }
         return AppLibrary.basicLocaleListResolution(

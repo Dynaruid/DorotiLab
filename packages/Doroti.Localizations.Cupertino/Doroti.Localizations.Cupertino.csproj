@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../../tools/Doroti.Localization.Generator/build/Doroti.Localization.Generator.props" />
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Version>0.4.1-beta</Version>
+    <IsDorotiProduct>true</IsDorotiProduct>
+    <IsAotCompatible>true</IsAotCompatible>
+    <Description>Opt-in Cupertino localization resources for Doroti with Flutter's locale coverage.</Description>
+    <DorotiLocalizationClass>CupertinoStrings</DorotiLocalizationClass>
+    <DorotiLocalizationLocales Condition="'$(DorotiWidgetLocales)' != ''">$(DorotiWidgetLocales)</DorotiLocalizationLocales>
+    <DorotiPackageReadmeSource>$(MSBuildProjectDirectory)/../../Doroti/docs/localization/widget-packages.md</DorotiPackageReadmeSource>
+    <PackageReadmeFile>widget-packages.md</PackageReadmeFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../tools/Doroti.Localization.Generator/Doroti.Localization.Generator.csproj"
+                      OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
+    <ProjectReference Include="../../Doroti/src/Doroti.Intl/Doroti.Intl.csproj" />
+    <ProjectReference Include="../Doroti.Cupertino/Doroti.Cupertino.csproj" />
+    <ProjectReference Include="../Doroti.Localizations.Widgets/Doroti.Localizations.Widgets.csproj" />
+    <AdditionalFiles Include="l10n/*.arb" />
+    <DorotiLicense Include="../../Doroti/LICENSES/Flutter-LICENSE.md" />
+    <None Include="../../Doroti/docs/localization/widget-provenance.json" Pack="true" PackagePath="provenance/" />
+  </ItemGroup>
+</Project>

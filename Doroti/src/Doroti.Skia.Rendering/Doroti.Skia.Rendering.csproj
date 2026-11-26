@@ -16,4 +16,22 @@
     <ProjectReference Include="..\Doroti.Skia.RuntimeEffects\Doroti.Skia.RuntimeEffects.csproj" />
     <ProjectReference Include="..\Doroti.Ui\Doroti.Ui.csproj" />
   </ItemGroup>
+  <PropertyGroup Condition="'$(DorotiShapedParagraphs)' == 'true'">
+    <DefineConstants>$(DefineConstants);DOROTI_SHAPED_PARAGRAPHS</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(DorotiShapedParagraphs)' == 'true'">
+    <PackageReference Include="SkiaSharp.HarfBuzz" />
+    <DorotiLicense Include="../../LICENSES/Avalonia-MIT.txt" />
+    <DorotiLicense Include="../../LICENSES/ICU-79.1-LICENSE.txt" />
+    <DorotiLicense Include="../../LICENSES/*-dictionary-NOTICE.txt" />
+    <DorotiLicense Include="../../LICENSES/Unicode-3.0.txt" />
+    <DorotiLicense Include="../../LICENSES/material-color-utilities-Apache-2.0.txt"
+                   TargetPath="licenses/Doroti.Skia.Rendering/Apache-2.0.txt" />
+    <EmbeddedResource Include="Unicode/*dict.txt.gz" LogicalName="Doroti.Skia.Rendering.Unicode.%(Filename)%(Extension)" />
+    <None Include="../../docs/localization/paragraph-unicode-provenance.json" Pack="true" PackagePath="provenance/" />
+    <InternalsVisibleTo Include="Doroti.Skia.Rendering.Tests" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(DorotiShapedParagraphs)' != 'true'">
+    <Compile Remove="Unicode/**/*.cs;ShapedText/**/*.cs" />
+  </ItemGroup>
 </Project>

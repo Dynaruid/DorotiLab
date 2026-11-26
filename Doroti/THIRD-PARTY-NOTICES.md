@@ -10,14 +10,27 @@ Doroti is independently implemented. Reference checkouts are not runtime depende
 - License: BSD 3-Clause; see [the retained license](LICENSES/Flutter-LICENSE.md). The optional reference checkout is prepared separately.
 - Copyright: Copyright 2014 The Flutter Authors
 
-## CLDR cardinal plural subset
+## Flutter widget translations
+
+- Source: Widgets, Cupertino and Material ARBs at the R3 revision above.
+- Use: localized strings and locale-specific layout data in the optional `Doroti.Localizations.*` packages.
+- License: BSD 3-Clause; see [the retained license](LICENSES/Flutter-LICENSE.md).
+- Source checksums and adaptations: [widget-provenance.json](docs/localization/widget-provenance.json).
+
+## CLDR cardinal plural rules
 
 - Unicode CLDR 49, revision `96e54b273d2da4ec6fbad350ba19ff23fa24a588`.
 - Source: https://github.com/unicode-org/cldr/blob/96e54b273d2da4ec6fbad350ba19ff23fa24a588/common/supplemental/plurals.xml
-- Use: independently transcribed cardinal conditions for en, ko, ru and ar in `Doroti.Intl/CardinalPlural.cs`.
+- Use: 39 groups of cardinal conditions for plain decimal input in `Doroti.Intl/CardinalPluralRules.cs`.
 - License: Unicode-3.0; see [the retained license](LICENSES/Unicode-3.0.txt).
-- Source/license hashes and manual regeneration procedure: [plural-provenance.json](src/Doroti.Intl/data/plural-provenance.json).
-- This subset supplies no date/number data, ordinal rules, runtime message parser or text shaping engine.
+- Source and license hashes and the regeneration command: [plural-provenance.json](src/Doroti.Intl/data/plural-provenance.json).
+
+## Unicode paragraph analysis
+
+- Avalonia 12.2.0 at revision `5d9e6d1b0e87337f74f233bead580db186412357` supplies the Unicode 17.0.0 bidirectional, grapheme, word, and line break algorithms and tables. [Avalonia MIT license](LICENSES/Avalonia-MIT.txt)
+- The imported files retain the Six Labors and Topten Software Apache-2.0 notices and the original attribution in the trie code. [Apache 2.0 terms](LICENSES/material-color-utilities-Apache-2.0.txt)
+- ICU 79.1 supplies word lists for Thai, Lao, Khmer and Burmese. Doroti preserves the dictionary notices and deduplicates, sorts and compresses the entries for its managed segmenter. [ICU 79.1 license](LICENSES/ICU-79.1-LICENSE.txt) · [Thai attribution](LICENSES/Thai-dictionary-NOTICE.txt) · [Lao attribution](LICENSES/Lao-dictionary-NOTICE.txt) · [Khmer attribution](LICENSES/Khmer-dictionary-NOTICE.txt) · [Burmese attribution](LICENSES/Burmese-dictionary-NOTICE.txt)
+- Doroti adapts the Unicode source namespace and access modifiers, fixes UAX #9 N0 and BD16, and applies the analyzed positions in the opt-in Skia renderer. [Pinned input hashes and changes](docs/localization/paragraph-unicode-provenance.json)
 
 ## Flutter rounded superellipse paths
 

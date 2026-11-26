@@ -366,14 +366,9 @@ internal sealed partial class MauiAndroidSemanticsBridge : IMauiSemanticsBridge,
             var isChecked = toggled
                 ? flags?.isToggled == Tristate.isTrue
                 : flags?.isChecked is CheckedState.isTrue or CheckedState.mixed;
-#if NET11_0_OR_GREATER
-            // MAUI 11's AndroidX binding exposes an integer checked state.
             info.Checked = isChecked
                 ? AccessibilityNodeInfoCompat.CheckedStateTrue
                 : AccessibilityNodeInfoCompat.CheckedStateFalse;
-#else
-            info.Checked = isChecked;
-#endif
             info.Selected = flags?.isSelected == Tristate.isTrue;
             info.Password = flags?.isObscured == true;
             info.Editable = textField && flags?.isReadOnly != true;

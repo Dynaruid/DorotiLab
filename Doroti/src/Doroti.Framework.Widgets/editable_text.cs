@@ -2586,6 +2586,7 @@ public class EditableTextState
     public override void didChangeDependencies()
     {
         base.didChangeDependencies();
+        _ = Localizations.maybeLocaleOf(context);
         _style = MediaQuery.boldTextOf(context)
             ? widget.style.merge(new TextStyle(fontWeight: FontWeight.bold))
             : widget.style;
@@ -2823,7 +2824,8 @@ public class EditableTextState
                 spellCheckResults = null;
             }
         }
-        if (!Equals(widget.style, oldWidget.style))
+        if (!Equals(widget.style, oldWidget.style) || widget.locale != oldWidget.locale
+            || widget.textDirection != oldWidget.textDirection || widget.textAlign != oldWidget.textAlign)
         {
             _style = MediaQuery.boldTextOf(context)
                 ? widget.style.merge(new TextStyle(fontWeight: FontWeight.bold))
@@ -2880,7 +2882,7 @@ public class EditableTextState
             letterSpacing: letterSpacingOverride ?? _style.letterSpacing,
             wordSpacing: wordSpacingOverride ?? _style.wordSpacing,
             lineHeight: renderEditable.preferredLineHeight
-        );
+        ) { locale = widget.locale?.normalized() ?? Localizations.maybeLocaleOf(context) };
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 

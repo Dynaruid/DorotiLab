@@ -1076,6 +1076,9 @@ public sealed partial class SkiaSceneRenderer
 
     public Paragraph Layout(ParagraphRequest request, DorotiUiInvocation invocation)
     {
+#if DOROTI_SHAPED_PARAGRAPHS
+        return CreateShapedParagraph(request);
+#else
         var started = DorotiFrameClock.Now;
         ObjectDisposedException.ThrowIf(_disposed, this);
         lock (_paintGate)
@@ -1144,6 +1147,7 @@ public sealed partial class SkiaSceneRenderer
             _paragraphMicroseconds += (DorotiFrameClock.Now - started).Ticks / 10;
             return paragraph;
         }
+#endif
     }
 
     public ValueTask<UiImage> DecodeAsync(
@@ -1480,6 +1484,9 @@ public sealed partial class SkiaSceneRenderer
         {
             if (_disposed) return;
             _fontGeneration++;
+#if DOROTI_SHAPED_PARAGRAPHS
+            ClearPreparedParagraphs();
+#endif
             foreach (var resources in _textRenderResources.Values)
             {
                 resources.Dispose();
@@ -1538,6 +1545,11 @@ public sealed partial class SkiaSceneRenderer
                 _presentedFrame = null;
                 _invalidate = null;
             }
+#if DOROTI_SHAPED_PARAGRAPHS
+            ClearPreparedParagraphs();
+            _shapingBuffer?.Dispose();
+            _shapingBuffer = null;
+#endif
             foreach (var resources in _textRenderResources.Values)
             {
                 resources.Dispose();
@@ -2801,6 +2813,13 @@ public sealed partial class SkiaSceneRenderer
         using var costProfile = FrameworkWorkCounters.Enabled
             ? FrameworkWorkProfile.Begin(typeof(SkiaSceneRenderer), 24)
             : default;
+#if DOROTI_SHAPED_PARAGRAPHS
+        if (paragraph.HostPaintPayload is ShapedParagraphPaint shaped)
+        {
+            shaped.Draw(canvas, offset);
+            return;
+        }
+#endif
         foreach (var line in paragraph.PaintLines)
         {
             var x = (float)(offset.dx + line.Left);
@@ -2882,7 +2901,11 @@ public sealed partial class SkiaSceneRenderer
         private readonly SKTypeface _primarySource;
         private readonly float _letterSpacing,
             _wordSpacing;
+#if DOROTI_SHAPED_PARAGRAPHS
+        private readonly Dictionary<(int Codepoint, string? Locale), TextFontResource> _fallbackByCodePoint = [];
+#else
         private readonly Dictionary<int, TextFontResource> _fallbackByCodePoint = [];
+#endif
         private readonly Dictionary<string, TextFontResource> _fallbackByFamily = new(
             StringComparer.OrdinalIgnoreCase
         );
@@ -2980,11 +3003,11 @@ public sealed partial class SkiaSceneRenderer
                 typeface = clone;
                 ownsTypeface = true;
             }
-            var resource = new TextFontResource(typeface, size, ownsTypeface);
+            var resource = new TextFontResource(typeface, size, ownsTypeface, descriptor);
             // Match Flutter/Skia's synthetic styles when a family lacks a face.
-            resource.Font.Embolden = !variableWeight && _fontStyle.Weight >= 600 && (descriptor?.WeightMax ?? typeface.FontWeight) < 600;
+            resource.Font.Embolden = !variableWeight && _fontStyle.Weight >= 600 && (resource.Descriptor?.WeightMax ?? typeface.FontWeight) < 600;
             resource.Font.SkewX = _fontStyle.Slant != SKFontStyleSlant.Upright
-                && (descriptor?.Slant ?? typeface.FontSlant) == SKFontStyleSlant.Upright ? -.25f : 0;
+                && (resource.Descriptor?.Slant ?? typeface.FontSlant) == SKFontStyleSlant.Upright ? -.25f : 0;
             return resource;
         }
 
@@ -3204,14 +3227,21 @@ public sealed partial class SkiaSceneRenderer
             return first;
         }
 
-        private TextFontResource ResolveFont(int codePoint)
+        private TextFontResource ResolveFont(int codePoint) => ResolveFontWithLocale(codePoint, null);
+
+        private TextFontResource ResolveFontWithLocale(int codePoint, string? language)
         {
             if (_primary.Font.ContainsGlyph(codePoint) && (_registeredFallbacks?.Covers(_primarySource, codePoint) ?? true))
             {
                 return _primary;
             }
 
-            if (_fallbackByCodePoint.TryGetValue(codePoint, out var cached))
+#if DOROTI_SHAPED_PARAGRAPHS
+            var key = (codePoint, language);
+#else
+            var key = codePoint;
+#endif
+            if (_fallbackByCodePoint.TryGetValue(key, out var cached))
             {
                 return cached;
             }
@@ -3237,7 +3267,7 @@ public sealed partial class SkiaSceneRenderer
                 else if (ownsFace) TypefaceLease.Acquire(face, true).Dispose();
                 if (preferred.Font.ContainsGlyph(codePoint))
                 {
-                    _fallbackByCodePoint.Add(codePoint, preferred);
+                    _fallbackByCodePoint.Add(key, preferred);
                     return preferred;
                 }
             }
@@ -3258,20 +3288,20 @@ public sealed partial class SkiaSceneRenderer
                     );
                     _fallbackByFamily.Add($"face:{registeredTypeface.Handle}", registered);
                 }
-                _fallbackByCodePoint.Add(codePoint, registered);
+                _fallbackByCodePoint.Add(key, registered);
                 return registered;
             }
 
             var matchedTypeface = OperatingSystem.IsBrowser() ? null : SKFontManager.Default.MatchCharacter(
                 _primary.FamilyName,
                 _fontStyle,
-                null,
+                language is null ? null : [language],
                 codePoint
             );
             if (matchedTypeface is null)
             {
                 _registeredFallbacks?.ReportMissingCharacter(codePoint);
-                _fallbackByCodePoint.Add(codePoint, _primary);
+                _fallbackByCodePoint.Add(key, _primary);
                 return _primary;
             }
 
@@ -3284,7 +3314,7 @@ public sealed partial class SkiaSceneRenderer
             {
                 TypefaceLease.Acquire(matchedTypeface, true).Dispose();
             }
-            _fallbackByCodePoint.Add(codePoint, fallback);
+            _fallbackByCodePoint.Add(key, fallback);
             return fallback;
         }
 
@@ -3304,15 +3334,83 @@ public sealed partial class SkiaSceneRenderer
             _primary.Dispose();
         }
 
-        private sealed class TextFontResource(
+#if DOROTI_SHAPED_PARAGRAPHS
+        internal TextFontResource PrimaryFont => _primary;
+
+        internal TextFontResource ResolveClusterFont(ReadOnlySpan<char> cluster, string language)
+        {
+            if (cluster.Length == 1 && cluster[0] is >= ' ' and <= '~')
+                return _primary.CoversGlyph(cluster[0]) ? _primary : ResolveFontWithLocale(cluster[0], language);
+
+            if (CoversCluster(_primary, cluster))
+                return _primary;
+
+            // Try the installed and registered faces for each visible member.
+            // Choose one face for the whole grapheme, including its marks.
+            TextFontResource? first = null;
+            foreach (var rune in cluster.EnumerateRunes())
+            {
+                if (!RequiresGlyph(rune)) continue;
+                var candidate = ResolveFontWithLocale(rune.Value, language);
+                first ??= candidate;
+                if (CoversCluster(candidate, cluster))
+                    return candidate;
+            }
+            return first ?? _primary;
+        }
+
+        private static bool CoversCluster(TextFontResource resource, ReadOnlySpan<char> text)
+        {
+            foreach (var rune in text.EnumerateRunes())
+                if (!resource.CoversGlyph(rune.Value) && RequiresGlyph(rune))
+                    return false;
+            return true;
+        }
+
+        private static bool RequiresGlyph(System.Text.Rune rune) =>
+            System.Text.Rune.GetUnicodeCategory(rune) is not (System.Globalization.UnicodeCategory.Control
+                or System.Globalization.UnicodeCategory.Format)
+            && rune.Value is not (>= 0xFE00 and <= 0xFE0F or >= 0xE0100 and <= 0xE01EF);
+#endif
+
+        internal sealed class TextFontResource(
             SKTypeface typeface,
             float fontSize,
-            bool ownsTypeface = true
+            bool ownsTypeface,
+            SkiaFontFaceDescriptor? descriptor
         ) : IDisposable
         {
             private readonly TypefaceLease _typefaceLease = TypefaceLease.Acquire(typeface, ownsTypeface);
             internal SKTypeface Typeface { get; } = typeface;
             internal SKFont Font { get; } = new(typeface, fontSize);
+            internal SkiaFontFaceDescriptor? Descriptor { get; } = descriptor;
+#if DOROTI_SHAPED_PARAGRAPHS
+            private HarfBuzzSharp.Font? _shapingFont;
+            private UInt128? _asciiGlyphs;
+            internal HarfBuzzSharp.Font ShapingFont => _shapingFont ??= CreateShapingFont(Typeface);
+
+            internal bool CoversGlyph(int codePoint)
+            {
+                if (Descriptor is not null && !Descriptor.Covers(codePoint)) return false;
+                if (codePoint is < ' ' or > '~') return Font.ContainsGlyph(codePoint);
+                var coverage = _asciiGlyphs ??= ReadAsciiGlyphs();
+                return (coverage & (UInt128.One << (codePoint - ' '))) != 0;
+            }
+
+            private UInt128 ReadAsciiGlyphs()
+            {
+                const int length = '~' - ' ' + 1;
+                Span<char> text = stackalloc char[length];
+                Span<ushort> glyphs = stackalloc ushort[length];
+                for (var i = 0; i < text.Length; i++) text[i] = (char)(' ' + i);
+                Font.GetGlyphs(text, glyphs);
+
+                UInt128 coverage = 0;
+                for (var i = 0; i < glyphs.Length; i++)
+                    if (glyphs[i] != 0) coverage |= UInt128.One << i;
+                return coverage;
+            }
+#endif
             internal string FamilyName
             {
                 get
@@ -3324,6 +3422,9 @@ public sealed partial class SkiaSceneRenderer
 
             public void Dispose()
             {
+#if DOROTI_SHAPED_PARAGRAPHS
+                _shapingFont?.Dispose();
+#endif
                 Font.Dispose();
                 _typefaceLease.Dispose();
             }

@@ -1,0 +1,20 @@
+{
+  "@@locale": "lt",
+  "reorderItemToStart": "Perkelti į pradžią",
+  "reorderItemToEnd": "Perkelti į pabaigą",
+  "reorderItemUp": "Perkelti aukštyn",
+  "reorderItemDown": "Perkelti žemyn",
+  "reorderItemLeft": "Perkelti kairėn",
+  "reorderItemRight": "Perkelti dešinėn",
+  "searchResultsFound": "Rasta paieškos rezultatų",
+  "noResultsFound": "Rezultatų nerasta",
+  "copyButtonLabel": "Kopijuoti",
+  "cutButtonLabel": "Iškirpti",
+  "pasteButtonLabel": "Įklijuoti",
+  "selectAllButtonLabel": "Pasirinkti viską",
+  "lookUpButtonLabel": "Ieškoti",
+  "searchWebButtonLabel": "Ieškoti žiniatinklyje",
+  "shareButtonLabel": "Bendrinti",
+  "radioButtonUnselectedLabel": "Nepasirinkta",
+  "textDirection": "ltr"
+}

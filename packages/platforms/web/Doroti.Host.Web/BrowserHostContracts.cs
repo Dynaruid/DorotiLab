@@ -61,7 +61,10 @@ public sealed record BrowserHostSnapshot(
     long EnvironmentGeneration = 0,
     IReadOnlyList<BrowserDisplayFeature>? DisplayFeatures = null,
     bool PlatformBackdrop = false
-);
+)
+{
+    public IReadOnlyList<string>? LanguageTags { get; init; }
+}
 
 public sealed record BrowserJavaScriptPluginDescriptor(
     string Id,
@@ -750,6 +753,7 @@ public sealed class BrowserHostAdapter
                     style.fontFamily,
                     style.fontSize,
                     fontWeight = style.fontWeight?.value,
+                    locale = style.locale?.toLanguageTag(),
                     textDirection = style.textDirection == TextDirection.rtl ? "rtl" : "ltr",
                     textAlign = style.textAlign switch
                     {
@@ -1285,13 +1289,7 @@ public sealed class BrowserHostAdapter
         }
 
         var nextConfiguration = ToConfiguration(next);
-        if (
-            previous.LanguageTag != next.LanguageTag
-            || previous.Brightness != next.Brightness
-            || previous.ReduceMotion != next.ReduceMotion
-            || previous.HighContrast != next.HighContrast
-            || previous.InvertColors != next.InvertColors
-        )
+        if (!_configuration.HasSameValues(nextConfiguration))
         {
             _configuration = nextConfiguration;
             ConfigurationChanged?.Invoke(nextConfiguration);
@@ -1384,14 +1382,7 @@ public sealed class BrowserHostAdapter
 
     private static PlatformConfiguration ToConfiguration(BrowserHostSnapshot snapshot)
     {
-        var pieces = snapshot.LanguageTag.Split('-', StringSplitOptions.RemoveEmptyEntries);
-        var locale = pieces.Length switch
-        {
-            0 => new Locale("en", "US"),
-            1 => new Locale(pieces[0]),
-            2 => new Locale(pieces[0], pieces[1]),
-            _ => new Locale(pieces[0], pieces[^1], pieces[1]),
-        };
+        var locales = Locale.ParseLanguageTags(snapshot.LanguageTags ?? [], snapshot.LanguageTag);
         var operatingSystem = snapshot.OperatingSystem switch
         {
             "android" => HostOperatingSystem.android,
@@ -1402,7 +1393,7 @@ public sealed class BrowserHostAdapter
             _ => HostOperatingSystem.web,
         };
         return new(
-            [locale],
+            locales,
             snapshot.Brightness == "dark" ? Brightness.dark : Brightness.light,
             false,
             false,

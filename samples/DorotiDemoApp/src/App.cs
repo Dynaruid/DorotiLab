@@ -15,6 +15,8 @@ internal static class App
     internal static Func<IDorotiViewEntrypoint> Definition =>
 #if DOROTI_INTL_RENDER_PROBE
         () => new DorotiWidgetEntrypoint(() => new IntlRenderProbe(), PrepareResourcesAsync);
+#elif DOROTI_WIDGET_LOCALIZATION_PROBE
+        () => new DorotiWidgetEntrypoint(() => new WidgetLocalizationProbe(), PrepareResourcesAsync);
 #else
         () => new DorotiWidgetEntrypoint(() => new DemoApplication(), PrepareResourcesAsync);
 #endif

@@ -1,0 +1,20 @@
+{
+  "@@locale": "eu",
+  "reorderItemToStart": "Eraman hasierara",
+  "reorderItemToEnd": "Eraman amaierara",
+  "reorderItemUp": "Eraman gora",
+  "reorderItemDown": "Eraman behera",
+  "reorderItemLeft": "Eraman ezkerrera",
+  "reorderItemRight": "Eraman eskuinera",
+  "searchResultsFound": "Bilaketa-emaitzak aurkitu dira",
+  "noResultsFound": "Ez da aurkitu emaitzarik",
+  "copyButtonLabel": "Kopiatu",
+  "cutButtonLabel": "Ebaki",
+  "pasteButtonLabel": "Itsatsi",
+  "selectAllButtonLabel": "Hautatu guztiak",
+  "lookUpButtonLabel": "Bilatu",
+  "searchWebButtonLabel": "Bilatu sarean",
+  "shareButtonLabel": "Partekatu",
+  "radioButtonUnselectedLabel": "Hautatu gabe",
+  "textDirection": "ltr"
+}

@@ -1,0 +1,20 @@
+{
+  "@@locale": "ja",
+  "reorderItemToStart": "先頭に移動",
+  "reorderItemToEnd": "最後に移動",
+  "reorderItemUp": "上に移動",
+  "reorderItemDown": "下に移動",
+  "reorderItemLeft": "左に移動",
+  "reorderItemRight": "右に移動",
+  "searchResultsFound": "検索結果が見つかりました",
+  "noResultsFound": "一致する検索結果はありません",
+  "copyButtonLabel": "コピー",
+  "cutButtonLabel": "切り取り",
+  "pasteButtonLabel": "貼り付け",
+  "selectAllButtonLabel": "すべてを選択",
+  "lookUpButtonLabel": "調べる",
+  "searchWebButtonLabel": "ウェブを検索",
+  "shareButtonLabel": "共有",
+  "radioButtonUnselectedLabel": "選択されていません",
+  "textDirection": "ltr"
+}

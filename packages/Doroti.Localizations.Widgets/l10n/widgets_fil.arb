@@ -1,0 +1,20 @@
+{
+  "@@locale": "fil",
+  "reorderItemToStart": "Ilipat sa simula",
+  "reorderItemToEnd": "Ilipat sa dulo",
+  "reorderItemUp": "Ilipat pataas",
+  "reorderItemDown": "Ilipat pababa",
+  "reorderItemLeft": "Ilipat pakaliwa",
+  "reorderItemRight": "Ilipat pakanan",
+  "searchResultsFound": "Nakakita ng mga resulta ng paghahanap",
+  "noResultsFound": "Walang nakitang resulta",
+  "copyButtonLabel": "Kopyahin",
+  "cutButtonLabel": "I-cut",
+  "pasteButtonLabel": "I-paste",
+  "selectAllButtonLabel": "Piliin lahat",
+  "lookUpButtonLabel": "Tumingin sa Itaas",
+  "searchWebButtonLabel": "Maghanap sa Web",
+  "shareButtonLabel": "I-share",
+  "radioButtonUnselectedLabel": "Hindi napili",
+  "textDirection": "ltr"
+}

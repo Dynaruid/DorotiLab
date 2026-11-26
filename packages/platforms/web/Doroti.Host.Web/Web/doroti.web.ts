@@ -433,6 +433,7 @@ function snapshot(host: BrowserHost): string {
     visible: document.visibilityState !== "hidden",
     focused: document.hasFocus() && host.viewFocused,
     languageTag: navigator.language || "en-US",
+    languageTags: [...(navigator.languages ?? [])],
     brightness: globalThis.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light",
     operatingSystem: browserOperatingSystem(),
     generation: host.generation,
@@ -1386,6 +1387,7 @@ interface TextInputStylePayload {
   fontFamily?: string | null;
   fontSize?: number | null;
   fontWeight?: number | null;
+  locale?: string | null;
   textDirection: "ltr" | "rtl";
   textAlign: "left" | "right" | "center" | "justify" | "start" | "end";
   letterSpacing?: number | null;
@@ -1406,6 +1408,7 @@ export function setTextInputStyle(hostId: number, styleJson: string): void {
   host.input.style.fontSize = finite(style.fontSize) ? `${style.fontSize}px` : "";
   host.input.style.fontWeight = finite(style.fontWeight) ? String(style.fontWeight) : "";
   host.input.dir = style.textDirection;
+  setOptionalAttribute(host.input, "lang", style.locale ?? undefined);
   host.input.style.textAlign = style.textAlign;
   host.input.style.letterSpacing = finite(style.letterSpacing) ? `${style.letterSpacing}px` : "";
   host.input.style.wordSpacing = finite(style.wordSpacing) ? `${style.wordSpacing}px` : "";
@@ -1545,6 +1548,7 @@ export function clearTextInput(hostId: number): void {
   host.composition = null;
   host.input.value = "";
   host.input.hidden = true;
+  host.input.removeAttribute("lang");
   rememberTextState(host, "", 0, 0, -1, -1);
   // A native-focus notification closes the framework connection asynchronously.
   // Preserve the iframe's inner editable instead of taking focus back on ACK.
@@ -1688,6 +1692,7 @@ function applySemanticsProjection(host: BrowserHost, update: SemanticsPacket, pl
       maxValueLength: node.maxValueLength,
       controlledIds,
       locale: node.locale,
+      direction: node.direction,
     });
     if (!canRetainContent &&
         (replaced || host.semanticsContentSignatures.get(id) !== contentSignature)) {
@@ -1710,6 +1715,7 @@ function applySemanticsProjection(host: BrowserHost, update: SemanticsPacket, pl
       setOptionalAttribute(element, "aria-description", [node.hint, node.tooltip].filter((value) => Boolean(value)).join(" "));
       setOptionalAttribute(element, "aria-controls", controlledIds?.join(" "));
       setOptionalAttribute(element, "lang", node.locale);
+      setOptionalAttribute(element, "dir", node.direction);
       if (node.validationResult === "invalid") element.setAttribute("aria-invalid", "true");
       if (node.headingLevel && node.headingLevel > 0) element.setAttribute("aria-level", String(node.headingLevel));
       if (valueRole) {
@@ -2879,7 +2885,7 @@ function resetSemanticsAttributes(element: HTMLElement): void {
     "role", "aria-label", "aria-description", "aria-controls", "aria-invalid", "aria-level",
     "aria-valuetext", "aria-valuemin", "aria-valuemax", "aria-valuenow", "aria-hidden",
     "aria-live", "aria-checked", "aria-selected", "aria-disabled", "aria-pressed",
-    "aria-expanded", "aria-required", "aria-multiline", "aria-readonly", "lang",
+    "aria-expanded", "aria-required", "aria-multiline", "aria-readonly", "lang", "dir",
   ]) element.removeAttribute(attribute);
   if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) {
     element.removeAttribute("maxlength");

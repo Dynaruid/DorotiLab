@@ -14,7 +14,7 @@ export interface SemanticsNode {
   inputType?: string; minValue?: string; maxValue?: string; maxValueLength?: number;
   currentValueLength?: number; scrollPosition?: number; scrollExtentMin?: number;
   scrollExtentMax?: number; scrollChildCount?: number; scrollIndex?: number;
-  controlsNodes?: string[]; locale?: string; rect: [number, number, number, number];
+  controlsNodes?: string[]; locale?: string; direction?: "ltr" | "rtl"; rect: [number, number, number, number];
 }
 
 export interface SemanticsPacket {

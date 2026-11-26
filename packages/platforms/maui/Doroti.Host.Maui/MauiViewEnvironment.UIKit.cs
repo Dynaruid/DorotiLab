@@ -212,7 +212,7 @@ internal sealed partial class MauiViewEnvironment
             UIAccessibility.IsReduceMotionEnabled
         );
         var pattern = NSDateFormatter.GetDateFormatFromTemplate("j", 0, NSLocale.CurrentLocale);
-        Locales = NSLocale.PreferredLanguages.Select(ParseLocale).ToArray();
+        Locales = ParseLocales(NSLocale.PreferredLanguages);
         Use24Hour = pattern?.Contains('a') == false;
         _configurationDirty = false;
     }
