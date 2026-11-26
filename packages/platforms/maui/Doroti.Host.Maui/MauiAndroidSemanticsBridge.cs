@@ -409,7 +409,8 @@ internal sealed partial class MauiAndroidSemanticsBridge : IMauiSemanticsBridge,
                 (int)Math.Ceiling(node.rect.bottom * scale)
             );
             SetBoundsInScreenFromBoundsInParent(info, bounds);
-            if (textField && node.textSelectionBase >= 0 && node.textSelectionExtent >= 0)
+            if (textField && flags?.isObscured != true
+                && node.textSelectionBase >= 0 && node.textSelectionExtent >= 0)
             {
                 var length = (node.value ?? string.Empty).Length;
                 info.SetTextSelection(

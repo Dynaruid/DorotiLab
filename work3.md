@@ -1,6 +1,6 @@
 # Doroti 접근성 트리의 위치 증분 갱신 계획
 
-2026-11-26 KST · 소스 검토 기준 `34a26d8c2de1` · 상태 **PAUSED / PARTIAL** · W3-01~05 구현 반영, 수락 검증 진행 중 중단
+2026-11-26 KST · 소스 검토 기준 `34a26d8c2de1` · 상태 **PARTIAL** · W3-01~05 구현 반영 및 Windows MAUI·Web·Android 후속 검증
 
 ## 1. 수정 판단
 
@@ -33,7 +33,8 @@
 
 - [x] 최신 노드 및 액션 소유자는 항상 갱신한다. Apple 속성은 플랫폼에서 읽거나 쓰는 값이 바뀔 때만 다시 투영한다. 자식 배열은 소속·순서·네이티브 핸들이 바뀔 때 갱신하고, 액션 배열은 노드 ID·핸들·허용 액션이 바뀔 때 갱신한다. 핸들 부착·교체, 노드 제거, 노출 상태 변화는 각각 처리한다. 현재 differ가 텍스트 사각형 변경을 `metadata | bounds`로 표시하므로 Apple에서 소비하는 필드 비교를 기준으로 한다. [Apple 속성과 액션](packages/platforms/maui/Doroti.Host.Maui/MauiSemanticsLayout.Apple.cs#L60), [변경 분류](Doroti/src/Doroti.Ui/GraphicsAndSemanticsContracts.cs#L3806)
 - [x] 노출과 구조가 같으면 필터링된 노드 목록과 부모·자식 인덱스를 재사용한다. 현재 `SemanticsTreeSnapshot`은 자식 목록을 복사하고 노드마다 조상 경로의 순환을 확인한다. 보류 여부 판단과 `Apply`가 같은 기준 트리를 쓰면 diff 결과를 재사용한다. 좌표 갱신에서는 이동한 노드와 부모 원점의 영향을 받는 자식의 상대 좌표를 계산해 실제 변화에만 쓰기를 수행한다. 동일 스냅샷도 최신 콜백 소유권을 전달하며 기존 바인딩을 재사용한다. [수신과 적용](packages/platforms/maui/Doroti.Host.Maui/MauiSemanticsBridge.cs#L77), [트리 인덱스 생성](Doroti/src/Doroti.Ui/SemanticsTreeSnapshot.cs#L10)
-- [ ] 위치만 바뀐 AppKit·Catalyst·iOS 노드의 네이티브 객체·액션 배열·자식 배열을 유지한다. 새 핸들 연결과 실제 자식 삽입·제거에서는 읽기 순서 및 액션이 즉시 반영되는지 확인한다. 같은 차이를 Windows MAUI peer의 현재 속성 조회와 자식 캐시로 검증한다.
+- [x] Windows MAUI에서 리사이즈 뒤 기존 peer Runtime ID의 현재 좌표를 조회했다. 자식 구성 변경과 캐시 무효화는 `WindowsPeerChildrenRegression`에서 확인했다.
+- [ ] 위치만 바뀐 AppKit·Catalyst·iOS 노드에서 네이티브 객체·액션 배열·자식 배열의 동일성을 확인한다. 새 핸들 연결과 실제 자식 삽입·제거에서 읽기 순서와 액션이 즉시 반영되는지도 확인한다.
 
 ### W3-02 · Windows App SDK·Qt 네이티브 반영
 
@@ -48,8 +49,9 @@
 
 ### W3-04 · Android 가상 노드와 MAUI 오버레이
 
-- [ ] 가상 노드 경로는 기존 소비자 판별, 최신 대기 스냅샷, 조회 시 적용을 재사용한다. 활성 소비자에게는 기존 ID와 노출 순서를 유지하며 좌표가 바뀐 노드만 갱신한다. 추가·삭제·노출·순서 변화 시 루트 알림을 사용하고, 단일 노드의 속성·위치 변경은 `InvalidateVirtualView`가 제공하는 알림으로 TalkBack에서 검증한다. 큰 스크롤 묶음에서는 노드별 알림을 무더기로 보내기보다 기존 루트 알림 한 번과 비교한다. 네이티브 조회·액션은 최신 좌표와 노드를 사용하고 제거된 포커스는 기존 순서대로 정리한다. [Android 적용과 포커스 정리](packages/platforms/maui/Doroti.Host.Maui/MauiAndroidSemanticsBridge.cs#L92), [AndroidX 가상 노드 알림 계약](https://developer.android.com/reference/androidx/customview/widget/ExploreByTouchHelper#invalidateVirtualView(int,int))
-- [ ] 오버레이 경로는 동일 핸들에 delegate를 재사용하고 새 핸들 부착 시 설치한다. Android 접근성 중요도, 자식 프록시의 노출 여부와 폐기 처리를 실제 상태 변화에 맞춰 갱신한다. Vulkan 가상 노드와 오버레이를 각각 실행해 읽기·탭·스크롤·포커스·갤럭시 입력란의 선택을 확인한다. [오버레이 갱신](packages/platforms/maui/Doroti.Host.Maui/MauiSemanticsLayout.cs#L27), [오버레이 delegate](packages/platforms/maui/Doroti.Host.Maui/MauiSemanticsLayout.Android.cs#L9)
+- [x] 가상 노드 경로는 기존 소비자 판별, 최신 대기 스냅샷, 조회 시 적용을 재사용한다. 기존 ID와 노출 순서를 유지하며 바뀐 노드를 갱신한다. 추가·삭제·노출·순서 변화와 여러 노드 변경에는 루트 알림을 사용하고, 단일 노드는 `InvalidateVirtualView`로 알린다. 네이티브 조회·액션은 최신 좌표와 노드를 사용하고 제거된 포커스는 기존 순서대로 정리한다. [Android 적용과 포커스 정리](packages/platforms/maui/Doroti.Host.Maui/MauiAndroidSemanticsBridge.cs#L98), [AndroidX 가상 노드 알림 계약](https://developer.android.com/reference/androidx/customview/widget/ExploreByTouchHelper#invalidateVirtualView(int,int))
+- [x] 오버레이 경로는 동일 핸들에 delegate를 재사용하고 새 핸들 부착 시 설치한다. 접근성 중요도와 자식 프록시 노출을 상태에 맞춰 갱신한다. 갤럭시에서 Vulkan 가상 노드와 오버레이의 입력란 선택, IME, TalkBack 연결 상태의 접근성 조회와 포커스·탭 액션을 확인했다. 실제 스크롤과 오버레이의 접근성 스크롤 액션도 확인했다. [오버레이 갱신과 delegate](packages/platforms/maui/Doroti.Host.Maui/MauiSemanticsLayout.Android.cs#L19)
+- [ ] 갤럭시에서 TalkBack 손동작으로 탐색하고, 단일 노드 알림 이후의 실제 발화를 듣고 확인한다.
 
 ### W3-05 · Web 및 공통 시나리오 확인
 
@@ -155,17 +157,62 @@ Windows의 .NET Release에서 트리 2,048개 노드를 고정하고 한 노드�
 
 표의 이벤트는 Qt에 요청한 호출 수이며, 구독한 AT-SPI 이벤트의 클라이언트 수신 수는 연결 실행 전후 모두 0건이었다. 변경 후 미연결 실행은 좌표 패치 20건과 전체 갱신 1건을 포함했고, 나머지 각 실행에서 갱신 20건을 기록했다. 로컬 계측 소스, 로그 및 단계별 표본은 `Doroti/artifacts/work3-native-profile`에 남겼다.
 
+### Web Demo 스크롤 전후 측정
+
+`4c349c45`와 `7fd291b6`의 Demo를 .NET SDK 10.0.403, Mono 10.0.15, Debug 비 AOT로 게시했다. Chromium 158.0.8127.18의 headless SwiftShader WebGL 2에서 뷰포트 840×760, DPR 1 및 같은 Components 화면을 사용했다. 동일 출처에 COOP·COEP를 적용해 threaded를 실행하고, 일반 루프백 출처에서는 compatible을 실행했다. 스크린 리더를 연결하지 않았다. 준비 스크롤 뒤 30 논리 픽셀씩 정방향과 역방향으로 각 10회 입력했다. 양쪽 빌드의 오프셋은 두 모드 모두 0에서 300까지 이동해 0으로 돌아왔다.
+
+| 단계 또는 카운터 | threaded 전 → 후 | compatible 전 → 후 |
+| --- | ---: | ---: |
+| 오프셋 변경 패킷 20건의 UTF-8 바이트 | 112,913 → 102,688 B | 112,912 → 102,688 B |
+| 오프셋 변경에 사용한 `contentUnchanged` 노드 수 | 0 → 18 | 0 → 18 |
+| 측정 구간 전체 전송 노드 수 | 952 → 951 | 951 → 951 |
+| DOM에서 내용 반영으로 분류한 노드 수 | 60 → 40 | 59 → 40 |
+| JSON 파싱 p95 | 0.070 → 0.090 ms | 0.100 → 0.100 ms |
+| DOM 상태 및 요소 반영 p95 | 1.200 → 1.505 ms | 1.600 → 1.600 ms |
+| 캔버스 커밋 응답 간격 p95 | 209.960 → 218.545 ms | 214.400 → 207.600 ms |
+
+오프셋 패킷이 두 모드에서 약 9.1% 작아졌다. 파싱·반영 및 커밋 간격은 모드와 구간에 따라 달라졌고, 커밋 간격에는 200ms의 입력 간격이 포함된다. 계측은 두 게시본의 동일한 DOM 처리 경로에 시간을 기록했고, 로컬 스크립트와 원시 표본은 `Doroti/artifacts/work3-resume/measure-web.mjs`, `web-probe.json`에 보존했다.
+
+### Windows MAUI Testbed 리사이즈 전후 측정
+
+192 DPI, Ganesh DXGI/D3D12에서 Components 화면 너비를 같은 12 물리 픽셀 간격으로 왕복 20회 조정했다. 두 실행 모두 내레이터가 종료돼 있었고 Windows UIA는 구독이 있다고 보고했다. 양쪽의 적용 18회에서 peer 생성과 구조 갱신은 0회였고 위치·속성 쓰기는 각각 450회였다. MAUI 브리지의 누적 적용 시간은 7.118ms에서 3.713ms로 줄었다. 각 리사이즈 세대의 첫 present 응답 간격 p95는 247.51ms에서 247.89ms였다. 원시 표본은 `Doroti/artifacts/work3-resume/windows-maui-before.json`, `windows-maui-after.json`에 보존했다.
+
+기본 데스크톱과 같은 세션에 만든 별도 데스크톱에서 모두 `UiaClientsAreListening()`이 `true`를 반환했다. Windows App SDK의 구독 미연결 비교에는 `false`가 관측되는 Windows 세션이 필요하다. [Windows UI Automation 구독 상태](https://learn.microsoft.com/en-us/windows/win32/api/uiautomationcoreapi/nf-uiautomationcoreapi-uiaclientsarelistening)
+
+### 갤럭시 Android 기능 검증
+
+Android 오버레이의 입력란은 최신 포커스와 선택 범위를 `AccessibilityNodeInfo`에 제공한다. 선택 액션의 인수를 프레임워크가 요구하는 64비트 정수로 전달하고, 노드가 허용하는 방향의 스크롤 액션을 표시하고 실행한다. 가상 노드는 가려진 입력란의 선택 오프셋을 공개하지 않는다. [Android 오버레이 delegate](packages/platforms/maui/Doroti.Host.Maui/MauiSemanticsLayout.Android.cs#L67), [Android 가상 노드의 선택 범위](packages/platforms/maui/Doroti.Host.Maui/MauiAndroidSemanticsBridge.cs#L412), [Android 접근성 선택 범위 API](https://developer.android.com/reference/android/view/accessibility/AccessibilityNodeInfo#setTextSelection(int,int))
+
+SM-S931N의 ARM64 Testbed에서 Vulkan 가상 노드와 Ganesh MAUI 오버레이를 각각 실행했다. 오버레이 검증 APK는 네이티브 플랫폼 뷰 선언을 제외한 별도 테스트 매니페스트를 사용했다. `Input and native view lifetime`에서 삼성 키보드의 한국어 자판으로 `한글`을 조합하고 공백으로 확정했다. 두 경로에서 `UiAutomation`의 `ACTION_SET_SELECTION`으로 `1:5` 범위와 `3:3` 캐럿을 요청했고, 네이티브 노드와 프레임워크 컨트롤러에서 같은 값을 읽었다. 오버레이의 Components 화면에서 `ACTION_SCROLL_FORWARD`를 실행한 뒤 역방향 스크롤 액션이 노출됐다.
+
+TalkBack이 연결된 상태에서도 두 경로에서 `UiAutomation`으로 `Remove native views`에 접근성 포커스를 주고 실행하면 `Create native views`가 표시됐다. TalkBack 자체의 탐색과 발화는 직접 수락이 남았다. 로컬 수락 자료는 `Doroti/artifacts/work3-resume/android-*-selection.log`, `android-*-ime.log`, `android-*-reader-talkback.log`와 화면 캡처에 보존했다.
+
+### 갤럭시 Testbed 스크롤 전후 측정
+
+동일한 갤럭시의 1080×2340, 480dpi에서 `4c349c45`와 변경본의 Debug Mono ARM64 Testbed Components를 실행했다. Vulkan은 Adreno 830에서 구동했다. 같은 위치에서 휠을 한 눈금씩 정방향과 역방향으로 각각 10회 입력하고 TalkBack 연결 여부를 바꿔 비교했다. 아래 각 실행에서 접근성 갱신 22회를 받았다. Vulkan의 TalkBack 미연결 실행은 갱신을 병합하면서 네이티브 반영 0회를 기록했다. 오버레이는 각 실행에서 구조 갱신 20회, 네이티브 컨트롤 생성 57회, 위치·속성 쓰기 667회를 기록했다.
+
+| 단계 또는 카운터 | Vulkan 미연결 전 → 후 | Vulkan 연결 전 → 후 | 오버레이 미연결 전 → 후 | 오버레이 연결 전 → 후 |
+| --- | ---: | ---: | ---: | ---: |
+| 프레임워크 semantics flush p95 | 20.48 → 21.43 ms | 20.80 → 16.86 ms | 36.29 → 28.36 ms | 47.31 → 44.73 ms |
+| 공통 투영 누적 할당 | 1,441,312 → 1,061,944 B | 1,437,928 → 1,062,648 B | 1,433,904 → 1,061,064 B | 1,433,904 → 1,061,064 B |
+| 네이티브 반영 누적 시간 | 0 → 0 ms | 20.52 → 27.11 ms | 216.15 → 266.47 ms | 408.12 → 216.94 ms |
+| 네이티브 반영 구간의 관리 할당 | 0 → 0 B | 125,624 → 200,504 B | 5,590,896 → 3,442,504 B | 5,349,272 → 3,323,592 B |
+| 오버레이 적용 p95 | 해당 없음 | 해당 없음 | 19.10 → 38.89 ms | 62.66 → 21.86 ms |
+| 새 장면의 네이티브 제출 간격 p95 | 423.80 → 420.63 ms | 258.79 → 283.15 ms | 269.69 → 267.30 ms | 279.84 → 275.01 ms |
+
+공통 투영의 할당은 네 경우에서 줄었다. Vulkan의 TalkBack 연결 실행에서 네이티브 반영 시간과 관리 할당이 늘었고, 오버레이의 미연결 실행에서 반영 p95가 늘었다. TalkBack 연결 Vulkan에서 휠 입력을 0.06눈금으로 줄여 다시 비교했을 때 갱신 21회의 브리지 할당은 102,064B에서 91,952B로 줄었고 누적 반영 시간은 15.49ms에서 20.30ms로 늘었다. 제출 간격에는 입력과 장면 요청 사이의 대기가 포함된다. `Doroti/artifacts/work3-resume/android-profile-summary.json`에 단계별 표본의 집계를 남겼다.
+
 ### 남은 수락 검증
 
-갤럭시에서 두 Android 경로의 TalkBack 발화·탐색과 IME·입력란 선택, iOS·AppKit·Mac Catalyst의 네이티브 접근성 객체·배열 보존과 VoiceOver, iOS Switch Control의 수락 검증이 남아 있다. Windows App SDK는 UIA 구독이 없는 세션의 계측이 남아 있다. Web의 스크롤 오프셋 전송량 비교와 MAUI·Android·Apple의 단계별 전후 비교도 필요하다.
+- AppKit·Mac Catalyst·iOS의 네이티브 접근성 객체와 배열 동일성, VoiceOver, iOS Switch Control 및 Apple 단계별 계측은 macOS와 해당 실행 환경이 필요하다.
+- Windows App SDK의 UIA 미연결 비교는 `UiaClientsAreListening()`이 `false`인 세션에서 진행한다.
+- 갤럭시 TalkBack의 직접 탐색과 발화를 확인한다. TalkBack 연결 Vulkan 반영과 미연결 오버레이 반영에서 증가한 비용은 추가 비교 대상으로 남긴다.
 
-## 5. 중단 및 재개 지점
+## 5. 재개 작업과 재현 기준
 
-2026-11-26 KST에 사용자 요청으로 중단했다. 구현, 회귀 테스트 및 이 문서의 변경은 현재 작업트리에 보존했다. 접근성 기능 검증과 Windows·Qt 네이티브 계측 자료는 §4에 기록했다. Windows App SDK Release 네이티브 빌드와 역할 변경 알림 회귀까지 통과했다. Windows 계측 앱과 내레이터를 종료했다.
+2026-11-26 KST에 명시적으로 재개했다. 중단 당시 복원까지 진행했던 Web Demo 기준 게시를 완료했고, 기준 작업트리 `temp/work3-native-profile-baseline`의 Qt 계측 소스를 보존했다. Web과 Windows MAUI의 전후 측정, 갤럭시 양쪽 Android 경로의 기능 검증과 전후 측정을 §4에 기록했다. Android 선택 및 스크롤 변경 후 공통 Release 회귀를 다시 통과했다.
 
-마지막 작업은 `4c349c45`의 Web Demo 기준 빌드였다. 복원 로그를 확인한 뒤 게시 프로세스 트리를 중단했다. 기준 배포의 `doroti.runtime-profile.json`은 아직 생성되지 않았다. 변경본의 threaded·compatible 배포와 접근성 smoke는 검증을 마쳤다. 기준 작업트리 `temp/work3-native-profile-baseline`, 로그 `Doroti/artifacts/work3-web-baseline/publish.log`, 변경본 `Doroti/artifacts/work3-web-demo-followup/publish/DorotiDemoApp.Web/debug/wwwroot`를 보존했다. 기준 작업트리의 Qt 계측 소스도 그대로 둔다.
-
-명시적인 재개 요청을 받은 뒤 저장소 루트에서 기준 배포부터 이어간다.
+Web 기준용 빌드 ID는 `514e85623eb940deaea07e67ee66356b`, 변경본은 `945a1c555da740929e1a1d1c09a03def`다. 기준 로그는 `Doroti/artifacts/work3-web-baseline/resume-publish.log`에 있으며, 두 게시본의 `wwwroot`는 각각 `work3-web-baseline/publish/DorotiDemoApp.Web/debug/wwwroot`, `work3-web-demo-followup/publish/DorotiDemoApp.Web/debug/wwwroot`에 있다. 다음 명령은 저장소 루트에서 기준 게시를 재현한다.
 
 ```powershell
 $project = Join-Path (Get-Location).Path 'temp/work3-native-profile-baseline/samples/DorotiDemoApp/web/DorotiDemoApp.Web.csproj'
@@ -176,4 +223,4 @@ $generation = [Guid]::NewGuid().ToString('N')
 python Doroti/eng/run-with-timeout.py --timeout 1200 $dotnet $sdk publish $project -c Debug -m:1 -nr:false -p:DorotiWebExecutionMode=auto -p:RunAOTCompilation=false "-p:DorotiWebBuildId=$generation" --artifacts-path $output
 ```
 
-기준과 변경본의 같은 실행 모드·DPR·스크롤 입력에서 전송량, 노드 수, DOM 반영과 프레임 간격을 비교한다. 이어서 §4의 미검증 항목을 다룬다. 중단 시 갤럭시 ADB 연결과 Apple 앱을 실행할 macOS 환경을 확인할 수 없었다.
+검증 스크립트와 원시 표본은 `Doroti/artifacts`의 로컬 산출물이다. 수치는 §4에 남겨 산출물 정리 후에도 비교 조건과 결과를 확인할 수 있다.

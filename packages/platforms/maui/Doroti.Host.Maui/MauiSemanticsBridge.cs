@@ -684,7 +684,7 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer, Action<Action, T
             ? checkedState == CheckedState.isTrue
             : node.flags?.isSelected == Tristate.isTrue;
 
-    private static (int Start, int End) ProjectedSelection(SemanticsNodeUpdate node)
+    internal static (int Start, int End) ProjectedSelection(SemanticsNodeUpdate node)
     {
         var length = (node.value ?? string.Empty).Length;
         return (
