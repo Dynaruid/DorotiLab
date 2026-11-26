@@ -102,7 +102,7 @@ internal static class ProductParagraphProbe
         {
             var styled = reflowRequest with { TextAlign = align, TextDirection = direction };
             using var resizable = renderer.Layout(styled, invoke);
-            foreach (var nextWidth in new[] { 400, 45, 100, 100, 550 })
+            foreach (var nextWidth in new[] { 400.0, 400.25, 45.0, 45.25, 100.0, 100.0, 550.0, double.PositiveInfinity })
             {
                 resizable.layout(new ParagraphConstraints(nextWidth));
                 using var fresh = renderer.Layout(styled with { Width = nextWidth }, invoke);

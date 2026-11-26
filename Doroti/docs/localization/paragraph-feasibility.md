@@ -116,13 +116,13 @@ The SDK 11.0.100 compatible Release/AOT product probe ran on net10.0.15 in Chrom
 
 The Linux x64 Graphite configuration accepts the original managed assembly and Linux native binary from signed SkiaSharp 4.156.0. The .NET 10 Debug Demo ran against system Qt 6.10.2 under WSL with Xvfb and Mesa software Vulkan. The two starts used process-local `en_US.UTF-8` and `ko_KR.UTF-8` locales and a pinned OFL Noto Sans KR test font. The English and Korean screenshots show the matching application and Material captions and the English subtree label in both runs.
 
-For Qt 6.12.0, the checked-in Framework lock installed the SDK and the Quick/Graphite shim compiled with WebEngine disabled. Runtime collection for the app bundle was interrupted at the user's pause. The bundled app launch and AT-SPI verification remain open. [Qt runtime and SDK settings](../../../packages/platforms/qt/qt-runtime.md)
+The Qt 6.12.0 bundle uses the pinned Framework SDK with WebEngine disabled. The native window registers its accessibility root before the first managed tree arrives. The bundled Demo ran under WSL with Xvfb and Mesa software Vulkan in `en_US.UTF-8` and `ko_KR.UTF-8`. AT-SPI reported the application and Material captions in each locale and the fixed English subtree. In both runs it also applied text and caret changes and returned nonempty character bounds for the Arabic lam-alef, combining accent and ZWJ emoji. The text query used the UTF-16 offsets exposed by the Qt adaptor. [Qt runtime and SDK settings](../../../packages/platforms/qt/qt-runtime.md)
 
 ### Android Demo
 
 The .NET 10 MAUI runner aligns the Lifecycle and Ktx packages with the AndroidX Core and Collection versions selected by Window and WebKit. The accessibility bridge uses the integer checked state from that AndroidX binding. The APK and load-path integrity checks use SHA-256 pins from the signed SkiaSharp.NativeAssets.Android 4.156.0 package. Both ABI pins were verified against the official package. The ARM64 APK contained the exact Skia library and the ARM64 HarfBuzz library. [SkiaSharp Android package](https://www.nuget.org/packages/SkiaSharp.NativeAssets.Android/4.156.0)
 
-The opt-in .NET 10 Debug Demo ran on a Galaxy SM-S931N with Android API 37. The installed base APK matched the signed local APK. Changing the app locale from `en-US` to `ko-KR` updated the generated application caption and Material Cancel label while the `Localizations` override kept its English text. UI Automator and the captured screen confirmed the labels. The test package was removed. This run covers ARM64 startup and app language changes. SDK 11 stopped at the missing `maui-android` workload, and Android x64 execution, TalkBack and physical IME composition remain open.
+The opt-in .NET 10 Debug Demo ran on a Galaxy SM-S931N with Android API 37. The installed base APK matched the signed local APK. Changing the app locale from `en-US` to `ko-KR` updated the generated application caption and Material Cancel label while the `Localizations` override kept its English text. UI Automator and the captured screen confirmed the labels. The test package was removed. This run covers ARM64 startup and app language changes.
 
 From the repository root, use the SDK selected by `Doroti/global.json` and a short artifacts path for Android packaging. The probe uses its own application ID.
 
@@ -140,6 +140,24 @@ try {
 ```
 
 Install the signed probe APK on the ARM64 test device. Use `cmd locale set-app-locales dev.doroti.work2probe --locales` with each language tag and `am start -W` with the launcher component resolved by `cmd package resolve-activity`. Read the three labels from the foreground test app with UI Automator. The two application captions are `2 localized items` and `현지화 항목 2개`. The Material label changes from `Cancel` to `취소`, and the override reads `One localized item` in both captures.
+
+SDK 10 and SDK 11 Debug profiles also ran with `-r android-x64` on an Android 13 emulator. For SDK 11, select 11.0.100 with `maui-android` installed and use `-p:DorotiAndroidTargetFramework=net11.0-android -p:UseMonoRuntime=false -p:PublishReadyToRun=false` with the non-AOT settings above. The MAUI host applies the AndroidX alignment to both Android target frameworks. Each installed APK matched its signed local file. Android UI Automator confirmed the English and Korean application and Material captions and the fixed English subtree. Both test packages were removed. TalkBack and physical IME composition still require device verification.
+
+### Continued reflow measurements
+
+The renderer keeps its most recent left-aligned placement across widths that preserve all its line-breaking decisions. A width change outside that range recalculates the layout. Width-dependent alignment and elision use their own placement. The glyph recorder writes the positions directly into the public Skia run buffer.
+
+The Windows x64 Release CPU fixture ran after the parallel builds finished. Both profiles used the same font files and logical CPU. Each operation had five warmups and 25 samples.
+
+| English workload | Operation | Advance p50 / p95 (µs) | HarfBuzz p50 / p95 (µs) |
+| --- | --- | ---: | ---: |
+| Short | New paragraph, same text | 12.0 / 13.2 | 14.9 / 26.8 |
+| Short | Change width | 0.3 / 0.4 | 0.2 / 0.3 |
+| Wrapped | Change text | 196.7 / 234.0 | 173.3 / 239.4 |
+| Wrapped | Change width | 5.2 / 10.7 | 57.6 / 75.7 |
+| Wrapped | Replay recorded picture | 73.4 / 86.3 | 19.6 / 20.0 |
+
+The wrapped English resize case allocated 16,025 managed bytes per sample with shaping. The earlier shaping measurement in this document recorded 20,367 bytes for the same case. Short repeated layout and wrapped resize exceed the proposed 10% p95 budget. The renderer keeps the shaping path opt-in. Frame timing on a physical device remains open.
 
 ## Reproduce the probe
 
@@ -203,9 +221,11 @@ try {
 
 Add `-p:DorotiShapedParagraphs=true` to each `dotnet` command for the product probe and use fresh artifact directories. The receipt begins with `Product paragraph`. The Unicode corpus is also runnable independently using the four matching test files from the [Unicode 17.0.0 database](https://www.unicode.org/Public/17.0.0/ucd/).
 
-The browser verifier accepts `firefox` or `webkit` as the fourth argument after the output PNG path. Use the corresponding browser from the verifier's Playwright installation.
+The browser verifier accepts `firefox` or `webkit` as the fourth argument after the output PNG path. Use the corresponding browser from the verifier's Playwright installation. It checks the loaded runtime version, worker thread mode and shared heap in addition to cross-origin isolation. The harness restricts network requests to the static publish server.
 
-For the Web Demo from the SDK 10 directory, pass `-p:DorotiShapedParagraphs=true`, `-p:DorotiIntlProbe=localizations`, `-p:DorotiWebExecutionMode=compatible`, and `-p:BlazorWebAssemblyLoadAllGlobalizationData=true` to the Demo runner publish. Pass an explicit 32-digit `DorotiWebBuildId` to pin the deployment generation across evaluations. The first publish without the explicit ID failed the existing runtime generation validator. The explicit-ID publish passed validation and the browser checks.
+SDK 10.0.403 and 11.0.100 each published against .NET 10.0.15 in both Web modes. The Debug and Release/AOT outputs passed in Chromium 158.0.8127.18, Firefox 159.0, and WebKit 27.2. These 24 outputs produced the same PNG SHA-256 `cf8ebe36fce85d33a5018071c607693747350a3603a6f9031f8039a46c475f13`. The first SDK 10 threaded Release run in WebKit timed out. The same build passed on retry.
+
+For the Web Demo from the SDK 10 directory, pass `-p:DorotiShapedParagraphs=true`, `-p:DorotiIntlProbe=localizations`, `-p:DorotiWebExecutionMode=compatible` or `threaded`, and `-p:BlazorWebAssemblyLoadAllGlobalizationData=true` to the Demo runner publish. Pass an explicit 32-digit `DorotiWebBuildId` to pin the deployment generation across evaluations. The Demo passed the locale switch and DOM input language checks at `/demo/` in both modes. With `browser-widget-localization.mjs <wwwroot> <mode> /demo/ --icu-errors`, the same profiles reported a missing or corrupt ICU boot asset before producing a first frame. The fetch keeps the runtime's integrity hash.
 
 ```powershell
 python Doroti/eng/run-with-timeout.py python Doroti/eng/import-paragraph-unicode.py Doroti/artifacts/work2-paragraph/unicode-sources --fetch --check

@@ -9,9 +9,9 @@ public sealed partial class SkiaSceneRenderer
 {
     private ParagraphHostLayoutSnapshot PlaceParagraph(ParagraphRequest request, ParagraphTextRun[] runs,
         ParagraphTextAnalysis analysis, List<ShapedCell> cells, double availableWidth, double width,
-        VerticalMetrics emptyMetrics, IntrinsicWidths widths)
+        VerticalMetrics emptyMetrics, IntrinsicWidths widths, out LineBreakWidths breakWidths)
     {
-        var lineRanges = BreakLines(cells, analysis.Breaks, availableWidth);
+        var lineRanges = BreakLines(CollectionsMarshal.AsSpan(cells), analysis.Breaks, availableWidth, out breakWidths);
         var limit = request.MaxLines ?? lineRanges.Count;
         if (limit < 0)
             throw new ArgumentOutOfRangeException(nameof(request), "Paragraph max lines must be nonnegative.");
@@ -69,7 +69,7 @@ public sealed partial class SkiaSceneRenderer
         var maximum = 0.0;
         var unwrappedAdvance = 0.0;
         var glyphCount = 0L;
-        foreach (var cell in cells)
+        foreach (ref readonly var cell in CollectionsMarshal.AsSpan(cells))
         {
             glyphCount += cell.GlyphCount;
             lineWidth += cell.Advance;
@@ -94,20 +94,23 @@ public sealed partial class SkiaSceneRenderer
             Math.Max(unwrappedAdvance, lineWidth), glyphCount);
     }
 
-    private static List<LineRange> BreakLines(List<ShapedCell> cells, ReadOnlySpan<bool> breaks,
-        double width)
+    private static List<LineRange> BreakLines(ReadOnlySpan<ShapedCell> cells, ReadOnlySpan<bool> breaks,
+        double width, out LineBreakWidths breakWidths)
     {
         var ranges = new List<LineRange>();
-        for (var start = 0; start < cells.Count; )
+        var minimum = 0.0;
+        var maximum = double.PositiveInfinity;
+        for (var start = 0; start < cells.Length; )
         {
             var cursor = start;
             var lastBreak = start;
             var advance = 0.0;
+            var lastFitting = 0.0;
             var hard = false;
             var emergency = false;
-            for (; cursor < cells.Count; cursor++)
+            for (; cursor < cells.Length; cursor++)
             {
-                var cell = cells[cursor];
+                ref readonly var cell = ref cells[cursor];
                 if (cell.HardBreak)
                 {
                     hard = true;
@@ -115,20 +118,27 @@ public sealed partial class SkiaSceneRenderer
                     break;
                 }
                 advance += cell.Advance;
-                if (advance > width && !cell.IsSpace)
+                if (!cell.IsSpace)
                 {
-                    emergency = lastBreak == start;
-                    cursor = emergency ? Math.Max(start + 1, cursor) : lastBreak;
-                    break;
+                    if (advance > width)
+                    {
+                        maximum = Math.Min(maximum, advance);
+                        emergency = lastBreak == start;
+                        cursor = emergency ? Math.Max(start + 1, cursor) : lastBreak;
+                        break;
+                    }
+                    lastFitting = advance;
                 }
                 if (breaks[cell.End])
                     lastBreak = cursor + 1;
             }
+            minimum = Math.Max(minimum, lastFitting);
             ranges.Add(new(start, cursor, hard, emergency));
             start = cursor;
         }
         if (ranges.Count != 0 && ranges[^1].HardBreak)
-            ranges.Add(new(cells.Count, cells.Count, false, false));
+            ranges.Add(new(cells.Length, cells.Length, false, false));
+        breakWidths = new(minimum, maximum);
         return ranges;
     }
 
@@ -179,7 +189,7 @@ public sealed partial class SkiaSceneRenderer
         Span<sbyte> levels = cells.Length <= 256 ? stackalloc sbyte[cells.Length] : new sbyte[cells.Length];
         for (var i = 0; i < cells.Length; i++)
         {
-            var cell = cells[i];
+            ref readonly var cell = ref cells[i];
             ascent = Math.Max(ascent, cell.Metrics.Ascent);
             descent = Math.Max(descent, cell.Metrics.Descent);
             levels[i] = cell.Level;
@@ -220,7 +230,7 @@ public sealed partial class SkiaSceneRenderer
         geometryCount = 0;
         foreach (var logical in order)
         {
-            var cell = cells[logical];
+            ref readonly var cell = ref cells[logical];
             var advance = cell.Advance + (logical < visibleEnd && cell.IsSpace ? expansion : 0);
             positions[logical] = pen;
             if (cell.Start < cell.End)
@@ -253,8 +263,6 @@ public sealed partial class SkiaSceneRenderer
     private static void RecordGlyphs(ReadOnlySpan<ShapedCell> cells, ReadOnlySpan<int> order,
         ReadOnlySpan<double> positions, float baseline, SKTextBlobBuilder builder, List<ShapedPaintRun> paint)
     {
-        Span<ushort> glyphBuffer = stackalloc ushort[128];
-        Span<SKPoint> pointBuffer = stackalloc SKPoint[128];
         SKColor? color = null;
         for (var start = 0; start < order.Length; )
         {
@@ -275,14 +283,14 @@ public sealed partial class SkiaSceneRenderer
             if (color is { } previousColor && previousColor != run.Color)
                 FinishBlob(previousColor);
             color = run.Color;
-            var buffer = builder.AllocatePositionedRun(run.Font, count);
-            var glyphs = count <= glyphBuffer.Length ? glyphBuffer[..count] : new ushort[count];
-            var points = count <= pointBuffer.Length ? pointBuffer[..count] : new SKPoint[count];
+            var buffer = builder.AllocateRawPositionedRun(run.Font, count);
+            var glyphs = buffer.Glyphs;
+            var points = buffer.Positions;
             var output = 0;
             for (var i = start; i < end; i++)
             {
                 var logical = order[i];
-                var cell = cells[logical];
+                ref readonly var cell = ref cells[logical];
                 var translation = (float)positions[logical] - cell.Origin;
                 for (var g = cell.GlyphStart; g < cell.GlyphStart + cell.GlyphCount; g++, output++)
                 {
@@ -291,8 +299,6 @@ public sealed partial class SkiaSceneRenderer
                     points[output] = new(point.X + translation, point.Y + baseline);
                 }
             }
-            buffer.SetGlyphs(glyphs);
-            buffer.SetPositions(points);
             start = end;
         }
         if (color is { } finalColor)
@@ -306,6 +312,16 @@ public sealed partial class SkiaSceneRenderer
     }
 
     private readonly record struct LineRange(int Start, int End, bool HardBreak, bool EmergencyBreak);
+
+    // Every accepted non-space cell still fits, and every first rejected cell
+    // still overflows. That preserves the same breaks, including fallback wraps.
+    private readonly record struct LineBreakWidths(double Minimum, double Maximum)
+    {
+        internal bool Contains(double width) =>
+            width >= Minimum && (width < Maximum || double.IsPositiveInfinity(Maximum));
+
+        internal LineBreakWidths AtOrAbove(double minimum) => new(Math.Max(Minimum, minimum), Maximum);
+    }
 
     private readonly record struct IntrinsicWidths(double Minimum, double Maximum, double UnwrappedAdvance, long GlyphCount);
 }

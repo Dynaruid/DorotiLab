@@ -63,12 +63,16 @@ public sealed partial class SkiaSceneRenderer
                 var placedWidth = double.IsFinite(availableWidth) ? availableWidth : widths.Maximum;
                 var snapshot = prepared.Placement;
                 if (snapshot is null || (availableWidth != prepared.AvailableWidth
-                    && (snapshot.DidExceedMaxLines || availableWidth < widths.UnwrappedAdvance
-                        || prepared.AvailableWidth < widths.UnwrappedAdvance
-                        || ResolveLineAlignment(layout.Request.TextAlign, analysis.BaseLevel) != TextAlign.left)))
+                    && !prepared.ReusableWidths.Contains(availableWidth)))
                 {
                     snapshot = PlaceParagraph(layout.Request, layout.Runs, analysis, prepared.Cells,
-                        availableWidth, placedWidth, prepared.EmptyMetrics, widths);
+                        availableWidth, placedWidth, prepared.EmptyMetrics, widths, out var breakWidths);
+                    prepared.ReusableWidths = !snapshot.DidExceedMaxLines
+                        && ResolveLineAlignment(layout.Request.TextAlign, analysis.BaseLevel) == TextAlign.left
+                        ? layout.Request.TextAlign == TextAlign.justify
+                            ? breakWidths.AtOrAbove(widths.UnwrappedAdvance)
+                            : breakWidths
+                        : default;
                 }
                 prepared.Placement = snapshot;
                 prepared.AvailableWidth = availableWidth;
@@ -354,6 +358,7 @@ public sealed partial class SkiaSceneRenderer
         internal long Weight { get; } = weight;
         internal ParagraphHostLayoutSnapshot? Placement { get; set; }
         internal double AvailableWidth { get; set; }
+        internal LineBreakWidths ReusableWidths { get; set; }
 
         public void Dispose() => fonts.Dispose();
     }

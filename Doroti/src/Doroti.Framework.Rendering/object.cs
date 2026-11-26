@@ -3512,6 +3512,7 @@ internal delegate void _MergeUpAndSiblingMergeGroups__object();
 public class _RenderObjectSemantics__object : _SemanticsFragment__object, DiagnosticableTree
 {
     internal bool scrollOffsetOnlyUpdate;
+    private _RenderObjectSemantics__object? _mergedTextGeometryOwner;
     public virtual RenderObject renderObject { get; private set; } = default!;
     internal virtual bool _hasSiblingConflict { get; set; } = false;
     internal virtual bool? _blocksPreviousSibling { get; set; } = default;
@@ -3750,6 +3751,7 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
     {
         DartRuntimePrimitives.Assert(() => (parentData is not null) || isRoot);
         configProvider.reset();
+        _mergedTextGeometryOwner = null;
         HashSet<SemanticsTag>? tagsForChildrenLocal = _getTagsForChildren();
         bool explicitChildNodesForChildren =
             isRoot
@@ -3801,6 +3803,7 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
             .map((fragment) => fragment.configToMergeUp)
             .OfType<SemanticsConfiguration>();
         configProvider.absorbAll(mergeUpConfigs);
+        _mergedTextGeometryOwner = FindMergedTextGeometryOwner();
         mergeUp.Clear();
         mergeUp.Add(this);
         foreach (
@@ -4223,6 +4226,62 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
         }
     }
 
+    private _RenderObjectSemantics__object? FindMergedTextGeometryOwner()
+    {
+        var config = configProvider.effective;
+        if (!config.isTextField || config.isObscured || config.hostTextGeometry is not null)
+        {
+            return null;
+        }
+
+        // Absorb keeps the attributed value from a single contributor. Use the
+        // same contributor for offsets and bounds, including an empty field.
+        foreach (var fragment in mergeUp.OfType<_RenderObjectSemantics__object>())
+        {
+            if (fragment.configToMergeUp is not { isTextField: true } childConfig
+                || !ReferenceEquals(childConfig.attributedValue, config.attributedValue))
+            {
+                continue;
+            }
+            var source = fragment._mergedTextGeometryOwner ?? fragment;
+            if (source.configProvider.original.hostTextGeometry is { } text
+                && text.Text == config.attributedValue.@string)
+            {
+                return source;
+            }
+        }
+        return null;
+    }
+
+    private SemanticsConfiguration ConfigurationForNode()
+    {
+        var config = configProvider.effective;
+        var source = _mergedTextGeometryOwner;
+        if (source is null || config.isObscured)
+        {
+            return config;
+        }
+
+        var sourceConfig = source.configProvider.original;
+        if (sourceConfig.hostTextGeometry is not { } text || text.Text != config.attributedValue.@string)
+        {
+            return config;
+        }
+        var sourceGeometry = _SemanticsGeometry__object.computeChildGeometry(
+            parentTransform: null, parentPaintClipRect: null, parentSemanticsClipRect: null,
+            parent: this, child: source);
+        var clip = MatrixUtils.transformRect(sourceGeometry.transform, sourceGeometry.rect).intersect(geometry!.rect);
+        if (!sourceGeometry.isVisible || sourceGeometry.hidden || !clip.IsFinite)
+        {
+            return config;
+        }
+
+        var projected = config.copy();
+        projected.hostTextGeometry = SemanticsGeometryProjection.ProjectText(text, sourceGeometry.transform, clip);
+        projected.hostScrollToTextRange = sourceConfig.hostScrollToTextRange;
+        return projected;
+    }
+
     internal virtual void _buildSemanticsSubtree(HashSet<long> usedSemanticsIds)
     {
         var children = new List<SemanticsNode>();
@@ -4262,12 +4321,13 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
                 }
             );
         }
-        if (configProvider.effective.isSemanticBoundary)
+        var configuration = ConfigurationForNode();
+        if (configuration.isSemanticBoundary)
         {
             if (_needsMergingSiblingNodesIntoSelf)
             {
                 var innerNode = new SemanticsNode(showOnScreen: () => renderObject.showOnScreen());
-                renderObject.assembleSemanticsNode(innerNode, configProvider.effective, children);
+                renderObject.assembleSemanticsNode(innerNode, configuration, children);
                 var configLocal = (
                     (Func<SemanticsConfiguration>)(
                         () =>
@@ -4286,16 +4346,16 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
             }
             else
             {
-                renderObject.assembleSemanticsNode(node, configProvider.effective, children);
+                renderObject.assembleSemanticsNode(node, configuration, children);
             }
         }
         else
         {
             DartRuntimePrimitives.Assert(() =>
-                !configProvider.effective.isMergingSemanticsOfDescendants
+                !configuration.isMergingSemanticsOfDescendants
             );
             node.updateWith(
-                config: configProvider.effective,
+                config: configuration,
                 childrenInInversePaintOrder: children
             );
         }
@@ -4657,6 +4717,7 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
     {
         built = false;
         cachedSemanticsNode = null;
+        _mergedTextGeometryOwner = null;
         parentData = null;
         geometry = null;
         _blocksPreviousSibling = null;

@@ -3429,7 +3429,7 @@ public static class SemanticsGeometryProjection
         internal SemanticsTextGeometry? Geometry;
     }
 
-    private static SemanticsTextGeometry ProjectText(SemanticsTextGeometry source, Matrix4 transform, Rect clip)
+    internal static SemanticsTextGeometry ProjectText(SemanticsTextGeometry source, Matrix4 transform, Rect clip)
     {
         var cache = TextProjections.GetValue(source, static _ => new TextProjection());
         lock (cache)

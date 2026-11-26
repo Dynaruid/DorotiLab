@@ -62,8 +62,8 @@
     <PackageReference Include="SkiaSharp.NativeAssets.Android" />
   </ItemGroup>
   <!-- Window and WebKit select the newer AndroidX Core and Collection line.
-       Keep Lifecycle and the exact-range Ktx siblings on compatible versions with MAUI 10. -->
-  <ItemGroup Condition="$(TargetFramework.StartsWith('net10.0-android'))">
+       Keep Lifecycle and the exact-range Ktx siblings on compatible versions with MAUI. -->
+  <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
     <PackageReference Include="Xamarin.AndroidX.Collection.Ktx" />
     <PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData" />
     <PackageReference Include="Xamarin.AndroidX.Lifecycle.Process" />

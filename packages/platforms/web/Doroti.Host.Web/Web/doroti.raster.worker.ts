@@ -26,7 +26,7 @@ import { captureBrowserTimers } from "./doroti.web.timers.js";
 import * as textures from "./doroti.web.texture-worker.js";
 import { WorkerRequestMailbox } from "./doroti.web.requests.js";
 import { WebGlFrameQueue } from "./doroti.web.gl-frames.js";
-import { verifyRuntime, sameOriginRuntimeUrl, type ExecutionSelection } from "./doroti.web.execution.js";
+import { createRuntimeWithIcuDiagnostics, verifyRuntime, sameOriginRuntimeUrl, type DotnetRuntimeBuilder, type ExecutionSelection } from "./doroti.web.execution.js";
 
 const protocolVersion = dorotiProtocolVersion;
 const inboundKinds = new Set([
@@ -1013,13 +1013,13 @@ async function startManagedRuntime(): Promise<void> {
     post("runtime-stage", { stage: "dotnet-create" });
     const dotnetUrl = dotnetModuleUrl || new URL("../../_framework/dotnet.js", import.meta.url).href;
     const dotnetModule = managedPort ? null : await startupLifetime.wait(import(dotnetUrl)) as { dotnet: {
-      withEnvironmentVariables(values: Record<string, string>): { create(): Promise<DotnetRuntime> };
+      withEnvironmentVariables(values: Record<string, string>): DotnetRuntimeBuilder<DotnetRuntime>;
     } };
     const runtime = managedPort
       ? (globalThis as unknown as { getDotnetRuntime(id: number): DotnetRuntime }).getDotnetRuntime(0)
-      : await startupLifetime.wait(dotnetModule!.dotnet.withEnvironmentVariables({
+      : await startupLifetime.wait(createRuntimeWithIcuDiagnostics(dotnetModule!.dotnet.withEnvironmentVariables({
         ...environment, DOROTI_STANDALONE_WORKER: "1",
-      }).create(), late => { late.exit(0); });
+      })), late => { late.exit(0); });
     startupLifetime.check();
     managedRuntime = runtime;
     const actualRuntime = verifyRuntime(runtime, execution);

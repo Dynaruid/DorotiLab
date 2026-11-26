@@ -2492,7 +2492,12 @@ public class SemanticsNode : DiagnosticableTreeMixin
     )
     {
         config ??= _kEmptyConfig;
-        if (hostTextGeometry?.Revision != config.hostTextGeometry?.Revision) _markDirty();
+        if (hostTextGeometry is { } previousGeometry
+            ? !previousGeometry.ContentEquals(config.hostTextGeometry)
+            : config.hostTextGeometry is not null)
+        {
+            _markDirty();
+        }
         hostTextGeometry = config.hostTextGeometry;
         hostScrollToTextRange = config.hostScrollToTextRange;
         if (_isDifferentFromCurrentSemanticAnnotation(config))

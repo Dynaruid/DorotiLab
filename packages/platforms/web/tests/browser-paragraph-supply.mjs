@@ -12,17 +12,26 @@ try {
   const browser = await engines[engine].launch();
   try {
     const errors = [];
-    const page = await browser.newPage();
+    const page = await browser.newPage({ serviceWorkers: "block" });
     page.on("pageerror", error => errors.push(String(error)));
     const isolated = mode === "threaded";
     const address = servers.addresses.find(entry => entry.isolated === isolated);
+    const origin = new URL(address.url).origin;
+    const externalRequests = [];
+    await page.route("**/*", route => {
+      const url = route.request().url();
+      if (new URL(url).origin === origin) return route.continue();
+      externalRequests.push(url);
+      return route.abort();
+    });
     await page.goto(address.url, { waitUntil: "commit" });
     const status = page.locator("#status");
     await expect(status).toHaveAttribute("data-outcome", /^(pass|fail)$/, { timeout: 90000 });
     const receipt = await status.textContent();
     assert.equal(await status.getAttribute("data-outcome"), "pass", receipt);
-    assert.match(receipt, new RegExp(`isolated=${isolated}`));
+    assert.match(receipt, new RegExp(`isolated=${isolated} threads=${isolated} sharedHeap=${isolated} runtime=\\d+\\.\\d+\\.\\d+`));
     assert.deepEqual(errors, []);
+    assert.deepEqual(externalRequests, [], "A static paragraph deployment uses only its own assets.");
     if (imageFile) {
       const source = await page.locator("#result").getAttribute("src");
       await writeFile(imageFile, Buffer.from(source.split(",")[1], "base64"));

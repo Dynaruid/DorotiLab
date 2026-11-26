@@ -133,6 +133,31 @@ export function verifyDocumentGeneration(manifest: RuntimeProfile | ExecutionMan
   if (documentBuildId !== undefined && documentBuildId !== manifest.buildId)
     throw new Error("DOROTIWEB055: Cached application HTML belongs to another deployment generation. Reload the page; deploy HTML and both runtimes together.");
 }
+type GlobalizationResourceLoader = (type: string, name: string, url: string, integrity: string) => Promise<Response> | undefined;
+
+export interface DotnetRuntimeBuilder<T> {
+  withResourceLoader(load: GlobalizationResourceLoader): unknown;
+  create(): Promise<T>;
+}
+
+export function createRuntimeWithIcuDiagnostics<T>(builder: DotnetRuntimeBuilder<T>): Promise<T> {
+  let fail!: (error: Error) => void;
+  const failed = new Promise<never>((_, reject) => { fail = reject; });
+  builder.withResourceLoader((type, name, url, integrity) => {
+    if (type !== "globalization") return undefined;
+    // Mono can leave create() pending after reporting a failed boot asset.
+    // Report the selected ICU asset to the owner while retaining browser integrity checking.
+    return fetch(url, { cache: "no-cache", integrity }).then(response => {
+      if (!response.ok) fail(new Error(`Could not load ICU globalization data '${name}' (HTTP ${response.status}).`));
+      return response;
+    }, cause => {
+      fail(new Error(`Could not load ICU globalization data '${name}': download or integrity check failed.`, { cause }));
+      throw cause;
+    });
+  });
+  return Promise.race([builder.create(), failed]);
+}
+
 export function verifyRuntime(runtime: { runtimeBuildInfo: { wasmEnableThreads: boolean; productVersion: string }; localHeapViewU8(): Uint8Array },
   selection: Pick<ExecutionSelection, "selected" | "runtimeContract" | "runtimeVersion">): { threads: boolean; sharedHeap: boolean; version: string } {
   const info = runtime.runtimeBuildInfo;

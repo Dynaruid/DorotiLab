@@ -410,8 +410,15 @@ class Provider final : public IRawElementProviderSimple,
       return UIA_E_NOTSUPPORTED;
     std::wstring json = L"\"";
     for (const auto character : std::wstring(value == nullptr ? L"" : value)) {
-      if (character == L'\\' || character == L'\"') json.push_back(L'\\');
-      json.push_back(character);
+      if (character < L' ') {
+        constexpr wchar_t hex[] = L"0123456789abcdef";
+        json.append(L"\\u00");
+        json.push_back(hex[character >> 4]);
+        json.push_back(hex[character & 0x0f]);
+      } else {
+        if (character == L'\\' || character == L'\"') json.push_back(L'\\');
+        json.push_back(character);
+      }
     }
     json.push_back(L'\"');
     state_->Invoke(id_, kSetTextAction, json);

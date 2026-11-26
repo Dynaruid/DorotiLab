@@ -68,6 +68,7 @@
 #include <cstring>
 #include <exception>
 #include <limits>
+#include <optional>
 #include <string>
 #include <stdexcept>
 #include <utility>
@@ -164,6 +165,7 @@ struct SemanticNode {
   int selection_extent = -1;
   bool text_geometry = false;
   QString layout_text;
+  QList<int> text_boundaries;
   QList<SemanticTextRun> text_runs;
 };
 
@@ -1735,7 +1737,7 @@ class DorotiAccessibleNode final : public QAccessibleInterface,
       : surface_(surface), id_(id) {}
   ~DorotiAccessibleNode() override = default;
 
-  bool isValid() const override { return surface_ != nullptr && Node() != nullptr; }
+  bool isValid() const override { return surface_ != nullptr && (id_ == 0 || Node() != nullptr); }
   QObject* object() const override { return id_ == 0 ? surface_ : nullptr; }
   QWindow* window() const override { return surface_; }
 
@@ -1750,6 +1752,8 @@ class DorotiAccessibleNode final : public QAccessibleInterface,
   }
 
   QAccessibleInterface* parent() const override {
+    if (id_ == 0 && surface_ != nullptr)
+      return QAccessible::queryAccessibleInterface(QCoreApplication::instance());
     const auto* node = Node();
     return node == nullptr || node->parent < 0 ? nullptr : surface_->Accessible(node->parent);
   }
@@ -1772,6 +1776,8 @@ class DorotiAccessibleNode final : public QAccessibleInterface,
 
   QString text(QAccessible::Text type) const override {
     const auto* node = Node();
+    if (id_ == 0 && surface_ != nullptr && type == QAccessible::Name && (!node || node->label.isEmpty()))
+      return surface_->title();
     if (node == nullptr) return {};
     if (type == QAccessible::Name) return node->label;
     if (type == QAccessible::Value) return node->obscured ? QString() : node->value;
@@ -1783,6 +1789,8 @@ class DorotiAccessibleNode final : public QAccessibleInterface,
 
   QRect rect() const override {
     const auto* node = Node();
+    if (id_ == 0 && surface_ != nullptr)
+      return {surface_->mapToGlobal(QPoint()), surface_->size()};
     if (node == nullptr || surface_ == nullptr) return {};
     const auto origin = surface_->mapToGlobal(
         QPoint(qRound(node->rect.left()), qRound(node->rect.top())));
@@ -1790,9 +1798,9 @@ class DorotiAccessibleNode final : public QAccessibleInterface,
   }
 
   QAccessible::Role role() const override {
+    if (id_ == 0) return QAccessible::Window;
     const auto* node = Node();
     if (node == nullptr) return QAccessible::NoRole;
-    if (id_ == 0) return QAccessible::Client;
     if (node->button && node->role == "none") return QAccessible::Button;
     if (node->text_field && node->role == "none") return QAccessible::EditableText;
     if (node->checked_state != 0 && node->role == "none") return QAccessible::CheckBox;
@@ -1821,6 +1829,11 @@ class DorotiAccessibleNode final : public QAccessibleInterface,
 
   QAccessible::State state() const override {
     QAccessible::State state;
+    if (id_ == 0 && surface_ != nullptr) {
+      state.active = surface_->isActive();
+      state.invisible = !surface_->isVisible();
+      return state;
+    }
     const auto* node = Node();
     if (node == nullptr) {
       state.invalid = true;
@@ -1893,6 +1906,21 @@ class DorotiAccessibleNode final : public QAccessibleInterface,
   }
   int characterCount() const override {
     const auto* node = Node(); return node && !node->obscured ? (node->text_geometry ? node->layout_text.size() : node->value.size()) : 0;
+  }
+  QString textAtOffset(int offset, QAccessible::TextBoundaryType type, int* start, int* end) const override {
+    if (type == QAccessible::CharBoundary)
+      if (auto result = LayoutCharacter(offset, 0, start, end)) return *result;
+    return QAccessibleTextInterface::textAtOffset(offset, type, start, end);
+  }
+  QString textBeforeOffset(int offset, QAccessible::TextBoundaryType type, int* start, int* end) const override {
+    if (type == QAccessible::CharBoundary)
+      if (auto result = LayoutCharacter(offset, -1, start, end)) return *result;
+    return QAccessibleTextInterface::textBeforeOffset(offset, type, start, end);
+  }
+  QString textAfterOffset(int offset, QAccessible::TextBoundaryType type, int* start, int* end) const override {
+    if (type == QAccessible::CharBoundary)
+      if (auto result = LayoutCharacter(offset, 1, start, end)) return *result;
+    return QAccessibleTextInterface::textAfterOffset(offset, type, start, end);
   }
   QRect characterRect(int offset) const override {
     const auto* node = Node();
@@ -1971,6 +1999,22 @@ class DorotiAccessibleNode final : public QAccessibleInterface,
   QStringList keyBindingsForAction(const QString&) const override { return {}; }
 
  private:
+  std::optional<QString> LayoutCharacter(int offset, int relative, int* start, int* end) const {
+    const auto* node = Node();
+    if (!node || node->obscured || !node->text_geometry || node->text_boundaries.isEmpty())
+      return std::nullopt;
+    const auto& boundaries = node->text_boundaries;
+    if (offset == -1) offset = boundaries.back();
+    *start = *end = -1;
+    if (offset < 0 || offset > boundaries.back()) return QString();
+    const auto next = std::upper_bound(boundaries.cbegin(), boundaries.cend(), offset);
+    const auto index = next - boundaries.cbegin() - 1 + relative;
+    if (index < 0 || index + 1 >= boundaries.size()) return QString();
+    *start = boundaries[index];
+    *end = boundaries[index + 1];
+    return node->layout_text.mid(*start, *end - *start);
+  }
+
   void SendSelection(int start, int end) {
     const auto* node = Node();
     if (!node || surface_ == nullptr) return;
@@ -2052,6 +2096,19 @@ void DorotiSurface::ApplySemantics(const QByteArray& json) {
     if (!node.obscured && !geometry.isEmpty()) {
       node.text_geometry = true;
       node.layout_text = geometry.value("text").toString();
+      int previous = -1;
+      for (const auto value : geometry.value("boundaries").toArray()) {
+        const int offset = value.toInt(-1);
+        if (offset <= previous || offset > node.layout_text.size()) {
+          node.text_boundaries.clear();
+          break;
+        }
+        node.text_boundaries.append(offset);
+        previous = offset;
+      }
+      if (!node.text_boundaries.isEmpty() &&
+          (node.text_boundaries.front() != 0 || node.text_boundaries.back() != node.layout_text.size()))
+        node.text_boundaries.clear();
       for (const auto value : geometry.value("runs").toArray()) {
         const auto run = value.toObject();
         const int start = run.value("start").toInt(-1), end = run.value("end").toInt(-1);
@@ -2137,8 +2194,8 @@ void DorotiSurface::ApplySemantics(const QByteArray& json) {
 
 QAccessibleInterface* AccessibleFactory(const QString&, QObject* object) {
   auto* surface = accessible_surfaces.contains(object) ? static_cast<DorotiSurface*>(object) : nullptr;
-  return surface == nullptr || surface->Semantic(0) == nullptr
-             ? nullptr : new DorotiAccessibleNode(surface, 0);
+  // Qt can cache the window interface before the managed tree's first update.
+  return surface == nullptr ? nullptr : new DorotiAccessibleNode(surface, 0);
 }
 
 const doroti_qt_host_api_v2 kHostApi{

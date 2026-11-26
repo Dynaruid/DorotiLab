@@ -1,7 +1,7 @@
 import { dorotiProtocolVersion } from "./doroti.web.protocol.js";
 import { startBrowserHotReload } from "./doroti.web.hot-reload.js";
 import { applicationEnvironment } from "./doroti.web.session.js";
-import { verifyRuntime, type ExecutionSelection } from "./doroti.web.execution.js";
+import { createRuntimeWithIcuDiagnostics, verifyRuntime, type DotnetRuntimeBuilder, type ExecutionSelection } from "./doroti.web.execution.js";
 import { monoWorkerUrls, MonoWorkerPreload, mono11InitialWorkerPoolSize, type MonoWorkerConfig } from "./doroti.web.mono.js";
 import { awaitWithAbort } from "./doroti.web.lifetime.js";
 
@@ -171,8 +171,9 @@ async function initializeMainRuntime(dotnetUrl: string, selection: ExecutionSele
     // still throw, including during metadata handlers, rather than deadlocking.
     if (document.querySelector("script[src*='aspnetcore-browser-refresh']"))
       module.dotnet.withConfig({ jsThreadBlockingMode: "ThrowWhenBlockingWait" });
-    const runtime = await Promise.race([module.dotnet.withEnvironmentVariables(
-      applicationEnvironment(location.search, selection.applicationBaseUrl)).create() as Promise<MainRuntime>, interrupted]);
+    const builder = module.dotnet.withEnvironmentVariables(
+      applicationEnvironment(location.search, selection.applicationBaseUrl)) as DotnetRuntimeBuilder<MainRuntime>;
+    const runtime = await Promise.race([createRuntimeWithIcuDiagnostics(builder), interrupted]);
     verifyRuntime(runtime, selection);
     if (selection.runtimeContract === "mono-11") await Promise.race([preload.ready(), interrupted]);
     document.documentElement.dataset.dorotiRuntimeLocation = "main";

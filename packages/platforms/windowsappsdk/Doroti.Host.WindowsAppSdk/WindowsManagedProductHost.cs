@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Doroti.Runtime;
 using Doroti.Skia.Rendering;
 using Doroti.Ui;
 
@@ -615,12 +616,9 @@ internal sealed unsafe partial class WindowsManagedProductHost
             throw new InvalidDataException("Native semantics action is invalid.");
         }
 
-        object? arguments = null;
-        if (!string.IsNullOrWhiteSpace(argumentsJson) && argumentsJson != "null")
-        {
-            using var document = JsonDocument.Parse(argumentsJson);
-            arguments = document.RootElement.Clone();
-        }
+        var arguments = string.IsNullOrWhiteSpace(argumentsJson)
+            ? null
+            : Dart_convertLibrary.json.decode(argumentsJson);
         var node = checked((int)nodeId);
         EnqueueInput(() => SemanticsAction?.Invoke(node, (SemanticsAction)action, arguments));
     }

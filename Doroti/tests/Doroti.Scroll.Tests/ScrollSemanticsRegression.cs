@@ -24,7 +24,7 @@ internal static class ScrollSemanticsRegression
         position.applyViewportDimension(200);
         position.applyContentDimensions(0, 1000);
         var scroll = Create(position);
-        var root = new RenderSemanticsAnnotations(child: scroll, container: true,
+        var root = new RenderSemanticsAnnotations(child: scroll, container: true, textDirection: TextDirection.ltr,
             properties: new SemanticsProperties(label: "before", textDirection: TextDirection.ltr));
         var updates = new List<SemanticsUpdate>();
         var owner = new PipelineOwner(onSemanticsUpdate: updates.Add) { rootNode = root };
@@ -75,6 +75,7 @@ internal static class ScrollSemanticsRegression
             Move(70.25);
             Check(owner.hasPendingSemanticsNonGeometryUpdate, "scroll action policy changes stay urgent");
             owner.flushSemantics();
+            CheckMergedEditableTextGeometry();
         }
         finally
         {
@@ -88,7 +89,73 @@ internal static class ScrollSemanticsRegression
         GC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect();
         Check(!disposed.IsAlive, "a surviving position does not retain disposed scroll renderers or their subtrees");
         externalPosition.dispose();
-        Console.WriteLine("PASS: scroll-only semantics coalescing, content/action priority, exact final offset/extents, conservative hosts and disposed listener release");
+        Console.WriteLine("PASS: scroll semantics coalescing, content priority, exact offsets, disposed listeners and merged editable text geometry");
+    }
+
+    private static void CheckMergedEditableTextGeometry()
+    {
+        const string value = "x 👩‍💻";
+        var textGeometry = new SemanticsTextGeometry(value, 1,
+            [new SemanticsTextRun(2, 7, new Rect(4, 5, 18, 19), 0, 7)]);
+        var editable = new EditableSemanticsBox(textGeometry);
+        var padding = new RenderPadding(EdgeInsets.CreateOnly(left: 10, top: 20)) { child = editable };
+        var field = new RenderSemanticsAnnotations(child: padding, container: true, textDirection: TextDirection.ltr,
+            properties: new SemanticsProperties(label: "edit label", textDirection: TextDirection.ltr));
+        var root = new RenderProxyBox(field);
+        var updates = new List<SemanticsUpdate>();
+        var owner = new PipelineOwner(onSemanticsUpdate: updates.Add) { rootNode = root };
+        var handle = owner.ensureSemantics();
+        try
+        {
+            root.layout(BoxConstraints.CreateTight(new Size(100, 60)));
+            root.scheduleInitialSemantics();
+            owner.flushSemantics();
+            var initial = updates[^1].nodes.Single(node => node.value == value);
+            Check(initial.label == "edit label" && initial.textGeometry?.Runs.Single().Bounds == new Rect(14, 25, 28, 39),
+                "the container's editable value carries child text geometry in container coordinates");
+            Check(initial.textGeometry!.Snap(4) == 2 && initial.textGeometry.Snap(4, true) == 7,
+                "merged text geometry retains the emoji boundary");
+
+            padding.padding = EdgeInsets.CreateOnly(left: 16, top: 23);
+            owner.flushLayout();
+            owner.flushSemantics();
+            var moved = updates[^1].nodes.Single(node => node.id == initial.id);
+            Check(moved.textGeometry?.Runs.Single().Bounds == new Rect(20, 28, 34, 42),
+                "a moved child republishes bounds even when its paragraph revision is unchanged");
+
+            editable.Obscure();
+            owner.flushSemantics();
+            var obscured = updates[^1].nodes.Single(node => node.id == initial.id);
+            Check(obscured.textGeometry is null && obscured.flags?.isObscured == true,
+                "an obscured field clears the merged text geometry");
+        }
+        finally
+        {
+            handle.dispose();
+            owner.rootNode = null;
+            root.dispose(); field.dispose(); padding.dispose(); editable.dispose(); owner.dispose();
+        }
+    }
+
+    private sealed class EditableSemanticsBox(SemanticsTextGeometry geometry) : RenderProxyBox
+    {
+        private bool _obscured;
+
+        public void Obscure()
+        {
+            _obscured = true;
+            markNeedsSemanticsUpdate();
+        }
+
+        public override void describeSemanticsConfiguration(SemanticsConfiguration config)
+        {
+            base.describeSemanticsConfiguration(config);
+            config.isTextField = true;
+            config.isObscured = _obscured;
+            config.textDirection = TextDirection.ltr;
+            config.value = _obscured ? new string('•', geometry.Text.Length) : geometry.Text;
+            config.hostTextGeometry = _obscured ? null : geometry;
+        }
     }
 
     private static RenderBox Create(ScrollPosition position) => (RenderBox)Activator.CreateInstance(

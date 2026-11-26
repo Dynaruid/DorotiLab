@@ -3,7 +3,7 @@
 - 작성일: 2026-11-13
 - 검토 기준: DorotiLab `0a7fdcfe2ffa`, 현재 제품 소스와 공식 upstream 문서·소스
 - 채택 방향: **.NET 우선 + 부족한 국제화 기능만 보강.** 이전의 Dart `intl` 관리형 이식 우선안을 대체한다.
-- 상태: **PARTIAL — 공통 로케일 계약, 위젯 번역 패키지, ARB 생성기와 언어 확대를 구현했다.** P4는 공식 HarfBuzz와 C# 분석을 사용하는 제품 렌더러를 소스 빌드에서 선택할 수 있다. 구현과 검증은 §15–16에 기록한다. §14는 2026-11-16 P0 기준 기록이다.
+- 상태: **PARTIAL.** 공통 로케일 계약, 위젯 번역 패키지, ARB 생성기와 언어 확대를 구현했다. 합성 문단은 `-p:DorotiShapedParagraphs=true`로 선택한다. 최신 검증과 남은 인수는 §21에 기록한다.
 
 ## 0. 요약과 채택 결정
 
@@ -682,3 +682,19 @@ python Doroti/eng/run-with-timeout.py node packages/platforms/web/tests/browser-
 | 제품 인수 | Android x64 및 Apple 지원 runner, 실제 IME 조합과 운영체제별 보조 기술의 텍스트 탐색, §10.3의 영어 p95 및 실제 기기·프레임 예산이 남아 있다. |
 
 원시 로그와 화면은 삭제 가능한 `Doroti/artifacts/work2-paragraph/semantics`에 있다. Web 재개에는 [제품 probe 재현 명령](Doroti/docs/localization/paragraph-feasibility.md#reproduce-the-probe)의 SDK를 11.0.100으로 선택하고 `-c Release -p:RunAOTCompilation=true -p:DorotiShapedParagraphs=true -p:WasmEnableThreads=true`를 사용한다. Qt 재개에는 [공식 SDK 설치 및 배포 설정](packages/platforms/qt/qt-runtime.md#explicit-sdk-installation)과 `-p:DorotiIntlProbe=localizations -p:DorotiShapedParagraphs=true -p:DorotiQtWebEngine=false`를 사용한다.
+
+## 21. 2026-11-26 재개 결과
+
+- 같은 줄바꿈과 왼쪽 정렬을 유지하는 폭 범위에서는 문단 배치를 재사용한다. 새 배치는 Skia의 공개 쓰기 버퍼에 글리프 ID와 위치를 직접 기록한다. Windows x64 JIT·NativeAOT와 WSL Linux x64 JIT의 제품 probe에서 폭 변경, 선택, 접근성 문자 범위와 이전 문단 그림의 재생을 확인했다. 각 환경의 고정 예문 PNG 해시는 이전 결과와 같았다.
+- Web 제품 probe는 SDK 10.0.403과 SDK 11.0.100 각각에서 compatible·threaded의 Debug 및 Release/AOT를 사용했다. Chromium 158.0.8127.18, Firefox 159.0, WebKit 27.2에서 총 24개 조합이 통과했다. 실제 .NET 10.0.15 런타임의 스레드·공유 힙·문서 격리 상태를 확인했다. 외부 요청을 차단하고 배포 산출물만 제공한 재실행도 모두 통과했고 PNG 24장의 SHA-256이 일치했다. SDK 10 threaded Release의 첫 WebKit 실행은 시간 제한에 도달했고 같은 산출물로 다시 실행해 통과했다. [제품 probe 재현 명령](Doroti/docs/localization/paragraph-feasibility.md#reproduce-the-probe)
+- Web Demo의 compatible·threaded를 Chromium `/demo/`에서 실행했다. `en-US`에서 `ko-KR`로 선호 순서를 바꾸면 앱 문구, Material 번역 및 활성 DOM 입력의 언어가 갱신되고 영어 하위 트리가 유지됐다. 두 모드에서 선택된 ICU 파일의 누락과 손상을 각각 발생시켰고 첫 프레임 전에 해당 파일의 오류를 확인했다.
+- Material 입력란이 상위 접근성 노드에 합쳐져도 실제 문자 범위와 좌표가 함께 전달된다. 입력란의 padding을 바꾸면 문단 revision이 같아도 새 좌표를 내보낸다. 암호 입력란의 문자 좌표는 제공하지 않는다.
+- WindowsAppSDK Demo의 UI Automation으로 한국어 앱·Material 문구와 영어 하위 트리를 확인했다. 입력란에 문자열과 탭을 넣고 `TextPattern`으로 ZWJ 이모지의 범위, 좌표, 선택을 확인했다. Windows 호스트는 접근성 입력 인수를 런타임 자료형으로 변환하고 JSON의 제어 문자를 이스케이프한다.
+- 공식 Qt Framework 6.12.0의 WebEngine 제외 번들을 WSL에서 Xvfb와 Mesa 소프트웨어 Vulkan으로 실행했다. 윈도우가 뜰 때 접근성 루트를 제공해 첫 트리 갱신 전의 캐시 문제를 해결했다. `en_US`와 `ko_KR`에서 AT-SPI로 앱과 Material 문구, 영어 하위 트리, 텍스트 편집을 확인했다. Qt가 내보낸 아랍어 합자, 결합문자, ZWJ 이모지의 UTF-16 범위와 문자 사각형, 캐럿 이동도 검증했다. [Qt 실행 환경](Doroti/docs/localization/paragraph-feasibility.md#linux-qt-demo)
+- Windows Debug·Release 스크롤 회귀 전체가 통과했다. 상속 알림은 마운트된 위젯의 빌드 범위에서 검증했다. 합쳐진 입력란의 문자 좌표, 위치 변경, 암호 입력도 검증했다. Unicode 17 표준 113,755건, ASCII 줄바꿈 비교 23건과 기본 렌더러의 spaced-text 21건 및 retained shadow/text 24건도 통과했다.
+- .NET 10과 .NET 11 Debug x64 Demo APK를 Android API 33 에뮬레이터에서 실행했다. 두 설치 APK의 SHA-256을 로컬 서명 APK와 확인했다. UI Automator로 `en-US`와 `ko-KR`의 앱 문구와 Material 버튼 번역, 영어 하위 트리를 확인했고 테스트 앱을 제거했다. SDK 11 검증에는 별도의 `maui-android` workload와 CoreCLR을 사용했다. [Android 재현 명령](Doroti/docs/localization/paragraph-feasibility.md#android-demo)
+- §10.3의 영어 배치 예산이 남아 있다. 병행 빌드를 마친 뒤 같은 Windows x64 논리 CPU와 고정 글꼴로 다시 측정했다. 줄바꿈 영어의 폭 변경 p95는 기존 문단 10.7µs, 합성 문단 75.7µs였다. 같은 문단의 기록 그림 재생 p95는 86.3µs에서 20.0µs로 줄었다. 합성 문단은 opt-in으로 유지한다. [측정 내역](Doroti/docs/localization/paragraph-feasibility.md#continued-reflow-measurements)
+
+### 남은 제품 인수
+
+Apple 지원 runner의 빌드와 실행에는 연결된 macOS/Xcode 환경이 필요하다. 실제 기기의 IME 조합, 화면 읽기 프로그램, 첫 현지화 프레임과 실제 GPU·표시 프레임 성능 인수도 남아 있다. 로컬 검증 로그는 `Doroti/artifacts/work2-paragraph/continuation`과 `Doroti/artifacts/work2-paragraph/semantics/qt`에 있다.
