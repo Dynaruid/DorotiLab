@@ -3,6 +3,13 @@ using System.Net.Sockets;
 using System.Text.Json;
 using Doroti.DeployHelper;
 
+if (args is ["--publish-error-fixture"])
+{
+    Console.WriteLine("MSBuild fixture error on stdout.");
+    Console.Error.WriteLine("Native compiler fixture detail on stderr.");
+    return 7;
+}
+
 using var deadline = new CancellationTokenSource(TimeSpan.FromMinutes(20));
 var ct = deadline.Token;
 var currentDirectory = Directory.GetCurrentDirectory();
@@ -277,7 +284,13 @@ foreach (var mode in new[] { "MonoAot", "Mono" })
         var cli = new WebDeploymentCli(root, runner, new TestUi(), new FakeServer());
         var plan = await cli.BuildPlanAsync(WebOptions(version, mode), demo, dotnet, ct);
         var args = plan.Command.Arguments;
-        Require(args[0] == Path.Combine(sdkRoot, version == 10 ? "10.0.403" : "11.0.100", "dotnet.dll"), "SDK pin was used instead of the selected SDK.");
+        var sdkDirectory = Path.Combine(sdkRoot, version == 10 ? "10.0.403" : "11.0.100");
+        Require(args[0] == Path.Combine(sdkDirectory, "dotnet.dll"), "SDK pin was used instead of the selected SDK.");
+        var environment = plan.Command.Environment;
+        Require(environment is not null && environment["DOTNET_HOST_PATH"] == dotnet &&
+            environment["MSBUILD_EXE_PATH"] == Path.Combine(sdkDirectory, "MSBuild.dll") &&
+            environment["MSBuildExtensionsPath"] == sdkDirectory &&
+            environment["MSBuildSDKsPath"] == Path.Combine(sdkDirectory, "Sdks"), "Publish can inherit MSBuild paths from a different SDK.");
         Require(args.Contains("publish") && !args.Contains("run") && !args.Contains("watch"), "Preview must publish.");
         Require(args.Contains($"-p:DorotiWebTargetFramework=net{version}.0"), "SDK and runtime target were conflated.");
         Require(Guid.TryParseExact(plan.BuildId, "N", out _) && args.Contains("-p:DorotiWebBuildId=" + plan.BuildId), "Inner builds can generate different publish IDs.");
@@ -285,6 +298,7 @@ foreach (var mode in new[] { "MonoAot", "Mono" })
         Require(args.Contains("-p:DorotiWebInterpretWidgetTree=false"), "Sample interpretation would hide the AOT comparison.");
         Require(args.Contains("-p:DorotiWebQualificationProbe=true") == (version == 11), "net11 qualification opt-in escaped its selection.");
         Require(plan.Command.TimeoutSeconds == 1200 && plan.Command.WorkingDirectory == root, "Publish is not bounded or independent of the caller directory.");
+        Require(!plan.Command.Capture && plan.Command.CaptureFailureOutput, "Publish must stream output and retain failure diagnostics.");
         Require(plan.WebRoot.Contains($"-net{version}-release-threaded", StringComparison.Ordinal), "Runtime variants share publish output.");
     });
 }
@@ -338,6 +352,24 @@ Test("Publish failure never serves an older output", async () =>
     }
     catch (DeployException) { }
     Require(server.Calls == 0, "An old publish was served after failure.");
+});
+
+Test("Live publish failure preserves diagnostics from both output streams", async () =>
+{
+    var runner = new ProcessRunner(new TestUi());
+    var command = new Command(Executables.Resolve("dotnet"), [typeof(TestUi).Assembly.Location, "--publish-error-fixture"],
+        repository, Capture: false, TimeoutSeconds: 1200, CaptureFailureOutput: true);
+    try
+    {
+        await runner.RunAsync(command, ct);
+        throw new Exception("Failing command was accepted.");
+    }
+    catch (DeployException error)
+    {
+        Require(error.Message.Contains("exit 7", StringComparison.Ordinal) &&
+            error.Message.Contains("MSBuild fixture error on stdout.", StringComparison.Ordinal) &&
+            error.Message.Contains("Native compiler fixture detail on stderr.", StringComparison.Ordinal), "Diagnostics were lost from the publish error.");
+    }
 });
 
 Test("Published runtime metadata must match the requested AOT/runtime", async () =>

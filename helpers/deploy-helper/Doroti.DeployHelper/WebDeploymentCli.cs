@@ -5,7 +5,8 @@ namespace Doroti.DeployHelper;
 
 public sealed record WebSdk(string Version, string Directory, int Major)
 {
-    public string EntryPoint => Path.Combine(Directory, Version, "dotnet.dll");
+    public string VersionDirectory => Path.Combine(Directory, Version);
+    public string EntryPoint => Path.Combine(VersionDirectory, "dotnet.dll");
 }
 
 public sealed record WebPublishPlan(Command Command, string WebRoot, string Sdk, int DotnetVersion,
@@ -62,9 +63,18 @@ public sealed class WebDeploymentCli(string repositoryRoot, ICommandRunner runne
             "-p:DorotiWebInterpretWidgetTree=false",
         };
         if (options.DotnetVersion == 11) arguments.Add("-p:DorotiWebQualificationProbe=true");
+        // The SDK used by dotnet run can export its MSBuild paths into this helper's environment.
+        var environment = new Dictionary<string, string>
+        {
+            ["DOTNET_HOST_PATH"] = dotnet,
+            ["MSBUILD_EXE_PATH"] = Path.Combine(sdk.VersionDirectory, "MSBuild.dll"),
+            ["MSBuildExtensionsPath"] = sdk.VersionDirectory,
+            ["MSBuildSDKsPath"] = Path.Combine(sdk.VersionDirectory, "Sdks"),
+        };
         ui.WriteLine($"\nSDK {sdk.Version} / net{options.DotnetVersion}.0 / {mode} / {configuration} / {execution}\nPublished files: {publish}");
         if (options.DotnetVersion == 11) ui.WriteLine(".NET 11 Web is a local qualification preview; product support remains gated.");
-        return new(new(dotnet, arguments, RepositoryRoot, Capture: false, TimeoutSeconds: 1200),
+        return new(new(dotnet, arguments, RepositoryRoot, Capture: false, TimeoutSeconds: 1200,
+                Environment: environment, CaptureFailureOutput: true),
             Path.Combine(publish, "wwwroot"), sdk.Version, options.DotnetVersion, mode, configuration, execution, buildId);
     }
 

@@ -6,7 +6,8 @@ namespace Doroti.DeployHelper;
 public sealed class DeployException(string message) : Exception(message);
 
 public record Command(string FileName, IReadOnlyList<string> Arguments, string? WorkingDirectory = null,
-    bool Capture = true, int? TimeoutSeconds = 60, IReadOnlyDictionary<string, string>? Environment = null)
+    bool Capture = true, int? TimeoutSeconds = 60, IReadOnlyDictionary<string, string>? Environment = null,
+    bool CaptureFailureOutput = false)
 {
     public string Display => string.Join(" ", new[] { FileName }.Concat(Arguments).Select(Quote));
     private static string Quote(string value) => Regex.IsMatch(value, "^[A-Za-z0-9_./:=+-]+$")
@@ -38,9 +39,11 @@ public sealed class ProcessRunner(IUserInterface ui) : ICommandRunner
     public async Task<string> RunAsync(Command command, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
+        var streamOutput = !command.Capture && command.CaptureFailureOutput;
+        var redirectOutput = command.Capture || streamOutput;
         var info = new ProcessStartInfo(command.FileName)
         {
-            UseShellExecute = false, RedirectStandardOutput = command.Capture, RedirectStandardError = command.Capture,
+            UseShellExecute = false, RedirectStandardOutput = redirectOutput, RedirectStandardError = redirectOutput,
             WorkingDirectory = command.WorkingDirectory ?? System.Environment.CurrentDirectory,
         };
         foreach (var argument in command.Arguments) info.ArgumentList.Add(argument);
@@ -48,8 +51,18 @@ public sealed class ProcessRunner(IUserInterface ui) : ICommandRunner
             foreach (var (key, value) in command.Environment) info.Environment[key] = value;
         if (!command.Capture) ui.WriteLine("+ " + command.Display);
         using var process = Process.Start(info) ?? throw new DeployException($"Cannot start {command.FileName}.");
-        var output = command.Capture ? process.StandardOutput.ReadToEndAsync() : Task.FromResult("");
-        var error = command.Capture ? process.StandardError.ReadToEndAsync() : Task.FromResult("");
+        var output = Task.FromResult("");
+        var error = Task.FromResult("");
+        if (command.Capture)
+        {
+            output = process.StandardOutput.ReadToEndAsync();
+            error = process.StandardError.ReadToEndAsync();
+        }
+        else if (streamOutput)
+        {
+            output = StreamOutputTailAsync(process.StandardOutput, Console.Out);
+            error = StreamOutputTailAsync(process.StandardError, Console.Error);
+        }
         using var timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         if (command.TimeoutSeconds is { } seconds) timeout.CancelAfter(TimeSpan.FromSeconds(seconds));
         try
@@ -67,8 +80,25 @@ public sealed class ProcessRunner(IUserInterface ui) : ICommandRunner
         var stdout = await output;
         var stderr = await error;
         if (process.ExitCode != 0)
-            throw new DeployException($"Command failed (exit {process.ExitCode}): {command.Display}\n{(stderr.Length > 0 ? stderr : stdout).Trim()}");
-        return stdout;
+        {
+            var details = streamOutput ? stdout + System.Environment.NewLine + stderr : (stderr.Length > 0 ? stderr : stdout);
+            throw new DeployException($"Command failed (exit {process.ExitCode}): {command.Display}\n{details.Trim()}".TrimEnd());
+        }
+        return command.Capture ? stdout : "";
+    }
+
+    private static async Task<string> StreamOutputTailAsync(StreamReader reader, TextWriter writer)
+    {
+        const int maxLines = 20;
+        var tail = new Queue<string>(maxLines);
+        while (await reader.ReadLineAsync() is { } line)
+        {
+            await writer.WriteLineAsync(line);
+            if (string.IsNullOrWhiteSpace(line)) continue;
+            if (tail.Count == maxLines) tail.Dequeue();
+            tail.Enqueue(line);
+        }
+        return string.Join(System.Environment.NewLine, tail);
     }
 }
 
